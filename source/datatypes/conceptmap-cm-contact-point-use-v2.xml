@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ConceptMap xmlns="http://hl7.org/fhir">
+  <id value="cm-contact-point-use-v2"/>
+  <url value="http://hl7.org/fhir/ConceptMap/cm-contact-point-use-v2"/>
+  <version value="6.0.0-ballot4"/>
+  <name value="v2.ContactPointUse"/>
+  <title value="v2 map for ContactPointUse"/>
+  <status value="draft"/>
+  <date value="2026-05-29T00:44:21-05:00"/>
+  <publisher value="HL7 (FHIR Project)"/>
+  <contact>
+    <telecom>
+      <system value="url"/>
+      <value value="http://hl7.org/fhir"/>
+    </telecom>
+    <telecom>
+      <system value="email"/>
+      <value value="fhir@lists.hl7.org"/>
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url"/>
+      <value value="http://www.hl7.org/Special/committees/fiwg"/>
+    </telecom>
+  </contact>
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm"/>
+      <code value="001"/>
+      <display value="World"/>
+    </coding>
+  </jurisdiction>
+  <sourceScopeCanonical value="http://hl7.org/fhir/ValueSet/contact-point-use"/>
+  <targetScopeCanonical value="http://terminology.hl7.org/ValueSet/v2-0201"/>
+  <group>
+    <source value="http://hl7.org/fhir/contact-point-use"/>
+    <target value="http://terminology.hl7.org/CodeSystem/v2-0201"/>
+    <element>
+      <code value="home"/>
+      <target>
+        <code value="PRN"/>
+        <relationship value="source-is-broader-than-target"/>
+        <comment value="FHIR doesn't distinguish types of homes for contacts"/>
+      </target>
+      <target>
+        <code value="ORN"/>
+        <relationship value="source-is-broader-than-target"/>
+        <comment value="FHIR doesn't distinguish types of homes for contacts"/>
+      </target>
+      <target>
+        <code value="VHN"/>
+        <relationship value="source-is-broader-than-target"/>
+        <comment value="FHIR doesn't distinguish types of homes for contacts"/>
+      </target>
+    </element>
+    <element>
+      <code value="work"/>
+      <target>
+        <code value="WPN"/>
+        <relationship value="equivalent"/>
+      </target>
+    </element>
+    <element>
+      <code value="mobile"/>
+      <target>
+        <code value="PRS"/>
+        <relationship value="equivalent"/>
+      </target>
+    </element>
+  </group>
+</ConceptMap>

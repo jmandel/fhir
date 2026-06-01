@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ConceptMap xmlns="http://hl7.org/fhir">
+  <id value="cm-contact-point-system-v2"/>
+  <url value="http://hl7.org/fhir/ConceptMap/cm-contact-point-system-v2"/>
+  <version value="6.0.0-ballot4"/>
+  <name value="v2.ContactPointSystem"/>
+  <title value="v2 map for ContactPointSystem"/>
+  <status value="draft"/>
+  <date value="2026-05-29T00:44:21-05:00"/>
+  <publisher value="HL7 (FHIR Project)"/>
+  <contact>
+    <telecom>
+      <system value="url"/>
+      <value value="http://hl7.org/fhir"/>
+    </telecom>
+    <telecom>
+      <system value="email"/>
+      <value value="fhir@lists.hl7.org"/>
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url"/>
+      <value value="http://www.hl7.org/Special/committees/fiwg"/>
+    </telecom>
+  </contact>
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm"/>
+      <code value="001"/>
+      <display value="World"/>
+    </coding>
+  </jurisdiction>
+  <sourceScopeCanonical value="http://hl7.org/fhir/ValueSet/contact-point-system"/>
+  <targetScopeCanonical value="http://terminology.hl7.org/ValueSet/v2-0202"/>
+  <group>
+    <source value="http://hl7.org/fhir/contact-point-system"/>
+    <target value="http://terminology.hl7.org/CodeSystem/v2-0202"/>
+    <element>
+      <code value="phone"/>
+      <target>
+        <code value="PH"/>
+        <relationship value="equivalent"/>
+      </target>
+    </element>
+    <element>
+      <code value="fax"/>
+      <target>
+        <code value="FX"/>
+        <relationship value="equivalent"/>
+      </target>
+    </element>
+    <element>
+      <code value="email"/>
+      <target>
+        <code value="Internet"/>
+        <relationship value="source-is-narrower-than-target"/>
+        <comment value="for email addresses"/>
+      </target>
+    </element>
+    <element>
+      <code value="pager"/>
+      <target>
+        <code value="BP"/>
+        <relationship value="equivalent"/>
+      </target>
+    </element>
+    <element>
+      <code value="url"/>
+      <target>
+        <code value="Internet"/>
+        <relationship value="source-is-narrower-than-target"/>
+        <comment value="for non-email kinds of addresses"/>
+      </target>
+    </element>
+  </group>
+</ConceptMap>

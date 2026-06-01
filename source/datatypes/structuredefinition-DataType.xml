@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <id value="DataType" />
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
+    <valueCode value="normative" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-normative-version">
+    <valueCode value="4.0.0" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir" />
+  </extension>
+  <url value="http://hl7.org/fhir/StructureDefinition/DataType" />
+  <version value="6.0.0-ballot4" />
+  <name value="DataType" />
+  <status value="active" />
+  <date value="2026-05-28T21:37:05-05:00" />
+  <publisher value="HL7 International / FHIR Infrastructure" />
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://hl7.org/fhir" />
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://www.hl7.org/Special/committees/fiwg" />
+    </telecom>
+  </contact>
+  <description value="DataType Type: The base class for all re-useable types defined as part of the FHIR Specification." />
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm" />
+      <code value="001" />
+      <display value="World" />
+    </coding>
+  </jurisdiction>
+  <fhirVersion value="6.0.0-ballot4" />
+  <mapping>
+    <identity value="rim" />
+    <uri value="http://hl7.org/v3" />
+    <name value="RIM Mapping" />
+  </mapping>
+  <kind value="complex-type" />
+  <abstract value="true" />
+  <type value="DataType" />
+  <baseDefinition value="http://hl7.org/fhir/StructureDefinition/Element" />
+  <derivation value="specialization" />
+  <differential>
+    <element id="DataType">
+      <path value="DataType" />
+      <short value="Reuseable Types" />
+      <definition value="The base class for all re-useable types defined as part of the FHIR Specification." />
+      <min value="0" />
+      <max value="*" />
+      <mapping>
+        <identity value="rim" />
+        <map value="n/a" />
+      </mapping>
+    </element>
+  </differential>
+</StructureDefinition>

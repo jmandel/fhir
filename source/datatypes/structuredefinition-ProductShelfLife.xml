@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <id value="ProductShelfLife" />
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
+    <valueCode value="normative" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-normative-version">
+    <valueCode value="4.0.0" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir" />
+  </extension>
+  <url value="http://hl7.org/fhir/StructureDefinition/ProductShelfLife" />
+  <version value="6.0.0-ballot4" />
+  <name value="ProductShelfLife" />
+  <status value="active" />
+  <date value="2026-05-28T21:37:05-05:00" />
+  <publisher value="HL7 International / FHIR Infrastructure" />
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://hl7.org/fhir" />
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://www.hl7.org/Special/committees/fiwg" />
+    </telecom>
+  </contact>
+  <description value="ProductShelfLife Type: The shelf-life and storage information for a medicinal product item or container can be described using this class." />
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm" />
+      <code value="001" />
+      <display value="World" />
+    </coding>
+  </jurisdiction>
+  <fhirVersion value="6.0.0-ballot4" />
+  <mapping>
+    <identity value="w5" />
+    <uri value="http://hl7.org/fhir/fivews" />
+    <name value="FiveWs Pattern Mapping" />
+  </mapping>
+  <mapping>
+    <identity value="rim" />
+    <uri value="http://hl7.org/v3" />
+    <name value="RIM Mapping" />
+  </mapping>
+  <kind value="complex-type" />
+  <abstract value="false" />
+  <type value="ProductShelfLife" />
+  <baseDefinition value="http://hl7.org/fhir/StructureDefinition/BackboneType" />
+  <derivation value="specialization" />
+  <differential>
+    <element id="ProductShelfLife">
+      <path value="ProductShelfLife" />
+      <short value="The shelf-life and storage information for a medicinal product item or container can be described using this class" />
+      <definition value="The shelf-life and storage information for a medicinal product item or container can be described using this class." />
+      <min value="0" />
+      <max value="*" />
+      <mapping>
+        <identity value="w5" />
+        <map value="administrative.medication" />
+      </mapping>
+    </element>
+    <element id="ProductShelfLife.type">
+      <path value="ProductShelfLife.type" />
+      <short value="This describes the shelf life, taking into account various scenarios such as shelf life of the packaged Medicinal Product itself, shelf life after transformation where necessary and shelf life after the first opening of a bottle, etc. The shelf life type shall be specified using an appropriate controlled vocabulary The controlled term and the controlled term identifier shall be specified" />
+      <definition value="This describes the shelf life, taking into account various scenarios such as shelf life of the packaged Medicinal Product itself, shelf life after transformation where necessary and shelf life after the first opening of a bottle, etc. The shelf life type shall be specified using an appropriate controlled vocabulary The controlled term and the controlled term identifier shall be specified." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="CodeableConcept" />
+      </type>
+    </element>
+    <element id="ProductShelfLife.period[x]">
+      <path value="ProductShelfLife.period[x]" />
+      <short value="The shelf life time period can be specified using a numerical value for the period of time and its unit of time measurement The unit of measurement shall be specified in accordance with ISO 11240 and the resulting terminology The symbol and the symbol identifier shall be used" />
+      <definition value="The shelf life time period can be specified using a numerical value for the period of time and its unit of time measurement The unit of measurement shall be specified in accordance with ISO 11240 and the resulting terminology The symbol and the symbol identifier shall be used." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Duration" />
+      </type>
+      <type>
+        <code value="string" />
+      </type>
+    </element>
+    <element id="ProductShelfLife.specialPrecautionsForStorage">
+      <path value="ProductShelfLife.specialPrecautionsForStorage" />
+      <short value="Special precautions for storage, if any, can be specified using an appropriate controlled vocabulary The controlled term and the controlled term identifier shall be specified" />
+      <definition value="Special precautions for storage, if any, can be specified using an appropriate controlled vocabulary The controlled term and the controlled term identifier shall be specified." />
+      <min value="0" />
+      <max value="*" />
+      <type>
+        <code value="CodeableConcept" />
+      </type>
+    </element>
+  </differential>
+</StructureDefinition>

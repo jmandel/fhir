@@ -16,11 +16,12 @@
     <system value="urn:ietf:rfc:3986"/>
     <value value="urn:oid:2.16.840.1.113883.4.642.3.105"/>
   </identifier>
-  <version value="4.0.0"/>
+  <version value="6.0.0-ballot4"/>
   <name value="ExpressionLanguage"/>
   <title value="Expression Language"/>
   <status value="active"/>
   <experimental value="false"/>
+  <date value="2026-05-28T21:51:39-05:00"/>
   <publisher value="HL7 International / FHIR Infrastructure"/>
   <contact>
     <telecom>

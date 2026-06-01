@@ -14,8 +14,8 @@
   <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-fmm">
     <valueInteger value="0"/>
   </extension>
-  <url value="http://hl7.org/fhir/ValueSet/price-component-type"/>
-  <version value="6.0.0"/>
+  <url value="http://hl7.org/fhir/ValueSet/relativetime-codes"/>
+  <version value="6.0.0-ballot4"/>
   <name value="RelativeTimeCodes"/>
   <title value="RelativeTime Codes"/>
   <status value="active"/>

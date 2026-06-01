@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ImplementationGuide xmlns="http://hl7.org/fhir">
+  <id value="identifier-extensions" />
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir" />
+  </extension>
+  <extension url="http://hl7.org/fhir/tools/StructureDefinition/profile-extension-uri">
+    <valueUri value="http://hl7.org/fhir/StructureDefinition/identifier-" />
+  </extension>
+  <extension url="http://hl7.org/fhir/tools/StructureDefinition/profile-binding">
+    <extension url="name">
+      <valueString value="Units" />
+    </extension>
+    <extension url="definition">
+      <valueMarkdown value="Units of measure allowed for an element" />
+    </extension>
+    <extension url="method">
+      <valueCode value="value-set" />
+    </extension>
+    <extension url="strength">
+      <valueCode value="required" />
+    </extension>
+    <extension url="reference">
+      <valueString value="valueset-ucum-units" />
+    </extension>
+  </extension>
+  <url value="http://hl7.org/fhir/ImplementationGuide/identifier-extensions" />
+  <name value="Common extensions for Identifier data type" />
+  <title value="Common extensions for Identifier data type" />
+  <status value="draft" />
+  <date value="2015-02-28T00:00:00.000" />
+  <publisher value="Health Level Seven, Inc. - FHIR Core WG" />
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://hl7.org/special/committees/FHIR" />
+    </telecom>
+  </contact>
+  <description value="Defines &quot;common&quot; extensions for use with the Identifier data type" />
+  <packageId value="hl7.fhir.r6.identifier-extensions" />
+  <fhirVersion value="6.0.0" />
+  <definition />
+</ImplementationGuide>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <id value="ContactDetail" />
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
+    <valueCode value="normative" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-normative-version">
+    <valueCode value="4.0.0" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir" />
+  </extension>
+  <url value="http://hl7.org/fhir/StructureDefinition/ContactDetail" />
+  <version value="6.0.0-ballot4" />
+  <name value="ContactDetail" />
+  <status value="active" />
+  <date value="2026-05-28T21:37:05-05:00" />
+  <publisher value="HL7 International / FHIR Infrastructure" />
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://hl7.org/fhir" />
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://www.hl7.org/Special/committees/fiwg" />
+    </telecom>
+  </contact>
+  <description value="ContactDetail Type: Specifies contact information for a person or organization." />
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm" />
+      <code value="001" />
+      <display value="World" />
+    </coding>
+  </jurisdiction>
+  <purpose value="Need to track contact information in the same way across multiple resources." />
+  <fhirVersion value="6.0.0-ballot4" />
+  <mapping>
+    <identity value="rim" />
+    <uri value="http://hl7.org/v3" />
+    <name value="RIM Mapping" />
+  </mapping>
+  <kind value="complex-type" />
+  <abstract value="false" />
+  <type value="ContactDetail" />
+  <baseDefinition value="http://hl7.org/fhir/StructureDefinition/DataType" />
+  <derivation value="specialization" />
+  <differential>
+    <element id="ContactDetail">
+      <path value="ContactDetail" />
+      <short value="Contact information" />
+      <definition value="Specifies contact information for a person or organization." />
+      <min value="0" />
+      <max value="*" />
+    </element>
+    <element id="ContactDetail.name">
+      <path value="ContactDetail.name" />
+      <short value="Name of an individual to contact" />
+      <definition value="The name of an individual to contact." />
+      <comment value="If there is no named individual, the telecom information is for the organization as a whole." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="string" />
+      </type>
+    </element>
+    <element id="ContactDetail.telecom">
+      <path value="ContactDetail.telecom" />
+      <short value="Contact details for individual or organization" />
+      <definition value="The contact details for the individual (if a name was provided) or the organization." />
+      <min value="0" />
+      <max value="*" />
+      <type>
+        <code value="ContactPoint" />
+      </type>
+    </element>
+  </differential>
+</StructureDefinition>

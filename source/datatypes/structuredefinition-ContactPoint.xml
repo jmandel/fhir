@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <id value="ContactPoint" />
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
+    <valueCode value="normative" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-normative-version">
+    <valueCode value="4.0.0" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir" />
+  </extension>
+  <url value="http://hl7.org/fhir/StructureDefinition/ContactPoint" />
+  <version value="6.0.0-ballot4" />
+  <name value="ContactPoint" />
+  <status value="active" />
+  <date value="2026-05-28T21:37:05-05:00" />
+  <publisher value="HL7 International / FHIR Infrastructure" />
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://hl7.org/fhir" />
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://www.hl7.org/Special/committees/fiwg" />
+    </telecom>
+  </contact>
+  <description value="ContactPoint Type: Details for all kinds of technology mediated contact points for a person or organization, including telephone, email, etc." />
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm" />
+      <code value="001" />
+      <display value="World" />
+    </coding>
+  </jurisdiction>
+  <purpose value="Need to track phone, fax, mobile, sms numbers, email addresses, twitter tags, etc." />
+  <fhirVersion value="6.0.0-ballot4" />
+  <mapping>
+    <identity value="v2" />
+    <uri value="http://hl7.org/v2" />
+    <name value="HL7 V2 Mapping" />
+  </mapping>
+  <mapping>
+    <identity value="rim" />
+    <uri value="http://hl7.org/v3" />
+    <name value="RIM Mapping" />
+  </mapping>
+  <mapping>
+    <identity value="servd" />
+    <uri value="http://www.omg.org/spec/ServD/1.0/" />
+    <name value="ServD" />
+  </mapping>
+  <kind value="complex-type" />
+  <abstract value="false" />
+  <type value="ContactPoint" />
+  <baseDefinition value="http://hl7.org/fhir/StructureDefinition/DataType" />
+  <derivation value="specialization" />
+  <differential>
+    <element id="ContactPoint">
+      <path value="ContactPoint" />
+      <short value="Details of a Technology mediated contact point (phone, fax, email, etc.)" />
+      <definition value="Details for all kinds of technology mediated contact points for a person or organization, including telephone, email, etc." />
+      <min value="0" />
+      <max value="*" />
+      <constraint>
+        <key value="cpt-2" />
+        <severity value="error" />
+        <human value="A system is required if a value is provided." />
+        <expression value="value.empty() or system.exists()" />
+        <source value="http://hl7.org/fhir/StructureDefinition/ContactPoint" />
+      </constraint>
+      <mapping>
+        <identity value="v2" />
+        <map value="XTN" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value="TEL" />
+      </mapping>
+      <mapping>
+        <identity value="servd" />
+        <map value="ContactPoint" />
+      </mapping>
+    </element>
+    <element id="ContactPoint.system">
+      <path value="ContactPoint.system" />
+      <short value="phone | fax | email | pager | url | sms | other" />
+      <definition value="Telecommunications form for contact point - what communications system is required to make use of the contact." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="code" />
+      </type>
+      <condition value="cpt-2" />
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="Telecommunications form for contact point." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="ContactPointSystem" />
+        </extension>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-method">
+          <valueCode value="code-list" />
+        </extension>
+        <strength value="required" />
+        <description value="Telecommunications form for contact point." />
+        <valueSet value="http://hl7.org/fhir/ValueSet/contact-point-system" />
+      </binding>
+      <mapping>
+        <identity value="v2" />
+        <map value="XTN.3" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value="./scheme" />
+      </mapping>
+      <mapping>
+        <identity value="servd" />
+        <map value="./ContactPointType" />
+      </mapping>
+    </element>
+    <element id="ContactPoint.value">
+      <path value="ContactPoint.value" />
+      <short value="The actual contact point details" />
+      <definition value="The actual contact point details, in a form that is meaningful to the designated communication system (i.e. phone number or email address)." />
+      <comment value="Additional text data such as phone extension numbers, or notes about use of the contact are sometimes included in the value." />
+      <requirements value="Need to support legacy numbers that are not in a tightly controlled format." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="string" />
+      </type>
+      <condition value="cpt-2" />
+      <mapping>
+        <identity value="v2" />
+        <map value="XTN.1 (or XTN.12)" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value="./url" />
+      </mapping>
+      <mapping>
+        <identity value="servd" />
+        <map value="./Value" />
+      </mapping>
+    </element>
+    <element id="ContactPoint.use">
+      <path value="ContactPoint.use" />
+      <short value="home | work | temp | old | mobile - purpose of this contact point" />
+      <definition value="Identifies the purpose for the contact point." />
+      <comment value="Applications can assume that a contact is current unless it explicitly says that it is temporary or old." />
+      <requirements value="Need to track the way a person uses this contact, so a user can choose which is appropriate for their purpose." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="code" />
+      </type>
+      <isModifier value="true" />
+      <isModifierReason value="This is labeled as &quot;Is Modifier&quot; because applications should not mistake a temporary or old contact etc.for a current/permanent one" />
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="Use of contact point." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="ContactPointUse" />
+        </extension>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-method">
+          <valueCode value="code-list" />
+        </extension>
+        <strength value="required" />
+        <description value="Use of contact point." />
+        <valueSet value="http://hl7.org/fhir/ValueSet/contact-point-use" />
+      </binding>
+      <mapping>
+        <identity value="v2" />
+        <map value="XTN.2 - but often indicated by field" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value="unique(./use)" />
+      </mapping>
+      <mapping>
+        <identity value="servd" />
+        <map value="./ContactPointPurpose" />
+      </mapping>
+    </element>
+    <element id="ContactPoint.rank">
+      <path value="ContactPoint.rank" />
+      <short value="Specify preferred order of use (1 = highest)" />
+      <definition value="Specifies a preferred order in which to use a set of contacts. ContactPoints with lower rank values are more preferred than those with higher rank values." />
+      <comment value="Note that rank does not necessarily follow the order in which the contacts are represented in the instance.&#10;&#10;Ranks need not be unique.  E.g. it's possible to have multiple contacts with rank=1.  If the ranks have different systems or uses, this would be interpreted to mean &quot;X is my most preferred phone number, Y is my most preferred email address&quot; or &quot;X is my preferred home email and Y is my preferred work email&quot;.  If the system and use for equally-ranked contacts are the same, then the level of preference is equivalent for both repetitions. &#10;&#10;Ranks need not be sequential and not all repetitions must have a rank.  For example, it's possible to have 4 contacts with ranks of 2, 5 and two with no rank specified.  That would be interpreted to mean the first is preferred over the second and no preference stated for the remaining contacts." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="positiveInt" />
+      </type>
+      <mapping>
+        <identity value="v2" />
+        <map value="n/a" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value="n/a" />
+      </mapping>
+    </element>
+    <element id="ContactPoint.period">
+      <path value="ContactPoint.period" />
+      <short value="Time period when the contact point was/is in use" />
+      <definition value="Time period when the contact point was/is in use." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Period" />
+      </type>
+      <mapping>
+        <identity value="v2" />
+        <map value="N/A" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value="./usablePeriod[type=&quot;IVL&lt;TS&gt;&quot;]" />
+      </mapping>
+      <mapping>
+        <identity value="servd" />
+        <map value="./StartDate and ./EndDate" />
+      </mapping>
+    </element>
+  </differential>
+</StructureDefinition>

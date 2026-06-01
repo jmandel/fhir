@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<StructureDefinition xmlns='http://hl7.org/fhir'>
+  <id value='integer'/>
+  <extension url='http://hl7.org/fhir/tools/StructureDefinition/primitive-schema-type'>
+    <valueString value='int'/>
+  </extension>
+  <extension url='http://hl7.org/fhir/tools/StructureDefinition/primitive-json-type'>
+    <valueString value='number'/>
+  </extension>
+  <extension url='http://hl7.org/fhir/tools/StructureDefinition/primitive-v2-map'>
+    <valueString value='~NM/~SI'/>
+  </extension>
+  <extension url='http://hl7.org/fhir/tools/StructureDefinition/primitive-v3-map'>
+    <valueString value='INT'/>
+  </extension>
+  <url value='http://hl7.org/fhir/StructureDefinition/integer'/>
+  <name value='integer'/>
+  <status value='active'/>
+  <kind value='primitive-type'/>
+  <abstract value='false'/>
+  <type value='integer'/>
+  <baseDefinition value='http://hl7.org/fhir/StructureDefinition/PrimitiveType'/>
+  <derivation value='specialization'/>
+  <differential>
+    <element>
+      <id value='integer'/>
+      <path value='integer'/>
+      <short value='Primitive Type integer'/>
+      <definition value='A whole number'/>
+      <comment value='32 bit number; for values larger than this, use decimal'/>
+      <min value='0'/>
+      <max value='*'/>
+    </element>
+    <element>
+      <id value='integer.value'/>
+      <path value='integer.value'/>
+      <representation value='xmlAttr'/>
+      <short value='Primitive value for integer'/>
+      <definition value='Primitive value for integer'/>
+      <min value='0'/>
+      <max value='1'/>
+      <type>
+        <extension url='http://hl7.org/fhir/StructureDefinition/regex'>
+          <valueString value='[0]|[-+]?[1-9][0-9]*'/>
+        </extension>
+        <code value='http://hl7.org/fhirpath/System.String'/>
+      </type>
+    </element>
+  </differential>
+</StructureDefinition>

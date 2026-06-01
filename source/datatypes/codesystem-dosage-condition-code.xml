@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeSystem xmlns="http://hl7.org/fhir" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://hl7.org/fhir ../../input-cache/schemas/R4/fhir-single.xsd">
+
+<CodeSystem xmlns="http://hl7.org/fhir">
   <id value="dosage-condition-code"/>
   <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
     <valueCode value="normative"/>
@@ -8,29 +9,45 @@
     <valueCode value="phx"/>
   </extension>
   <url value="http://hl7.org/fhir/CodeSystem/dosage-condition-code"/>
+  <version value="6.0.0-ballot4"/>
   <name value="DosageConditionCodes"/>
   <title value="Dosage Condition Codes"/>
   <status value="active"/>
   <experimental value="false"/>
+  <publisher value="HL7 International / Pharmacy"/>
+  <contact>
+    <telecom>
+      <system value="url"/>
+      <value value="http://www.hl7.org/Special/committees/fiwg"/>
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url"/>
+      <value value="http://www.hl7.org/Special/committees/medication"/>
+    </telecom>
+  </contact>
+  <description value="Additional Binding Purpose"/>
   <jurisdiction>
     <coding>
       <system value="http://unstats.un.org/unsd/methods/m49/m49.htm"/>
       <code value="001"/>
     </coding>
-  </jurisdiction>  
+  </jurisdiction>
   <caseSensitive value="true"/>
+  <valueSet value="http://hl7.org/fhir/ValueSet/dosage-condition-code"/>
   <hierarchyMeaning value="is-a"/>
-  <content value="complete"/>  
+  <content value="complete"/>
   <property>
     <code value="type"/>
     <description value="The type that goes in ConditionDetails.value for this code"/>
     <type value="code"/>
-  </property>   
+  </property>
   <property>
     <code value="details"/>
     <description value="Documentation about what might go in the details for this code"/>
     <type value="string"/>
-  </property>   
+  </property>
   <concept>
     <code value="if-needed"/>
     <display value="If Needed"/>

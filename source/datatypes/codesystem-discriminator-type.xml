@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CodeSystem xmlns="http://hl7.org/fhir">
+  <id value="discriminator-type"/>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir"/>
+  </extension>
+  <url value="http://hl7.org/fhir/discriminator-type"/>
+  <identifier>
+    <system value="urn:ietf:rfc:3986"/>
+    <value value="urn:oid:2.16.840.1.113883.4.642.1.92"/>
+  </identifier>
+  <version value="6.0.0-ballot4"/>
+  <name value="DiscriminatorType"/>
+  <title value="DiscriminatorType"/>
+  <status value="draft"/>
+  <experimental value="false"/>
+  <date value="2026-05-28T21:51:39-05:00"/>
+  <publisher value="HL7 International / FHIR Infrastructure"/>
+  <contact>
+    <telecom>
+      <system value="url"/>
+      <value value="http://hl7.org/fhir"/>
+    </telecom>
+    <telecom>
+      <system value="email"/>
+      <value value="fhir@lists.hl7.org"/>
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url"/>
+      <value value="http://www.hl7.org/Special/committees/fiwg"/>
+    </telecom>
+  </contact>
+  <description value="How an element value is interpreted when discrimination is evaluated."/>
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm"/>
+      <code value="001"/>
+      <display value="World"/>
+    </coding>
+  </jurisdiction>
+  <caseSensitive value="true"/>
+  <valueSet value="http://hl7.org/fhir/ValueSet/discriminator-type"/>
+  <content value="complete"/>
+  <property>
+    <code value="status"/>
+    <uri value="http://hl7.org/fhir/concept-properties#status"/>
+    <description value="A property that indicates the status of the concept. One of active, experimental, deprecated, retired"/>
+    <type value="code"/>
+  </property>
+  <property>
+    <code value="deprecationDate"/>
+    <uri value="http://hl7.org/fhir/concept-properties#deprecationDate"/>
+    <description value="The date at which a concept was deprecated. Concepts that are deprecated but not inactive can still be used, but their use is discouraged"/>
+    <type value="dateTime"/>
+  </property>
+  <concept>
+    <code value="value"/>
+    <display value="Value"/>
+    <definition value="The slices have different values in the nominated element, as determined by the applicable fixed value, pattern, or required ValueSet binding."/>
+  </concept>
+  <concept>
+    <code value="exists"/>
+    <display value="Exists"/>
+    <definition value="The slices are differentiated by the presence or absence of the nominated element. There SHALL be no more than two slices. The slices are differentiated by the fact that one must have a max of 0 and the other must have a min of 1 (or more).  The order in which the slices are declared doesn't matter."/>
+  </concept>
+  <concept>
+    <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
+      <valueCode value="deprecated">
+        <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status-reason">
+          <valueMarkdown value="Pattern' is deprecated - it works exactly the same as 'value'"/>
+        </extension>
+      </valueCode>
+    </extension>
+    <code value="pattern"/>
+    <display value="Pattern"/>
+    <definition value="The slices have different values in the nominated element, as determined by the applicable fixed value, pattern, or required ValueSet binding. This has the same meaning as 'value' and is deprecated."/>
+    <property>
+      <code value="status"/>
+      <valueCode value="deprecated"/>
+    </property>
+    <property>
+      <code value="deprecationDate"/>
+      <valueDateTime value="2022-08-19T00:00:00.000Z"/>
+    </property>
+  </concept>
+  <concept>
+    <code value="type"/>
+    <display value="Type"/>
+    <definition value="The slices are differentiated by type of the nominated element."/>
+  </concept>
+  <concept>
+    <code value="profile"/>
+    <display value="Profile"/>
+    <definition value="The slices are differentiated by conformance of the nominated element to a specified profile. Note that if the path specifies .resolve() then the profile is the target profile on the reference. In this case, validation by the possible profiles is required to differentiate the slices."/>
+  </concept>
+  <concept>
+    <code value="position"/>
+    <display value="Position"/>
+    <definition value="The slices are differentiated by their index. This is only possible if all but the last slice have min=max cardinality, and the (optional) last slice contains other undifferentiated elements."/>
+  </concept>
+</CodeSystem>

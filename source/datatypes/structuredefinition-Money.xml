@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <id value="Money" />
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
+    <valueCode value="normative" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-normative-version">
+    <valueCode value="4.0.0" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-type-characteristics">
+    <valueCode value="has-range" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-type-characteristics">
+    <valueCode value="is-continuous" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-type-characteristics">
+    <valueCode value="has-units" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir" />
+  </extension>
+  <url value="http://hl7.org/fhir/StructureDefinition/Money" />
+  <version value="6.0.0-ballot4" />
+  <name value="Money" />
+  <status value="active" />
+  <date value="2026-05-28T21:37:05-05:00" />
+  <publisher value="HL7 International / FHIR Infrastructure" />
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://hl7.org/fhir" />
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://www.hl7.org/Special/committees/fiwg" />
+    </telecom>
+  </contact>
+  <description value="Money Type: An amount of economic utility in some recognized currency." />
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm" />
+      <code value="001" />
+      <display value="World" />
+    </coding>
+  </jurisdiction>
+  <fhirVersion value="6.0.0-ballot4" />
+  <mapping>
+    <identity value="rim" />
+    <uri value="http://hl7.org/v3" />
+    <name value="RIM Mapping" />
+  </mapping>
+  <mapping>
+    <identity value="v2" />
+    <uri value="http://hl7.org/v2" />
+    <name value="HL7 V2 Mapping" />
+  </mapping>
+  <kind value="complex-type" />
+  <abstract value="false" />
+  <type value="Money" />
+  <baseDefinition value="http://hl7.org/fhir/StructureDefinition/DataType" />
+  <derivation value="specialization" />
+  <differential>
+    <element id="Money">
+      <path value="Money" />
+      <short value="An amount of economic utility in some recognized currency" />
+      <definition value="An amount of economic utility in some recognized currency." />
+      <min value="0" />
+      <max value="*" />
+      <mapping>
+        <identity value="rim" />
+        <map value="MO" />
+      </mapping>
+    </element>
+    <element id="Money.value">
+      <path value="Money.value" />
+      <short value="Numerical value (with implicit precision)" />
+      <definition value="Numerical value (with implicit precision)." />
+      <comment value="Monetary values have their own rules for handling precision (refer to standard accounting text books)." />
+      <requirements value="The amount of the currency. The value includes an implicit precision in the presentation of the value." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="decimal" />
+      </type>
+      <mapping>
+        <identity value="v2" />
+        <map value="MO.Value" />
+      </mapping>
+    </element>
+    <element id="Money.currency">
+      <path value="Money.currency" />
+      <short value="ISO 4217 Currency Code" />
+      <definition value="ISO 4217 Currency Code." />
+      <requirements value="A code indicating the currency, taken from ISO 4217." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="code" />
+      </type>
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="A code indicating the currency, taken from ISO 4217." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="CurrencyCode" />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-isCommonBinding">
+          <valueBoolean value="true" />
+        </extension>
+        <strength value="required" />
+        <description value="A code indicating the currency, taken from ISO 4217." />
+        <valueSet value="http://hl7.org/fhir/ValueSet/currencies" />
+      </binding>
+      <mapping>
+        <identity value="v2" />
+        <map value="MO.Currency" />
+      </mapping>
+    </element>
+  </differential>
+</StructureDefinition>

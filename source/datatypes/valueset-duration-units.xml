@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <ValueSet xmlns="http://hl7.org/fhir">
+  <id value="duration-units"/>
   <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
     <valueCode value="fhir"/>
   </extension>
+  <url value="http://hl7.org/fhir/ValueSet/duration-units"/>
+  <identifier>
+    <system value="urn:ietf:rfc:3986"/>
+    <value value="urn:oid:2.16.840.1.113883.4.642.3.61"/>
+  </identifier>
+  <version value="6.0.0-ballot4"/>
   <name value="CommonUCUMCodesForDuration"/>
   <title value="Common UCUM Codes for Duration"/>
   <status value="draft"/>
   <experimental value="false"/>
+  <date value="2026-05-28T21:51:39-05:00"/>
   <publisher value="HL7 International / FHIR Infrastructure"/>
   <contact>
     <telecom>

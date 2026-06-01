@@ -203,6 +203,9 @@
         <code value="CodeableConcept"/>
       </type>
       <type>
+        <code value="CodeableReference"/>
+      </type>
+      <type>
         <code value="Coding"/>
       </type>
       <type>
@@ -239,6 +242,9 @@
         <code value="Ratio"/>
       </type>
       <type>
+        <code value="RatioRange"/>
+      </type>
+      <type>
         <code value="Reference"/>
       </type>
       <type>
@@ -272,15 +278,21 @@
         <code value="UsageContext"/>
       </type>
       <type>
-        <code value="Dosage"/>
+        <code value="Availability"/>
       </type>
       <type>
-        <code value="CodeableReference"/>
+        <code value="ExtendedContactDetail"/>
+      </type>
+      <type>
+        <code value="VirtualServiceDetail"/>
+      </type>
+      <type>
+        <code value="Dosage"/>
       </type>
       <type>
         <code value="Meta"/>
       </type>
-      <condition value="inv-1"/>
+<condition value="inv-1"/>
       <isSummary value="true"/>
     </element>
     <element id="Parameters.parameter.resource">

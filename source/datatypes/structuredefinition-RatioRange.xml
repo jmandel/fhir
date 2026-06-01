@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <id value="RatioRange" />
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
+    <valueCode value="normative" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-normative-version">
+    <valueCode value="4.0.0" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-type-characteristics">
+    <valueCode value="can-bind" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir" />
+  </extension>
+  <url value="http://hl7.org/fhir/StructureDefinition/RatioRange" />
+  <version value="6.0.0-ballot4" />
+  <name value="RatioRange" />
+  <status value="active" />
+  <date value="2026-05-28T21:37:05-05:00" />
+  <publisher value="HL7 International / FHIR Infrastructure" />
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://hl7.org/fhir" />
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://www.hl7.org/Special/committees/fiwg" />
+    </telecom>
+  </contact>
+  <description value="RatioRange Type: A range of ratios expressed as a low and high numerator and a denominator." />
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm" />
+      <code value="001" />
+      <display value="World" />
+    </coding>
+  </jurisdiction>
+  <purpose value="Need to be able to specify ranges of ratios." />
+  <fhirVersion value="6.0.0-ballot4" />
+  <mapping>
+    <identity value="v2" />
+    <uri value="http://hl7.org/v2" />
+    <name value="HL7 V2 Mapping" />
+  </mapping>
+  <mapping>
+    <identity value="rim" />
+    <uri value="http://hl7.org/v3" />
+    <name value="RIM Mapping" />
+  </mapping>
+  <kind value="complex-type" />
+  <abstract value="false" />
+  <type value="RatioRange" />
+  <baseDefinition value="http://hl7.org/fhir/StructureDefinition/DataType" />
+  <derivation value="specialization" />
+  <differential>
+    <element id="RatioRange">
+      <path value="RatioRange" />
+      <short value="Range of ratio values" />
+      <definition value="A range of ratios expressed as a low and high numerator and a denominator." />
+      <comment value="The stated low and high value are assumed to have arbitrarily high precision when it comes to determining which values are in the range. I.e. 1.99 is not in the range 2 -&gt; 3." />
+      <min value="0" />
+      <max value="*" />
+      <constraint>
+        <key value="ratrng-1" />
+        <severity value="error" />
+        <human value="One of lowNumerator or highNumerator and denominator SHALL be present, or all are absent. If all are absent, there SHALL be some extension present" />
+        <expression value="((lowNumerator.exists() or highNumerator.exists()) and denominator.exists()) or (lowNumerator.empty() and highNumerator.empty() and denominator.empty() and extension.exists())" />
+        <source value="http://hl7.org/fhir/StructureDefinition/RatioRange" />
+      </constraint>
+      <constraint>
+        <key value="ratrng-2" />
+        <severity value="error" />
+        <human value="If present, lowNumerator SHALL have a lower value than highNumerator" />
+        <expression value="lowNumerator.hasValue().not() or highNumerator.hasValue().not()  or (lowNumerator.lowBoundary() &lt;= highNumerator.highBoundary())" />
+        <source value="http://hl7.org/fhir/StructureDefinition/RatioRange" />
+      </constraint>
+      <mapping>
+        <identity value="v2" />
+        <map value="NR and also possibly SN (but see also quantity)" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value="IVL&lt;RTO&lt;QTY[not(type=&quot;TS&quot;)]&gt;&gt; [lowClosed=&quot;true&quot; and highClosed=&quot;true&quot;]or URG&lt;&lt;RTO&lt;QTY[not(type=&quot;TS&quot;)]&gt;&gt;" />
+      </mapping>
+    </element>
+    <element id="RatioRange.lowNumerator">
+      <path value="RatioRange.lowNumerator" />
+      <short value="Low Numerator limit" />
+      <definition value="The value of the low limit numerator." />
+      <comment value="If the low element is missing, the low boundary is not known." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Quantity" />
+        <profile value="http://hl7.org/fhir/StructureDefinition/SimpleQuantity" />
+      </type>
+      <condition value="ratrng-1" />
+      <condition value="ratrng-2" />
+      <mapping>
+        <identity value="v2" />
+        <map value="NR.1" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value="./low" />
+      </mapping>
+    </element>
+    <element id="RatioRange.highNumerator">
+      <path value="RatioRange.highNumerator" />
+      <short value="High Numerator limit" />
+      <definition value="The value of the high limit numerator." />
+      <comment value="If the high element is missing, the high boundary is not known." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Quantity" />
+        <profile value="http://hl7.org/fhir/StructureDefinition/SimpleQuantity" />
+      </type>
+      <condition value="ratrng-1" />
+      <condition value="ratrng-2" />
+      <mapping>
+        <identity value="v2" />
+        <map value="NR.2" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value="./high" />
+      </mapping>
+    </element>
+    <element id="RatioRange.denominator">
+      <path value="RatioRange.denominator" />
+      <short value="Denominator value" />
+      <definition value="The value of the denominator." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Quantity" />
+        <profile value="http://hl7.org/fhir/StructureDefinition/SimpleQuantity" />
+      </type>
+      <condition value="ratrng-1" />
+    </element>
+  </differential>
+</StructureDefinition>

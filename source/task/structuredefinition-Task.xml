@@ -1086,6 +1086,9 @@
         <code value="CodeableConcept"/>
       </type>
       <type>
+        <code value="CodeableReference"/>
+      </type>
+      <type>
         <code value="Coding"/>
       </type>
       <type>
@@ -1122,6 +1125,9 @@
         <code value="Ratio"/>
       </type>
       <type>
+        <code value="RatioRange"/>
+      </type>
+      <type>
         <code value="Reference"/>
       </type>
       <type>
@@ -1155,15 +1161,21 @@
         <code value="UsageContext"/>
       </type>
       <type>
-        <code value="Dosage"/>
+        <code value="Availability"/>
       </type>
       <type>
-        <code value="CodeableReference"/>
+        <code value="ExtendedContactDetail"/>
+      </type>
+      <type>
+        <code value="VirtualServiceDetail"/>
+      </type>
+      <type>
+        <code value="Dosage"/>
       </type>
       <type>
         <code value="Meta"/>
       </type>
-      <mapping>
+<mapping>
         <identity value="rim"/>
         <map value="???"/>
       </mapping>
@@ -1297,6 +1309,9 @@
         <code value="CodeableConcept"/>
       </type>
       <type>
+        <code value="CodeableReference"/>
+      </type>
+      <type>
         <code value="Coding"/>
       </type>
       <type>
@@ -1333,6 +1348,9 @@
         <code value="Ratio"/>
       </type>
       <type>
+        <code value="RatioRange"/>
+      </type>
+      <type>
         <code value="Reference"/>
       </type>
       <type>
@@ -1366,15 +1384,21 @@
         <code value="UsageContext"/>
       </type>
       <type>
-        <code value="Dosage"/>
+        <code value="Availability"/>
       </type>
       <type>
-        <code value="CodeableReference"/>
+        <code value="ExtendedContactDetail"/>
+      </type>
+      <type>
+        <code value="VirtualServiceDetail"/>
+      </type>
+      <type>
+        <code value="Dosage"/>
       </type>
       <type>
         <code value="Meta"/>
       </type>
-      <mapping>
+<mapping>
         <identity value="rim"/>
         <map value="???"/>
       </mapping>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ConceptMap xmlns="http://hl7.org/fhir">
+  <id value="cm-name-use-v2"/>
+  <url value="http://hl7.org/fhir/ConceptMap/cm-name-use-v2"/>
+  <version value="6.0.0-ballot4"/>
+  <name value="v2.NameUse"/>
+  <title value="v2 map for NameUse"/>
+  <status value="draft"/>
+  <date value="2026-05-29T00:44:21-05:00"/>
+  <publisher value="HL7 (FHIR Project)"/>
+  <contact>
+    <telecom>
+      <system value="url"/>
+      <value value="http://hl7.org/fhir"/>
+    </telecom>
+    <telecom>
+      <system value="email"/>
+      <value value="fhir@lists.hl7.org"/>
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url"/>
+      <value value="http://www.hl7.org/Special/committees/fiwg"/>
+    </telecom>
+  </contact>
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm"/>
+      <code value="001"/>
+      <display value="World"/>
+    </coding>
+  </jurisdiction>
+  <sourceScopeCanonical value="http://hl7.org/fhir/ValueSet/name-use"/>
+  <targetScopeCanonical value="http://terminology.hl7.org/ValueSet/v2-0200"/>
+  <group>
+    <source value="http://hl7.org/fhir/name-use"/>
+    <target value="http://terminology.hl7.org/CodeSystem/v2-0200"/>
+    <element>
+      <code value="usual"/>
+      <target>
+        <code value="D"/>
+        <relationship value="equivalent"/>
+      </target>
+    </element>
+    <element>
+      <code value="official"/>
+      <target>
+        <code value="L"/>
+        <relationship value="equivalent"/>
+      </target>
+    </element>
+    <element>
+      <code value="temp"/>
+      <target>
+        <code value="TEMP"/>
+        <relationship value="equivalent"/>
+      </target>
+    </element>
+    <element>
+      <code value="nickname"/>
+      <target>
+        <code value="N"/>
+        <relationship value="equivalent"/>
+      </target>
+    </element>
+    <element>
+      <code value="anonymous"/>
+      <target>
+        <code value="S"/>
+        <relationship value="equivalent"/>
+      </target>
+    </element>
+    <element>
+      <code value="old"/>
+      <target>
+        <code value="NOUSE"/>
+        <relationship value="source-is-broader-than-target"/>
+        <comment value="No Use Addresses are considered to be old records"/>
+      </target>
+      <target>
+        <code value="BAD"/>
+        <relationship value="source-is-broader-than-target"/>
+        <comment value="bad addresses are old records"/>
+      </target>
+    </element>
+    <element>
+      <code value="maiden"/>
+      <target>
+        <code value="M"/>
+        <relationship value="equivalent"/>
+      </target>
+    </element>
+  </group>
+</ConceptMap>

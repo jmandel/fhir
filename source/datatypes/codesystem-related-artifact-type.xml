@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CodeSystem xmlns="http://hl7.org/fhir">
+  <id value="related-artifact-type"/>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir"/>
+  </extension>
+  <url value="http://hl7.org/fhir/related-artifact-type"/>
+  <identifier>
+    <system value="urn:ietf:rfc:3986"/>
+    <value value="urn:oid:2.16.840.1.113883.4.642.4.100"/>
+  </identifier>
+  <version value="6.0.0-ballot4"/>
+  <name value="RelatedArtifactType"/>
+  <title value="RelatedArtifactType"/>
+  <status value="draft"/>
+  <experimental value="false"/>
+  <date value="2026-05-28T21:51:39-05:00"/>
+  <publisher value="HL7 International / FHIR Infrastructure"/>
+  <contact>
+    <telecom>
+      <system value="url"/>
+      <value value="http://hl7.org/fhir"/>
+    </telecom>
+    <telecom>
+      <system value="email"/>
+      <value value="fhir@lists.hl7.org"/>
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url"/>
+      <value value="http://www.hl7.org/Special/committees/fiwg"/>
+    </telecom>
+  </contact>
+  <description value="The type of relationship to the related artifact."/>
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm"/>
+      <code value="001"/>
+      <display value="World"/>
+    </coding>
+  </jurisdiction>
+  <caseSensitive value="true"/>
+  <valueSet value="http://hl7.org/fhir/ValueSet/related-artifact-type"/>
+  <content value="complete"/>
+  <concept>
+    <code value="documentation"/>
+    <display value="Documentation"/>
+    <definition value="Additional documentation for the knowledge resource. This would include additional instructions on usage as well as additional information on clinical context or appropriateness."/>
+  </concept>
+  <concept>
+    <code value="justification"/>
+    <display value="Justification"/>
+    <definition value="The target artifact is a summary of the justification for the knowledge resource including supporting evidence, relevant guidelines, or other clinically important information. This information is intended to provide a way to make the justification for the knowledge resource available to the consumer of interventions or results produced by the knowledge resource."/>
+  </concept>
+  <concept>
+    <code value="citation"/>
+    <display value="Citation"/>
+    <definition value="Bibliographic citation for papers, references, or other relevant material for the knowledge resource. This is intended to allow for citation of related material, but that was not necessarily specifically prepared in connection with this knowledge resource."/>
+  </concept>
+  <concept>
+    <code value="predecessor"/>
+    <display value="Predecessor"/>
+    <definition value="The previous version of the knowledge artifact, used to establish an ordering of versions of an artifact, independent of the status of each version."/>
+  </concept>
+  <concept>
+    <code value="successor"/>
+    <display value="Successor"/>
+    <definition value="The subsequent version of the knowledge artfact, used to establish an ordering of versions of an artifact, independent of the status of each version."/>
+  </concept>
+  <concept>
+    <code value="derived-from"/>
+    <display value="Derived From"/>
+    <definition value="This artifact is derived from the target artifact. This is intended to capture the relationship in which a particular knowledge resource is based on the content of another artifact, but is modified to capture either a different set of overall requirements, or a more specific set of requirements such as those involved in a particular institution or clinical setting. The artifact may be derived from one or more target artifacts."/>
+  </concept>
+  <concept>
+    <code value="depends-on"/>
+    <display value="Depends On"/>
+    <definition value="This artifact depends on the target artifact. There is a requirement to use the target artifact in the creation or interpretation of this artifact."/>
+  </concept>
+  <concept>
+    <code value="composed-of"/>
+    <display value="Composed Of"/>
+    <definition value="This artifact is composed of the target artifact. This artifact is constructed with the target artifact as a component. The target artifact is a part of this artifact. (A dataset is composed of data.)."/>
+  </concept>
+  <concept>
+    <code value="part-of"/>
+    <display value="Part Of"/>
+    <definition value="This artifact is a part of the target artifact. The target artifact is composed of this artifact (and possibly other artifacts)."/>
+  </concept>
+</CodeSystem>

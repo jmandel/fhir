@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <id value="Dosage" />
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
+    <valueCode value="normative" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-normative-version">
+    <valueCode value="4.0.0" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir" />
+  </extension>
+  <url value="http://hl7.org/fhir/StructureDefinition/Dosage" />
+  <version value="6.0.0-ballot4" />
+  <name value="Dosage" />
+  <status value="active" />
+  <date value="2026-05-28T21:37:05-05:00" />
+  <publisher value="HL7 International / FHIR Infrastructure" />
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://hl7.org/fhir" />
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://www.hl7.org/Special/committees/fiwg" />
+    </telecom>
+  </contact>
+  <description value="Dosage Type: Indicates how the medication is/was taken or should be taken by the patient." />
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm" />
+      <code value="001" />
+      <display value="World" />
+    </coding>
+  </jurisdiction>
+  <fhirVersion value="6.0.0-ballot4" />
+  <mapping>
+    <identity value="rim" />
+    <uri value="http://hl7.org/v3" />
+    <name value="RIM Mapping" />
+  </mapping>
+  <mapping>
+    <identity value="v2" />
+    <uri value="http://hl7.org/v2" />
+    <name value="HL7 V2 Mapping" />
+  </mapping>
+  <kind value="complex-type" />
+  <abstract value="false" />
+  <type value="Dosage" />
+  <baseDefinition value="http://hl7.org/fhir/StructureDefinition/BackboneType" />
+  <derivation value="specialization" />
+  <differential>
+    <element id="Dosage">
+      <path value="Dosage" />
+      <short value="How the medication is/was taken or should be taken" />
+      <definition value="Indicates how the medication is/was taken or should be taken by the patient." />
+      <min value="0" />
+      <max value="*" />
+      <constraint>
+        <key value="dos-1" />
+        <severity value="error" />
+        <human value="AsNeededFor can only be set if AsNeeded is empty or true" />
+        <expression value="asNeededFor.empty() or asNeeded.empty() or asNeeded" />
+        <source value="http://hl7.org/fhir/StructureDefinition/Dosage" />
+      </constraint>
+      <mapping>
+        <identity value="rim" />
+        <map value=".outboundRelationship[typeCode=COMP].target[classCode=SBADM, moodCode=INT]" />
+      </mapping>
+    </element>
+    <element id="Dosage.condition">
+      <path value="Dosage.condition" />
+      <short value="Whether the dosage applies (e.g. as a whole) (any can be true)" />
+      <definition value="Whether the dosage applies (e.g. as a whole). The Disage applies if any of the conditions are true." />
+      <min value="0" />
+      <max value="*" />
+      <type>
+        <code value="DosageCondition" />
+      </type>
+    </element>
+    <element id="Dosage.text">
+      <path value="Dosage.text" />
+      <short value="Free text dosage instructions e.g. SIG" />
+      <definition value="Free text dosage instructions e.g. SIG." />
+      <requirements value="Free text dosage instructions can be used for cases where the instructions are too complex to code.  The content of this attribute does not include the name or description of the medication. When coded instructions are present, the free text instructions may still be present for display to humans taking or administering the medication. It is expected that the text instructions will always be populated.  If the dosage.timing attribute is also populated, then the dosage.text should reflect the same information as the timing.  Additional information about administration or preparation of the medication should be included as text." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="string" />
+      </type>
+      <mapping>
+        <identity value="v2" />
+        <map value="RXO-6; RXE-21" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value=".text" />
+      </mapping>
+    </element>
+    <element id="Dosage.additionalInstruction">
+      <path value="Dosage.additionalInstruction" />
+      <short value="Supplemental instruction or warnings to the patient - e.g. &quot;with meals&quot;, &quot;may cause drowsiness&quot;" />
+      <definition value="Supplemental instructions to the patient on how to take the medication  (e.g. &quot;with meals&quot; or&quot;take half to one hour before food&quot;) or warnings for the patient about the medication (e.g. &quot;may cause drowsiness&quot; or &quot;avoid exposure of skin to direct sunlight or sunlamps&quot;)." />
+      <comment value="Information about administration or preparation of the medication (e.g. &quot;infuse as rapidly as possibly via intraperitoneal port&quot; or take &quot;immediately following drug x&quot;) should be populated in dosage.text." />
+      <requirements value="Additional instruction is intended to be coded, but where no code exists, the element could include text.  For example, &quot;Swallow with plenty of water&quot; which might or might not be coded." />
+      <min value="0" />
+      <max value="*" />
+      <type>
+        <code value="CodeableConcept" />
+      </type>
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="A coded concept identifying additional instructions such as &quot;take with water&quot; or &quot;avoid operating heavy machinery&quot;." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="AdditionalInstruction" />
+        </extension>
+        <strength value="example" />
+        <description value="A coded concept identifying additional instructions such as &quot;take with water&quot; or &quot;avoid operating heavy machinery&quot;." />
+        <valueSet value="http://hl7.org/fhir/ValueSet/additional-instruction-codes" />
+      </binding>
+      <mapping>
+        <identity value="v2" />
+        <map value="RXO-7" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value=".text" />
+      </mapping>
+    </element>
+    <element id="Dosage.patientInstruction">
+      <path value="Dosage.patientInstruction" />
+      <short value="Patient or consumer oriented instructions" />
+      <definition value="Instructions in terms that are understood by the patient or consumer." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="string" />
+      </type>
+      <mapping>
+        <identity value="v2" />
+        <map value="RXO-7" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value=".text" />
+      </mapping>
+    </element>
+    <element id="Dosage.timing">
+      <path value="Dosage.timing" />
+      <short value="When medication should be administered" />
+      <definition value="When medication should be administered." />
+      <comment value="This attribute might not always be populated while the Dosage.text is expected to be populated.  If both are populated, then the Dosage.text should reflect the content of the Dosage.timing." />
+      <requirements value="The timing schedule for giving the medication to the patient. This  data type allows many different expressions. For example: &quot;Every 8 hours&quot;; &quot;Three times a day&quot;; &quot;1/2 an hour before breakfast for 10 days from 23-Dec 2011:&quot;; &quot;15 Oct 2013, 17 Oct 2013 and 1 Nov 2013&quot;.  Sometimes, a rate can imply duration when expressed as total volume / duration (e.g.  500mL/2 hours implies a duration of 2 hours).  However, when rate doesn't imply duration (e.g. 250mL/hour), then the timing.repeat.duration is needed to convey the infuse over time period." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Timing" />
+      </type>
+      <mapping>
+        <identity value="rim" />
+        <map value=".effectiveTime" />
+      </mapping>
+    </element>
+    <element id="Dosage.asNeeded">
+      <path value="Dosage.asNeeded" />
+      <short value="Take &quot;as needed&quot;" />
+      <definition value="Indicates whether the Medication is only taken when needed within a specific dosing schedule (Boolean option)." />
+      <comment value="Can express &quot;as needed&quot; without a reason by setting the Boolean = True.  In this case the CodeableConcept is not populated." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="boolean" />
+      </type>
+      <condition value="dos-1" />
+      <mapping>
+        <identity value="v2" />
+        <map value="TQ1-9" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value=".outboundRelationship[typeCode=PRCN].target[classCode=OBS, moodCode=EVN, code=&quot;as needed&quot;].value=boolean or codable concept" />
+      </mapping>
+    </element>
+    <element id="Dosage.asNeededFor">
+      <path value="Dosage.asNeededFor" />
+      <short value="Take &quot;as needed&quot; (for x)" />
+      <definition value="Indicates whether the Medication is only taken based on a precondition for taking the Medication (CodeableConcept)." />
+      <comment value="Can express &quot;as needed&quot; with a reason by including the CodeableConcept.  Based on the invariant, the Dosage.asNeededFor is not populated when Dosage.asNeeded is false. If the Dosage.asNeeded is &quot;false&quot;, then the dose is given according to the schedule and is not &quot;prn&quot; or &quot;as needed&quot;." />
+      <min value="0" />
+      <max value="*" />
+      <type>
+        <code value="CodeableConcept" />
+      </type>
+      <condition value="dos-1" />
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="A coded concept identifying the precondition that should be met or evaluated prior to consuming or administering a medication dose.  For example &quot;pain&quot;, &quot;30 minutes prior to sexual intercourse&quot;, &quot;on flare-up&quot; etc." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="MedicationAsNeededReason" />
+        </extension>
+        <strength value="example" />
+        <description value="A coded concept identifying the precondition that should be met or evaluated prior to consuming or administering a medication dose.  For example &quot;pain&quot;, &quot;30 minutes prior to sexual intercourse&quot;, &quot;on flare-up&quot; etc." />
+        <valueSet value="http://hl7.org/fhir/ValueSet/medication-as-needed-reason" />
+      </binding>
+      <mapping>
+        <identity value="v2" />
+        <map value="TQ1-9" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value=".outboundRelationship[typeCode=PRCN].target[classCode=OBS, moodCode=EVN, code=&quot;as needed&quot;].value=boolean or codable concept" />
+      </mapping>
+    </element>
+    <element id="Dosage.site">
+      <path value="Dosage.site" />
+      <short value="Body site to administer to" />
+      <definition value="Body site to administer to." />
+      <comment value="If the use case requires attributes from the BodySite resource (e.g. to identify and track separately) then use the standard extension [http://hl7.org/fhir/StructureDefinition/bodySite](https://build.fhir.org/ig/HL7/fhir-extensions/StructureDefinition-bodySite.html).  May be a summary code, or a reference to a very precise definition of the location, or both." />
+      <requirements value="A coded specification of the anatomic site where the medication first enters the body." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="CodeableReference" />
+        <targetProfile value="http://hl7.org/fhir/StructureDefinition/BodyStructure" />
+      </type>
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="A coded concept describing the site location the medicine enters into or onto the body." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="MedicationAdministrationSite" />
+        </extension>
+        <strength value="example" />
+        <description value="A coded concept describing the site location the medicine enters into or onto the body." />
+        <valueSet value="http://hl7.org/fhir/ValueSet/approach-site-codes" />
+      </binding>
+      <mapping>
+        <identity value="v2" />
+        <map value="RXR-2" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value=".approachSiteCode" />
+      </mapping>
+    </element>
+    <element id="Dosage.route">
+      <path value="Dosage.route" />
+      <short value="How drug should enter body" />
+      <definition value="How drug should enter body." />
+      <requirements value="A code specifying the route or physiological path of administration of a therapeutic agent into or onto a patient's body." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="CodeableConcept" />
+      </type>
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="A coded concept describing the route or physiological path of administration of a therapeutic agent into or onto the body of a subject." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="RouteOfAdministration" />
+        </extension>
+        <strength value="example" />
+        <description value="A coded concept describing the route or physiological path of administration of a therapeutic agent into or onto the body of a subject." />
+        <valueSet value="http://hl7.org/fhir/ValueSet/route-codes" />
+      </binding>
+      <mapping>
+        <identity value="v2" />
+        <map value="RXR-1" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value=".routeCode" />
+      </mapping>
+    </element>
+    <element id="Dosage.method">
+      <path value="Dosage.method" />
+      <short value="Technique for administering medication" />
+      <definition value="Technique for administering medication." />
+      <comment value="Terminologies used often pre-coordinate this term with the route and or form of administration." />
+      <requirements value="A coded value indicating the method by which the medication is introduced into or onto the body. Most commonly used for injections.  For examples, Slow Push; Deep IV." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="CodeableConcept" />
+      </type>
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="A coded concept describing the technique by which the medicine is administered." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="MedicationAdministrationMethod" />
+        </extension>
+        <strength value="example" />
+        <description value="A coded concept describing the technique by which the medicine is administered." />
+        <valueSet value="http://hl7.org/fhir/ValueSet/administration-method-codes" />
+      </binding>
+      <mapping>
+        <identity value="v2" />
+        <map value="RXR-4" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value="SubstanceAdministration.methodCode" />
+      </mapping>
+    </element>
+    <element id="Dosage.doseAndRate">
+      <path value="Dosage.doseAndRate" />
+      <short value="Amount of medication administered, to be administered or typical amount to be administered" />
+      <definition value="Depending on the resource,this is the amount of medication administered, to  be administered or typical amount to be administered." />
+      <min value="0" />
+      <max value="*" />
+      <type>
+        <code value="Element" />
+      </type>
+      <mapping>
+        <identity value="v2" />
+        <map value="TQ1-2" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value="SubstanceAdministration.doseQuantity; SubstanceAdministration.RateQuantity" />
+      </mapping>
+    </element>
+    <element id="Dosage.doseAndRate.type">
+      <path value="Dosage.doseAndRate.type" />
+      <short value="The kind of dose or rate specified" />
+      <definition value="The kind of dose or rate specified, for example, ordered or calculated." />
+      <requirements value="If the type is not populated, assume to be &quot;ordered&quot;." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="CodeableConcept" />
+      </type>
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="The kind of dose or rate specified." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="DoseAndRateType" />
+        </extension>
+        <strength value="example" />
+        <description value="The kind of dose or rate specified." />
+        <valueSet value="http://terminology.hl7.org/ValueSet/dose-rate-type" />
+      </binding>
+      <mapping>
+        <identity value="v2" />
+        <map value="RXO-21; RXE-23" />
+      </mapping>
+    </element>
+    <element id="Dosage.doseAndRate.dose[x]">
+      <path value="Dosage.doseAndRate.dose[x]" />
+      <short value="Amount of medication per dose" />
+      <definition value="Amount of medication per dose." />
+      <comment value="Note that this specifies the quantity of the specified medication, not the quantity for each active ingredient(s). Each ingredient amount can be communicated in the Medication resource. For example, if one wants to communicate that a tablet was 375 mg, where the dose was one tablet, you can use the Medication resource to document that the tablet was comprised of 375 mg of drug XYZ. Alternatively if the dose was 375 mg, then you may only need to use the Medication resource to indicate this was a tablet. If the example were an IV such as dopamine and you wanted to communicate that 400mg of dopamine was mixed in 500 ml of some IV solution, then this would all be communicated in the Medication resource. If the administration is not intended to be instantaneous (rate is present or timing has a duration), this can be specified to convey the total amount to be administered over the period of time as indicated by the schedule e.g. 500 ml in dose, with timing used to convey that this should be done over 4 hours. Expression is provided for medications that are e.g. weight dependent, or skin surface are dependent." />
+      <requirements value="The amount of therapeutic or other substance given at one administration event." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Range" />
+      </type>
+      <type>
+        <code value="Quantity" />
+        <profile value="http://hl7.org/fhir/StructureDefinition/SimpleQuantity" />
+      </type>
+      <type>
+        <code value="Expression" />
+      </type>
+      <mapping>
+        <identity value="v2" />
+        <map value="RXO-2, RXE-3" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value=".doseQuantity" />
+      </mapping>
+    </element>
+    <element id="Dosage.doseAndRate.rate[x]">
+      <path value="Dosage.doseAndRate.rate[x]" />
+      <short value="Amount of medication per unit of time" />
+      <definition value="Amount of medication per unit of time." />
+      <comment value="It is possible to supply both a rate and a doseQuantity to provide full details about how the medication is to be administered and supplied. If the rate is intended to change over time, depending on local rules/regulations, each change should be captured as a new version of the MedicationRequest with an updated rate, or captured with a new MedicationRequest with the new rate.&#10;&#10;It is possible to specify a rate over time (for example, 100 ml/hour) using either the rateRatio and rateQuantity.  The rateQuantity approach requires systems to have the capability to parse UCUM grammar where ml/hour is included rather than a specific ratio where the time is specified as the denominator.  Where a rate such as 500ml over 2 hours is specified, the use of rateRatio may be more semantically correct than specifying using a rateQuantity of 250 mg/hour. Expression is provided for medications that are e.g. weight dependent, or skin surface are dependent." />
+      <requirements value="Identifies the speed with which the medication was or will be introduced into the patient. Typically the rate for an infusion e.g. 100 ml per 1 hour or 100 ml/hr.  May also be expressed as a rate per unit of time e.g. 500 ml per 2 hours.   Other examples: 200 mcg/min or 200 mcg/1 minute; 1 liter/8 hours.  Sometimes, a rate can imply duration when expressed as total volume / duration (e.g.  500mL/2 hours implies a duration of 2 hours).  However, when rate doesn't imply duration (e.g. 250mL/hour), then the timing.repeat.duration is needed to convey the infuse over time period." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Ratio" />
+      </type>
+      <type>
+        <code value="Range" />
+      </type>
+      <type>
+        <code value="Quantity" />
+        <profile value="http://hl7.org/fhir/StructureDefinition/SimpleQuantity" />
+      </type>
+      <type>
+        <code value="Expression" />
+      </type>
+      <mapping>
+        <identity value="v2" />
+        <map value="RXE22, RXE23, RXE-24" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value=".rateQuantity" />
+      </mapping>
+    </element>
+    <element id="Dosage.safety">
+      <path value="Dosage.safety" />
+      <short value="Safety Information about the this dosage instructions" />
+      <definition value="Safety Information about the this dosage instructions." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="DosageSafety" />
+      </type>
+    </element>
+  </differential>
+</StructureDefinition>

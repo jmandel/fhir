@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ImplementationGuide xmlns="http://hl7.org/fhir">
+  <id value="elementdefinition-11179"/>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir"/>
+  </extension>
+  <extension url="http://hl7.org/fhir/tools/StructureDefinition/profile-extension-uri">
+    <valueUri value="http://hl7.org/fhir/StructureDefinition/11179-"/>
+  </extension>
+  <url value="http://hl7.org/fhir/ImplementationGuide/elementdefinition-11179"/>
+  <version value="0.01"/>
+  <name value="ISO 11179 Element Definition Profile"/>
+  <title value="ISO 11179 Element Definition Profile"/>
+  <status value="draft"/>
+  <date value="2014-04-21T00:00:00.000"/>
+  <publisher value="HL7 International / Orders and Observations"/>
+  <contact>
+    <telecom>
+      <system value="url"/>
+      <value value="http://hl7.org"/>
+    </telecom>
+  </contact>
+  <description value="A profile showing how to use ElementDefinition to express 11179 Data_Element and Concept_Elements.  At present, the profile is a partially-complete place-holder"/>
+  <packageId value="hl7.fhir.r6.elementdefinition-11179"/>
+  <fhirVersion value="6.0.0"/>
+  <definition/>
+</ImplementationGuide>

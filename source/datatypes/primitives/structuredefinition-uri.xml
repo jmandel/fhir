@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<StructureDefinition xmlns='http://hl7.org/fhir'>
+  <id value='uri'/>
+  <extension url='http://hl7.org/fhir/tools/StructureDefinition/primitive-schema-type'>
+    <valueString value='anyURI'/>
+  </extension>
+  <extension url='http://hl7.org/fhir/tools/StructureDefinition/primitive-json-type'>
+    <valueString value='string'/>
+  </extension>
+  <extension url='http://hl7.org/fhir/tools/StructureDefinition/primitive-v2-map'>
+    <valueString value='n/a'/>
+  </extension>
+  <extension url='http://hl7.org/fhir/tools/StructureDefinition/primitive-v3-map'>
+    <valueString value='URL'/>
+  </extension>
+  <url value='http://hl7.org/fhir/StructureDefinition/uri'/>
+  <name value='uri'/>
+  <status value='active'/>
+  <kind value='primitive-type'/>
+  <abstract value='false'/>
+  <type value='uri'/>
+  <baseDefinition value='http://hl7.org/fhir/StructureDefinition/PrimitiveType'/>
+  <derivation value='specialization'/>
+  <differential>
+    <element>
+      <id value='uri'/>
+      <path value='uri'/>
+      <short value='Primitive Type uri'/>
+      <definition value='String of characters used to identify a name or a resource'/>
+      <comment value='see http://en.wikipedia.org/wiki/Uniform_resource_identifier'/>
+      <min value='0'/>
+      <max value='*'/>
+    </element>
+    <element>
+      <id value='uri.value'/>
+      <path value='uri.value'/>
+      <representation value='xmlAttr'/>
+      <short value='Primitive value for uri'/>
+      <definition value='Primitive value for uri'/>
+      <min value='0'/>
+      <max value='1'/>
+      <type>
+        <extension url='http://hl7.org/fhir/StructureDefinition/regex'>
+          <valueString value='\S*'/>
+        </extension>
+        <code value='http://hl7.org/fhirpath/System.String'/>
+      </type>
+    </element>
+  </differential>
+</StructureDefinition>

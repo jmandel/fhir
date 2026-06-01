@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <id value="DosageDetails" />
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
+    <valueCode value="normative" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-normative-version">
+    <valueCode value="4.0.0" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir" />
+  </extension>
+  <url value="http://hl7.org/fhir/StructureDefinition/DosageDetails" />
+  <version value="6.0.0-ballot4" />
+  <name value="DosageDetails" />
+  <status value="active" />
+  <date value="2026-05-28T21:37:05-05:00" />
+  <publisher value="HL7 International / FHIR Infrastructure" />
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://hl7.org/fhir" />
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://www.hl7.org/Special/committees/fiwg" />
+    </telecom>
+  </contact>
+  <description value="DosageDetails Type: Indicates how the medication is/was taken or should be taken by the patient." />
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm" />
+      <code value="001" />
+      <display value="World" />
+    </coding>
+  </jurisdiction>
+  <fhirVersion value="6.0.0-ballot4" />
+  <mapping>
+    <identity value="rim" />
+    <uri value="http://hl7.org/v3" />
+    <name value="RIM Mapping" />
+  </mapping>
+  <kind value="complex-type" />
+  <abstract value="false" />
+  <type value="DosageDetails" />
+  <baseDefinition value="http://hl7.org/fhir/StructureDefinition/BackboneType" />
+  <derivation value="specialization" />
+  <differential>
+    <element id="DosageDetails">
+      <path value="DosageDetails" />
+      <short value="How the medication is/was taken or should be taken" />
+      <definition value="Indicates how the medication is/was taken or should be taken by the patient." />
+      <min value="0" />
+      <max value="*" />
+      <constraint>
+        <key value="dosdet-2" />
+        <severity value="error" />
+        <human value="If only one step is present, DosageDetails.step.safety shall not be populated" />
+        <expression value="step.count() = 1 implies step.safety.empty()" />
+        <source value="http://hl7.org/fhir/StructureDefinition/DosageDetails" />
+      </constraint>
+    </element>
+    <element id="DosageDetails.renderedInstruction">
+      <path value="DosageDetails.renderedInstruction" />
+      <short value="Full representation of the dosage instructions" />
+      <definition value="The full representation of the dose of the medication included in all dosage instructions. The renderedInstructions element must always be present to ensure the full dosage intent is communicated in every case." />
+      <comment value="The content of the renderedInstructions SHALL contain the information found in the structured dosage, and may contain additional information not found in the structured dosage content, if applicable." />
+      <min value="1" />
+      <max value="1" />
+      <type>
+        <code value="markdown" />
+      </type>
+    </element>
+    <element id="DosageDetails.step">
+      <path value="DosageDetails.step" />
+      <short value="One step in a sequence of steps that comprise the dosage course" />
+      <definition value="One step in a sequence of steps that comprise the dosage course." />
+      <min value="0" />
+      <max value="*" />
+      <type>
+        <code value="Element" />
+      </type>
+    </element>
+    <element id="DosageDetails.step.start">
+      <path value="DosageDetails.step.start" />
+      <short value="When the step starts" />
+      <definition value="When the step starts. In the absence of a linked event, the step is assumed to start immediately (or after the previous step)." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="RelativeTime" />
+      </type>
+    </element>
+    <element id="DosageDetails.step.end">
+      <path value="DosageDetails.step.end" />
+      <short value="When the step ends" />
+      <definition value="When the step ends. In the absence of a linked event, the step is assumed to end when the internal timing schedule termnates." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="RelativeTime" />
+      </type>
+    </element>
+    <element id="DosageDetails.step.count">
+      <path value="DosageDetails.step.count" />
+      <short value="How many times to do this step (if not 1)" />
+      <definition value="How many times to do this step (if not 1)." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="integer" />
+      </type>
+    </element>
+    <element id="DosageDetails.step.component">
+      <path value="DosageDetails.step.component" />
+      <short value="A dosage details that is part of this step" />
+      <definition value="A dosage details that is part of this step." />
+      <min value="1" />
+      <max value="*" />
+      <type>
+        <code value="Dosage" />
+      </type>
+    </element>
+    <element id="DosageDetails.step.safety">
+      <path value="DosageDetails.step.safety" />
+      <short value="Safety Information about this step of the dose course" />
+      <definition value="Safety Information about this step of the dose course." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="DosageSafety" />
+      </type>
+    </element>
+    <element id="DosageDetails.safety">
+      <path value="DosageDetails.safety" />
+      <short value="Safety Information about the combined dose course" />
+      <definition value="Safety Information about the combined dose course." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="DosageSafety" />
+      </type>
+    </element>
+  </differential>
+</StructureDefinition>

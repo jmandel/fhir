@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<StructureDefinition xmlns='http://hl7.org/fhir'>
+  <id value='unsignedInt'/>
+  <extension url='http://hl7.org/fhir/tools/StructureDefinition/primitive-schema-type'>
+    <valueString value='xs:nonNegativeInteger'/>
+  </extension>
+  <extension url='http://hl7.org/fhir/tools/StructureDefinition/primitive-json-type'>
+    <valueString value='number'/>
+  </extension>
+  <url value='http://hl7.org/fhir/StructureDefinition/unsignedInt'/>
+  <name value='unsignedInt'/>
+  <status value='active'/>
+  <kind value='primitive-type'/>
+  <abstract value='false'/>
+  <type value='unsignedInt'/>
+  <baseDefinition value='http://hl7.org/fhir/StructureDefinition/integer'/>
+  <derivation value='specialization'/>
+  <differential>
+    <element>
+      <id value='unsignedInt'/>
+      <path value='unsignedInt'/>
+      <short value='Primitive Type unsignedInt'/>
+      <definition value='An integer with a value that is not negative (e.g. &gt;= 0)'/>
+      <min value='0'/>
+      <max value='*'/>
+    </element>
+    <element>
+      <id value='unsignedInt.value'/>
+      <path value='unsignedInt.value'/>
+      <representation value='xmlAttr'/>
+      <short value='Primitive value for unsignedInt'/>
+      <definition value='Primitive value for unsignedInt'/>
+      <min value='0'/>
+      <max value='1'/>
+      <type>
+        <extension url='http://hl7.org/fhir/StructureDefinition/regex'>
+          <valueString value='[0]|([1-9][0-9]*)'/>
+        </extension>
+        <code value='http://hl7.org/fhirpath/System.String'/>
+      </type>
+    </element>
+  </differential>
+</StructureDefinition>

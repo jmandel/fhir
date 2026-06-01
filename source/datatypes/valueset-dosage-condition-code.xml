@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ValueSet xmlns="http://hl7.org/fhir" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://hl7.org/fhir ../../input-cache/schemas/R4/fhir-single.xsd">
+
+<ValueSet xmlns="http://hl7.org/fhir">
   <id value="dosage-condition-code"/>
   <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
     <valueCode value="normative"/>
@@ -7,16 +8,24 @@
   <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
     <valueCode value="phx"/>
   </extension>
-  <url value="http://hl7.org/fhir/tools/ValueSet/dosage-condition-code"/>
+  <url value="http://hl7.org/fhir/ValueSet/dosage-condition-code"/>
+  <version value="6.0.0-ballot4"/>
   <name value="DoseLimitScopeVS"/>
   <title value="Dose Limit Scope ValueSet"/>
   <status value="active"/>
   <experimental value="false"/>
-  <publisher value="HL7 International / FHIR Infrastructure"/>
+  <date value="2026-05-28T21:51:39-05:00"/>
+  <publisher value="HL7 International / Pharmacy"/>
   <contact>
     <telecom>
       <system value="url"/>
       <value value="http://www.hl7.org/Special/committees/fiwg"/>
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url"/>
+      <value value="http://www.hl7.org/Special/committees/medication"/>
     </telecom>
   </contact>
   <description value="Additional Binding Purpose"/>
@@ -25,7 +34,9 @@
       <system value="http://unstats.un.org/unsd/methods/m49/m49.htm"/>
       <code value="001"/>
     </coding>
-  </jurisdiction>  <compose>
+  </jurisdiction>
+  <immutable value="true"/>
+  <compose>
     <include>
       <system value="http://hl7.org/fhir/CodeSystem/dosage-condition-code"/>
     </include>

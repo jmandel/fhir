@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <ValueSet xmlns="http://hl7.org/fhir">
-  <meta>
-    
-  </meta>
+  <id value="signature-type"/>
   <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
     <valueCode value="sec"/>
   </extension>
+  <url value="http://hl7.org/fhir/ValueSet/signature-type"/>
+  <identifier>
+    <system value="urn:ietf:rfc:3986"/>
+    <value value="urn:oid:1.2.840.10065.1.12"/>
+  </identifier>
+  <version value="6.0.0-ballot4"/>
   <name value="SignatureTypeCodes"/>
   <title value="Signature Type Codes"/>
   <status value="draft"/>
   <experimental value="true"/>
+  <date value="2026-05-28T21:51:39-05:00"/>
   <publisher value="HL7 International / Security"/>
   <contact>
     <telecom>

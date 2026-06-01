@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <id value="SimpleQuantity"/>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
+    <valueCode value="normative"/>
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-normative-version">
+    <valueCode value="4.0.0"/>
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-type-characteristics">
+    <valueCode value="has-range"/>
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-type-characteristics">
+    <valueCode value="is-continuous"/>
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-type-characteristics">
+    <valueCode value="can-bind"/>
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-type-characteristics">
+    <valueCode value="has-units"/>
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir"/>
+  </extension>
+  <url value="http://hl7.org/fhir/StructureDefinition/SimpleQuantity"/>
+  <version value="6.0.0-ballot4"/>
+  <name value="SimpleQuantity"/>
+  <status value="active"/>
+  <experimental value="false"/>
+  <publisher value="HL7 International / FHIR Infrastructure"/>
+  <contact>
+    <telecom>
+      <system value="url"/>
+      <value value="http://hl7.org/fhir"/>
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url"/>
+      <value value="http://www.hl7.org/Special/committees/fiwg"/>
+    </telecom>
+  </contact>
+  <description value="A fixed quantity (no comparator)"/>
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm"/>
+      <code value="001"/>
+      <display value="World"/>
+    </coding>
+  </jurisdiction>
+  <fhirVersion value="6.0.0-ballot4"/>
+  <mapping>
+    <identity value="v2"/>
+    <uri value="http://hl7.org/v2"/>
+    <name value="HL7 V2 Mapping"/>
+  </mapping>
+  <mapping>
+    <identity value="rim"/>
+    <uri value="http://hl7.org/v3"/>
+    <name value="RIM Mapping"/>
+  </mapping>
+  <kind value="complex-type"/>
+  <abstract value="false"/>
+  <type value="Quantity"/>
+  <baseDefinition value="http://hl7.org/fhir/StructureDefinition/Quantity"/>
+  <derivation value="constraint"/>
+  <differential>
+    <element id="Quantity">
+      <path value="Quantity"/>
+      <short value="A fixed quantity (no comparator)"/>
+      <definition value="The comparator is not used on a SimpleQuantity"/>
+      <min value="0"/>
+      <max value="*"/>
+      <constraint>
+        <key value="sqty-1"/>
+        <severity value="error"/>
+        <human value="The comparator is not used on a SimpleQuantity"/>
+        <expression value="comparator.empty()"/>
+      </constraint>
+      <isModifier value="false"/>
+    </element>
+    <element id="Quantity.comparator">
+      <path value="Quantity.comparator"/>
+      <definition value="Not allowed to be used in this context"/>
+      <max value="0"/>
+    </element>
+  </differential>
+</StructureDefinition>

@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <id value="DosageCondition" />
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
+    <valueCode value="normative" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-normative-version">
+    <valueCode value="4.0.0" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir" />
+  </extension>
+  <url value="http://hl7.org/fhir/StructureDefinition/DosageCondition" />
+  <version value="6.0.0-ballot4" />
+  <name value="DosageCondition" />
+  <status value="active" />
+  <date value="2026-05-28T21:37:05-05:00" />
+  <publisher value="HL7 International / FHIR Infrastructure" />
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://hl7.org/fhir" />
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://www.hl7.org/Special/committees/fiwg" />
+    </telecom>
+  </contact>
+  <description value="DosageCondition Type: DosageCondition expresses a time or time period as relative to the time of an event defined in data types other than dateTime." />
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm" />
+      <code value="001" />
+      <display value="World" />
+    </coding>
+  </jurisdiction>
+  <fhirVersion value="6.0.0-ballot4" />
+  <mapping>
+    <identity value="rim" />
+    <uri value="http://hl7.org/v3" />
+    <name value="RIM Mapping" />
+  </mapping>
+  <kind value="complex-type" />
+  <abstract value="false" />
+  <type value="DosageCondition" />
+  <baseDefinition value="http://hl7.org/fhir/StructureDefinition/BackboneType" />
+  <derivation value="specialization" />
+  <differential>
+    <element id="DosageCondition">
+      <path value="DosageCondition" />
+      <short value="Expresses that something is dependent on an event happening" />
+      <definition value="DosageCondition expresses a time or time period as relative to the time of an event defined in data types other than dateTime." />
+      <min value="0" />
+      <max value="*" />
+    </element>
+    <element id="DosageCondition.code">
+      <path value="DosageCondition.code" />
+      <short value="The specific event occurrence or resource context used as a base point (reference point) in time" />
+      <definition value="The specific event occurrence or resource context used as a base point (reference point) in time.  This establishes the context in which the 'path' is evaluated." />
+      <min value="1" />
+      <max value="1" />
+      <type>
+        <code value="CodeableConcept" />
+      </type>
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="The specific event occurrence or resource context used as a base point (reference point) in time." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="DosageConditionCode" />
+        </extension>
+        <strength value="preferred" />
+        <description value="The specific event occurrence or resource context used as a base point (reference point) in time." />
+        <valueSet value="http://hl7.org/fhir/ValueSet/dosage-condition-code" />
+      </binding>
+    </element>
+    <element id="DosageCondition.details">
+      <path value="DosageCondition.details" />
+      <short value="Additional details about the event - depends on the code" />
+      <definition value="Additional details about the event - depends on the code." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="CodeableConcept" />
+      </type>
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="Additional details about the event - depends on the code." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="DosageConditionDetails" />
+        </extension>
+        <strength value="example" />
+        <description value="Additional details about the event - depends on the code." />
+        <valueSet value="http://hl7.org/fhir/ValueSet/dosage-condition-details" />
+      </binding>
+    </element>
+    <element id="DosageCondition.operation">
+      <path value="DosageCondition.operation" />
+      <short value="eq | ne | in | nin | gt | lt | ge | le | sa | eb | ap" />
+      <definition value="How the value is tested." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="code" />
+      </type>
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="How the criteria value is tested." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="ComparisonOperation" />
+        </extension>
+        <strength value="required" />
+        <description value="How the criteria value is tested." />
+        <valueSet value="http://hl7.org/fhir/ValueSet/comparison-operation" />
+      </binding>
+    </element>
+    <element id="DosageCondition.value[x]">
+      <path value="DosageCondition.value[x]" />
+      <short value="The value for this critera" />
+      <definition value="The value for this critera." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="base64Binary" />
+      </type>
+      <type>
+        <code value="boolean" />
+      </type>
+      <type>
+        <code value="canonical" />
+      </type>
+      <type>
+        <code value="code" />
+      </type>
+      <type>
+        <code value="date" />
+      </type>
+      <type>
+        <code value="dateTime" />
+      </type>
+      <type>
+        <code value="decimal" />
+      </type>
+      <type>
+        <code value="id" />
+      </type>
+      <type>
+        <code value="instant" />
+      </type>
+      <type>
+        <code value="integer" />
+      </type>
+      <type>
+        <code value="integer64" />
+      </type>
+      <type>
+        <code value="markdown" />
+      </type>
+      <type>
+        <code value="oid" />
+      </type>
+      <type>
+        <code value="positiveInt" />
+      </type>
+      <type>
+        <code value="string" />
+      </type>
+      <type>
+        <code value="time" />
+      </type>
+      <type>
+        <code value="unsignedInt" />
+      </type>
+      <type>
+        <code value="uri" />
+      </type>
+      <type>
+        <code value="url" />
+      </type>
+      <type>
+        <code value="uuid" />
+      </type>
+      <type>
+        <code value="Address" />
+      </type>
+      <type>
+        <code value="Age" />
+      </type>
+      <type>
+        <code value="Annotation" />
+      </type>
+      <type>
+        <code value="Attachment" />
+      </type>
+      <type>
+        <code value="CodeableConcept" />
+      </type>
+      <type>
+        <code value="CodeableReference" />
+      </type>
+      <type>
+        <code value="Coding" />
+      </type>
+      <type>
+        <code value="ContactPoint" />
+      </type>
+      <type>
+        <code value="Count" />
+      </type>
+      <type>
+        <code value="Distance" />
+      </type>
+      <type>
+        <code value="Duration" />
+      </type>
+      <type>
+        <code value="HumanName" />
+      </type>
+      <type>
+        <code value="Identifier" />
+      </type>
+      <type>
+        <code value="Money" />
+      </type>
+      <type>
+        <code value="Period" />
+      </type>
+      <type>
+        <code value="Quantity" />
+      </type>
+      <type>
+        <code value="Range" />
+      </type>
+      <type>
+        <code value="Ratio" />
+      </type>
+      <type>
+        <code value="RatioRange" />
+      </type>
+      <type>
+        <code value="Reference" />
+      </type>
+      <type>
+        <code value="SampledData" />
+      </type>
+      <type>
+        <code value="Signature" />
+      </type>
+      <type>
+        <code value="Timing" />
+      </type>
+      <type>
+        <code value="ContactDetail" />
+      </type>
+      <type>
+        <code value="DataRequirement" />
+      </type>
+      <type>
+        <code value="Expression" />
+      </type>
+      <type>
+        <code value="ParameterDefinition" />
+      </type>
+      <type>
+        <code value="RelatedArtifact" />
+      </type>
+      <type>
+        <code value="TriggerDefinition" />
+      </type>
+      <type>
+        <code value="UsageContext" />
+      </type>
+      <type>
+        <code value="Availability" />
+      </type>
+      <type>
+        <code value="ExtendedContactDetail" />
+      </type>
+      <type>
+        <code value="VirtualServiceDetail" />
+      </type>
+      <type>
+        <code value="Dosage" />
+      </type>
+      <type>
+        <code value="Meta" />
+      </type>
+    </element>
+    <element id="DosageCondition.text">
+      <path value="DosageCondition.text" />
+      <short value="Free-text description" />
+      <definition value="Free-text (human-readable) description." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="string" />
+      </type>
+    </element>
+  </differential>
+</StructureDefinition>

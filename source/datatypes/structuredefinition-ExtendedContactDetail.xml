@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <id value="ExtendedContactDetail" />
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
+    <valueCode value="normative" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-normative-version">
+    <valueCode value="4.0.0" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir" />
+  </extension>
+  <url value="http://hl7.org/fhir/StructureDefinition/ExtendedContactDetail" />
+  <version value="6.0.0-ballot4" />
+  <name value="ExtendedContactDetail" />
+  <status value="active" />
+  <date value="2026-05-28T21:37:05-05:00" />
+  <publisher value="HL7 International / FHIR Infrastructure" />
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://hl7.org/fhir" />
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://www.hl7.org/Special/committees/fiwg" />
+    </telecom>
+  </contact>
+  <description value="ExtendedContactDetail Type: Specifies contact information for a specific purpose over a period of time, might be handled/monitored by a specific named person or organization." />
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm" />
+      <code value="001" />
+      <display value="World" />
+    </coding>
+  </jurisdiction>
+  <purpose value="Need to track contact and address information in the same way across multiple resources." />
+  <fhirVersion value="6.0.0-ballot4" />
+  <mapping>
+    <identity value="rim" />
+    <uri value="http://hl7.org/v3" />
+    <name value="RIM Mapping" />
+  </mapping>
+  <kind value="complex-type" />
+  <abstract value="false" />
+  <type value="ExtendedContactDetail" />
+  <baseDefinition value="http://hl7.org/fhir/StructureDefinition/DataType" />
+  <derivation value="specialization" />
+  <differential>
+    <element id="ExtendedContactDetail">
+      <path value="ExtendedContactDetail" />
+      <short value="Contact information" />
+      <definition value="Specifies contact information for a specific purpose over a period of time, might be handled/monitored by a specific named person or organization." />
+      <comment value="This datatype may be sparsely populated, i.e. only contain a purpose and phone number or address, but other cases could be completed filled out." />
+      <min value="0" />
+      <max value="*" />
+    </element>
+    <element id="ExtendedContactDetail.purpose">
+      <path value="ExtendedContactDetail.purpose" />
+      <short value="The type of contact" />
+      <definition value="The purpose/type of contact." />
+      <comment value="If no purpose is defined, then these contact details may be used for any purpose." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="CodeableConcept" />
+      </type>
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="The purpose for which an extended contact detail should be used." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="Purpose" />
+        </extension>
+        <strength value="preferred" />
+        <description value="The purpose for which an extended contact detail should be used." />
+        <valueSet value="http://terminology.hl7.org/ValueSet/contactentity-type" />
+      </binding>
+    </element>
+    <element id="ExtendedContactDetail.name">
+      <path value="ExtendedContactDetail.name" />
+      <short value="Name of an individual to contact" />
+      <definition value="The name of an individual to contact, some types of contact detail are usually blank." />
+      <comment value="If there is no named individual, the telecom/address information is not generally monitored by a specific individual." />
+      <min value="0" />
+      <max value="*" />
+      <type>
+        <code value="HumanName" />
+      </type>
+    </element>
+    <element id="ExtendedContactDetail.telecom">
+      <path value="ExtendedContactDetail.telecom" />
+      <short value="Contact details (e.g.phone/fax/url)" />
+      <definition value="The contact details application for the purpose defined." />
+      <min value="0" />
+      <max value="*" />
+      <type>
+        <code value="ContactPoint" />
+      </type>
+    </element>
+    <element id="ExtendedContactDetail.address">
+      <path value="ExtendedContactDetail.address" />
+      <short value="Address for the contact" />
+      <definition value="Address for the contact." />
+      <comment value="More than 1 address would be for different purposes, and thus should be entered as a different entry,." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Address" />
+      </type>
+    </element>
+    <element id="ExtendedContactDetail.organization">
+      <path value="ExtendedContactDetail.organization" />
+      <short value="This contact detail is handled/monitored by a specific organization" />
+      <definition value="This contact detail is handled/monitored by a specific organization. If the name is provided in the contact, then it is referring to the named individual within this organization." />
+      <requirements value="Some specific types of contact information can be an handled by an organization (eg legal council is via a specific firm)." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Reference" />
+        <targetProfile value="http://hl7.org/fhir/StructureDefinition/Organization" />
+      </type>
+    </element>
+    <element id="ExtendedContactDetail.period">
+      <path value="ExtendedContactDetail.period" />
+      <short value="Period that this contact was valid for usage" />
+      <definition value="Period that this contact was valid for usage." />
+      <comment value="If the details have multiple periods, then enter in a new ExtendedContact with the new period." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Period" />
+      </type>
+    </element>
+  </differential>
+</StructureDefinition>

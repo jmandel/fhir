@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <id value="RelativeTime" />
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
+    <valueCode value="normative" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-normative-version">
+    <valueCode value="4.0.0" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir" />
+  </extension>
+  <url value="http://hl7.org/fhir/StructureDefinition/RelativeTime" />
+  <version value="6.0.0-ballot4" />
+  <name value="RelativeTime" />
+  <status value="active" />
+  <date value="2026-05-28T21:37:05-05:00" />
+  <publisher value="HL7 International / FHIR Infrastructure" />
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://hl7.org/fhir" />
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://www.hl7.org/Special/committees/fiwg" />
+    </telecom>
+  </contact>
+  <description value="RelativeTime Type: RelativeTime expresses a time or time period as relative to the time of an event defined in data types other than dateTime." />
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm" />
+      <code value="001" />
+      <display value="World" />
+    </coding>
+  </jurisdiction>
+  <fhirVersion value="6.0.0-ballot4" />
+  <mapping>
+    <identity value="rim" />
+    <uri value="http://hl7.org/v3" />
+    <name value="RIM Mapping" />
+  </mapping>
+  <kind value="complex-type" />
+  <abstract value="false" />
+  <type value="RelativeTime" />
+  <baseDefinition value="http://hl7.org/fhir/StructureDefinition/BackboneType" />
+  <derivation value="specialization" />
+  <differential>
+    <element id="RelativeTime">
+      <path value="RelativeTime" />
+      <short value="Expresses a time or time period as relative to the time of an event" />
+      <definition value="RelativeTime expresses a time or time period as relative to the time of an event defined in data types other than dateTime." />
+      <min value="0" />
+      <max value="*" />
+      <constraint>
+        <key value="rlt-2" />
+        <severity value="error" />
+        <human value="If RelativeTime has a contextPath, it SHALL have either a contextReference or a contextDefinition" />
+        <expression value="contextPath.empty() or contextReference.exists() or contextDefinition.exists()" />
+        <source value="http://hl7.org/fhir/StructureDefinition/RelativeTime" />
+      </constraint>
+      <constraint>
+        <key value="rlt-1" />
+        <severity value="error" />
+        <human value="A RelativeTime can have either a contextReference or contextDefinition but not both" />
+        <expression value="contextReference.empty() or contextDefinition.empty()" />
+        <source value="http://hl7.org/fhir/StructureDefinition/RelativeTime" />
+      </constraint>
+    </element>
+    <element id="RelativeTime.contextReference">
+      <path value="RelativeTime.contextReference" />
+      <short value="The specific event occurrence or resource context used as a base point (reference point) in time" />
+      <definition value="The specific event occurrence or resource context used as a base point (reference point) in time.  This establishes the context in which the 'path' is evaluated." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Reference" />
+        <targetProfile value="http://hl7.org/fhir/StructureDefinition/Resource" />
+      </type>
+      <condition value="rlt-1" />
+    </element>
+    <element id="RelativeTime.contextDefinition">
+      <path value="RelativeTime.contextDefinition" />
+      <short value="The type of event used as a base point" />
+      <definition value="The type of event used as a base point.  Instances of this definition will establish the context for evaluating the path to determine the base time for the offset." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="canonical" />
+        <targetProfile value="http://hl7.org/fhir/StructureDefinition/ActivityDefinition" />
+        <targetProfile value="http://hl7.org/fhir/StructureDefinition/EventDefinition" />
+        <targetProfile value="http://hl7.org/fhir/StructureDefinition/PlanDefinition" />
+        <targetProfile value="http://hl7.org/fhir/StructureDefinition/ObservationDefinition" />
+      </type>
+      <condition value="rlt-1" />
+    </element>
+    <element id="RelativeTime.contextPath">
+      <path value="RelativeTime.contextPath" />
+      <short value="Path to the element defining the basis for the relative time" />
+      <definition value="Path to the element defining the basis for the relative time. Any valid FHIRPath expression." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="string" />
+      </type>
+      <condition value="rlt-2" />
+    </element>
+    <element id="RelativeTime.contextCode">
+      <path value="RelativeTime.contextCode" />
+      <short value="Coded representation of the event used as a base point (reference point) in time" />
+      <definition value="Coded representation of the event used as a base point (reference point) in time." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="CodeableConcept" />
+      </type>
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="The event used as a base point (reference point) in time." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="RelativeTimeCodes" />
+        </extension>
+        <strength value="example" />
+        <description value="The event used as a base point (reference point) in time." />
+        <valueSet value="http://hl7.org/fhir/ValueSet/relativetime-codes" />
+      </binding>
+    </element>
+    <element id="RelativeTime.offset[x]">
+      <path value="RelativeTime.offset[x]" />
+      <short value="An offset or offset range before (negative values) or after (positive values) the event" />
+      <definition value="An offset or offset range before (negative values) or after (positive values) the event. Range is limited to time-valued quantities (Durations)." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Duration" />
+      </type>
+      <type>
+        <code value="Range" />
+      </type>
+    </element>
+    <element id="RelativeTime.text">
+      <path value="RelativeTime.text" />
+      <short value="Free-text description" />
+      <definition value="Free-text (human-readable) description." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="string" />
+      </type>
+    </element>
+  </differential>
+</StructureDefinition>

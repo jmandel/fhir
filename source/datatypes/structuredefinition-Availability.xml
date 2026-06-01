@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <id value="Availability" />
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
+    <valueCode value="normative" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-normative-version">
+    <valueCode value="4.0.0" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir" />
+  </extension>
+  <url value="http://hl7.org/fhir/StructureDefinition/Availability" />
+  <version value="6.0.0-ballot4" />
+  <name value="Availability" />
+  <status value="active" />
+  <date value="2026-05-28T21:37:05-05:00" />
+  <publisher value="HL7 International / FHIR Infrastructure" />
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://hl7.org/fhir" />
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://www.hl7.org/Special/committees/fiwg" />
+    </telecom>
+  </contact>
+  <description value="Availability Type: Availability data for an {item}, declaring what days/times are available, and any exceptions. The exceptions could be textual only, e.g. Public holidays, or could be time period specific and indicate a specific years dates." />
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm" />
+      <code value="001" />
+      <display value="World" />
+    </coding>
+  </jurisdiction>
+  <fhirVersion value="6.0.0-ballot4" />
+  <mapping>
+    <identity value="rim" />
+    <uri value="http://hl7.org/v3" />
+    <name value="RIM Mapping" />
+  </mapping>
+  <kind value="complex-type" />
+  <abstract value="false" />
+  <type value="Availability" />
+  <baseDefinition value="http://hl7.org/fhir/StructureDefinition/DataType" />
+  <derivation value="specialization" />
+  <differential>
+    <element id="Availability">
+      <path value="Availability" />
+      <short value="Availability data for an {item}" />
+      <definition value="Availability data for an {item}, declaring what days/times are available, and any exceptions. The exceptions could be textual only, e.g. Public holidays, or could be time period specific and indicate a specific years dates." />
+      <min value="0" />
+      <max value="*" />
+    </element>
+    <element id="Availability.period">
+      <path value="Availability.period" />
+      <short value="When the availability applies" />
+      <definition value="The period of time when the availability is applicable.  For example, you might use this property to indicate the period during the holiday season when you close an hour early." />
+      <comment value="The parent resource may have a period that applies to the overall lifecycle of the resource.  In those cases, the Availability.availableTime.period property may be considered a more specific description of when that resource is available.  Thus it would normally be expected that the Availability.availableTime.period is within the period specified by the containing resource." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Period" />
+      </type>
+    </element>
+    <element id="Availability.availableTime">
+      <path value="Availability.availableTime" />
+      <short value="Times the {item} is available" />
+      <definition value="A collection of times that the {item} is available." />
+      <min value="0" />
+      <max value="*" />
+      <type>
+        <code value="Element" />
+      </type>
+      <constraint>
+        <key value="av-1" />
+        <severity value="error" />
+        <human value="Cannot include start/end times when selecting all day availability." />
+        <expression value="allDay.exists().not() or (allDay implies availableStartTime.exists().not() and availableEndTime.exists().not())" />
+        <source value="http://hl7.org/fhir/StructureDefinition/Availability" />
+      </constraint>
+    </element>
+    <element id="Availability.availableTime.daysOfWeek">
+      <path value="Availability.availableTime.daysOfWeek" />
+      <short value="mon | tue | wed | thu | fri | sat | sun" />
+      <definition value="Indicates which days of the week are available between the start and end Times." />
+      <min value="0" />
+      <max value="*" />
+      <type>
+        <code value="code" />
+      </type>
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="The purpose for which an extended contact detail should be used." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="DaysOfWeek" />
+        </extension>
+        <strength value="required" />
+        <description value="The purpose for which an extended contact detail should be used." />
+        <valueSet value="http://hl7.org/fhir/ValueSet/days-of-week" />
+      </binding>
+    </element>
+    <element id="Availability.availableTime.allDay">
+      <path value="Availability.availableTime.allDay" />
+      <short value="Always available? i.e. 24 hour service" />
+      <definition value="Is this always available? (hence times are irrelevant) i.e. 24 hour service." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="boolean" />
+      </type>
+      <condition value="av-1" />
+    </element>
+    <element id="Availability.availableTime.availableStartTime">
+      <path value="Availability.availableTime.availableStartTime" />
+      <short value="Opening time of day (ignored if allDay = true)" />
+      <definition value="The opening time of day. Note: If the AllDay flag is set, then this time is ignored." />
+      <comment value="The timezone is expected to be specified or implied by the context this datatype is used." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="time" />
+      </type>
+      <condition value="av-1" />
+    </element>
+    <element id="Availability.availableTime.availableEndTime">
+      <path value="Availability.availableTime.availableEndTime" />
+      <short value="Closing time of day (ignored if allDay = true)" />
+      <definition value="The closing time of day. Note: If the AllDay flag is set, then this time is ignored." />
+      <comment value="The timezone is expected to be specified or implied by the context this datatype is used." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="time" />
+      </type>
+      <condition value="av-1" />
+    </element>
+    <element id="Availability.notAvailableTime">
+      <path value="Availability.notAvailableTime" />
+      <short value="Not available during this time due to provided reason" />
+      <definition value="The {item} is not available during this period of time due to the provided reason." />
+      <min value="0" />
+      <max value="*" />
+      <type>
+        <code value="Element" />
+      </type>
+    </element>
+    <element id="Availability.notAvailableTime.description">
+      <path value="Availability.notAvailableTime.description" />
+      <short value="Reason presented to the user explaining why time not available" />
+      <definition value="The reason that can be presented to the user as to why this time is not available." />
+      <comment value="The reason will generally be provided to give the textual reason for displaying when the {item} is not available, e.g. 'Closed public holidays' or 'Independence Day'. In cases such as this, the `during` might not be included and local knowledge would be required in such cases (as don't desire to keep updating when the holiday occurs each year).&#10;&#10;e.g.2: 'Closed for maintenance over the summer' for this example you would want to include the `during` period, unless this was a university hospital and the &quot;summer&quot; period was well known, but would recommend its inclusion anyway." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="string" />
+      </type>
+    </element>
+    <element id="Availability.notAvailableTime.during">
+      <path value="Availability.notAvailableTime.during" />
+      <short value="Service not available during this period" />
+      <definition value="The {item} is not available (seasonally or for a public holiday) during this period." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Period" />
+      </type>
+    </element>
+  </differential>
+</StructureDefinition>

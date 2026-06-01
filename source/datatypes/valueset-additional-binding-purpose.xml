@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ValueSet xmlns="http://hl7.org/fhir" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://hl7.org/fhir ../../input-cache/schemas/R4/fhir-single.xsd">
+
+<ValueSet xmlns="http://hl7.org/fhir">
   <id value="additional-binding-purpose"/>
   <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
     <valueCode value="normative"/>
@@ -7,11 +8,13 @@
   <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
     <valueCode value="fhir"/>
   </extension>
-  <url value="http://hl7.org/fhir/tools/ValueSet/additional-binding-purpose"/>
+  <url value="http://hl7.org/fhir/ValueSet/additional-binding-purpose"/>
+  <version value="6.0.0-ballot4"/>
   <name value="AdditionalBindingPurposeVS"/>
   <title value="Additional Binding Purpose ValueSet"/>
   <status value="active"/>
   <experimental value="false"/>
+  <date value="2026-05-28T21:51:39-05:00"/>
   <publisher value="HL7 International / FHIR Infrastructure"/>
   <contact>
     <telecom>
@@ -25,7 +28,9 @@
       <system value="http://unstats.un.org/unsd/methods/m49/m49.htm"/>
       <code value="001"/>
     </coding>
-  </jurisdiction>  <compose>
+  </jurisdiction>
+  <immutable value="true"/>
+  <compose>
     <include>
       <system value="http://hl7.org/fhir/CodeSystem/additional-binding-purpose"/>
     </include>

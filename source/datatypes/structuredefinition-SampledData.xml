@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <id value="SampledData" />
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
+    <valueCode value="normative" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-normative-version">
+    <valueCode value="4.0.0" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir" />
+  </extension>
+  <url value="http://hl7.org/fhir/StructureDefinition/SampledData" />
+  <version value="6.0.0-ballot4" />
+  <name value="SampledData" />
+  <status value="active" />
+  <date value="2026-05-28T21:37:05-05:00" />
+  <publisher value="HL7 International / FHIR Infrastructure" />
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://hl7.org/fhir" />
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://www.hl7.org/Special/committees/fiwg" />
+    </telecom>
+  </contact>
+  <description value="SampledData Type: A series of measurements taken by a device, with upper and lower limits. There may be more than one dimension in the data." />
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm" />
+      <code value="001" />
+      <display value="World" />
+    </coding>
+  </jurisdiction>
+  <purpose value="There is a need for a concise way to handle the data produced by devices that sample a physical state at a high frequency." />
+  <fhirVersion value="6.0.0-ballot4" />
+  <mapping>
+    <identity value="v2" />
+    <uri value="http://hl7.org/v2" />
+    <name value="HL7 V2 Mapping" />
+  </mapping>
+  <mapping>
+    <identity value="rim" />
+    <uri value="http://hl7.org/v3" />
+    <name value="RIM Mapping" />
+  </mapping>
+  <kind value="complex-type" />
+  <abstract value="false" />
+  <type value="SampledData" />
+  <baseDefinition value="http://hl7.org/fhir/StructureDefinition/DataType" />
+  <derivation value="specialization" />
+  <differential>
+    <element id="SampledData">
+      <path value="SampledData" />
+      <short value="A series of measurements taken by a device" />
+      <definition value="A series of measurements taken by a device, with upper and lower limits. There may be more than one dimension in the data." />
+      <comment value="The data is not interpretable without at least origin, period, and dimensions, but these are optional to allow a separation between the template of measurement and the actual measurement, such as between DeviceCapabilities and DeviceLog.  When providing a summary view (for example with Observation.value[x]) SampledData should be represented with a brief display text such as &quot;Sampled Data&quot;." />
+      <min value="0" />
+      <max value="*" />
+      <constraint>
+        <key value="sdd-1" />
+        <severity value="error" />
+        <human value="A SampledData SHALL have either an interval and offsets but not both" />
+        <expression value="interval.exists().not() xor offsets.exists().not()" />
+        <source value="http://hl7.org/fhir/StructureDefinition/SampledData" />
+      </constraint>
+      <mapping>
+        <identity value="v2" />
+        <map value="N/A (but see section 7.14 in v2.7)" />
+      </mapping>
+      <mapping>
+        <identity value="rim" />
+        <map value="SLIST + GLIST" />
+      </mapping>
+    </element>
+    <element id="SampledData.origin">
+      <path value="SampledData.origin" />
+      <short value="Zero value and units" />
+      <definition value="The base quantity that a measured value of zero represents. In addition, this provides the units of the entire measurement series." />
+      <min value="1" />
+      <max value="1" />
+      <type>
+        <code value="Quantity" />
+        <profile value="http://hl7.org/fhir/StructureDefinition/SimpleQuantity" />
+      </type>
+      <isSummary value="true" />
+      <mapping>
+        <identity value="rim" />
+        <map value="SLIST.origin" />
+      </mapping>
+    </element>
+    <element id="SampledData.interval">
+      <path value="SampledData.interval" />
+      <short value="Number of intervalUnits between samples" />
+      <definition value="Amount of intervalUnits between samples, e.g. milliseconds for time-based sampling." />
+      <comment value="This is usually a whole number." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="decimal" />
+      </type>
+      <condition value="sdd-1" />
+      <isSummary value="true" />
+      <mapping>
+        <identity value="rim" />
+        <map value="GLIST.increment" />
+      </mapping>
+    </element>
+    <element id="SampledData.intervalUnit">
+      <path value="SampledData.intervalUnit" />
+      <short value="The measurement unit of the interval between samples" />
+      <definition value="The measurement unit in which the sample interval is expressed." />
+      <min value="1" />
+      <max value="1" />
+      <type>
+        <code value="code" />
+      </type>
+      <isSummary value="true" />
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="Units of measure allowed for an element." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="Units" />
+        </extension>
+        <strength value="required" />
+        <description value="Units of measure allowed for an element." />
+        <valueSet value="http://hl7.org/fhir/ValueSet/ucum-units" />
+      </binding>
+    </element>
+    <element id="SampledData.factor">
+      <path value="SampledData.factor" />
+      <short value="Multiply data by this before adding to origin" />
+      <definition value="A correction factor that is applied to the sampled data points before they are added to the origin." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="decimal" />
+      </type>
+      <meaningWhenMissing value="If no factor is assigned, the data is not adjusted before adding to the origin" />
+      <isSummary value="true" />
+      <mapping>
+        <identity value="rim" />
+        <map value="SLIST.factor" />
+      </mapping>
+    </element>
+    <element id="SampledData.lowerLimit">
+      <path value="SampledData.lowerLimit" />
+      <short value="Lower limit of detection" />
+      <definition value="The lower limit of detection of the measured points. This is needed if any of the data points have the value &quot;L&quot; (lower than detection limit)." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="decimal" />
+      </type>
+      <isSummary value="true" />
+      <mapping>
+        <identity value="rim" />
+        <map value="N/A (use SLIST.digits.nullFlavor)" />
+      </mapping>
+    </element>
+    <element id="SampledData.upperLimit">
+      <path value="SampledData.upperLimit" />
+      <short value="Upper limit of detection" />
+      <definition value="The upper limit of detection of the measured points. This is needed if any of the data points have the value &quot;U&quot; (higher than detection limit)." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="decimal" />
+      </type>
+      <isSummary value="true" />
+      <mapping>
+        <identity value="rim" />
+        <map value="N/A (use SLIST.digits.nullFlavor)" />
+      </mapping>
+    </element>
+    <element id="SampledData.dimensions">
+      <path value="SampledData.dimensions" />
+      <short value="Number of sample points at each time point" />
+      <definition value="The number of sample points at each time point. If this value is greater than one, then the dimensions will be interlaced - all the sample points for a point in time will be recorded at once." />
+      <comment value="If there is more than one dimension, the code for the type of data will define the meaning of the dimensions (typically ECG data)." />
+      <min value="1" />
+      <max value="1" />
+      <type>
+        <code value="positiveInt" />
+      </type>
+      <isSummary value="true" />
+      <mapping>
+        <identity value="rim" />
+        <map value="N/A (fixed to 1)" />
+      </mapping>
+    </element>
+    <element id="SampledData.codeMap">
+      <path value="SampledData.codeMap" />
+      <short value="Defines the codes used in the data" />
+      <definition value="Reference to ConceptMap that defines the codes used in the data." />
+      <comment value="The ConceptMap cannot define meanings for the codes 'E', 'U', or 'L' (nor 'e', 'u', or 'l')." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="canonical" />
+        <targetProfile value="http://hl7.org/fhir/StructureDefinition/ConceptMap" />
+      </type>
+      <mapping>
+        <identity value="rim" />
+        <map value="N/A" />
+      </mapping>
+    </element>
+    <element id="SampledData.offsets">
+      <path value="SampledData.offsets" />
+      <short value="Offsets, typically in time, at which data values were taken" />
+      <definition value="A series of increasing decimal values separated by a single space (character u20), which represent the offset from the logical start point. Offset values may be negative. The units in which the offsets are expressed are found in intervalUnit.  The absolute point at which the measurements begin SHALL be conveyed outside the scope of this datatype, e.g. Observation.effectiveDateTime for a timing offset." />
+      <comment value="If offsets is present, the number of data points must be equal to the number of offsets multipled by the dimensions." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="string" />
+      </type>
+      <condition value="sdd-1" />
+      <mapping>
+        <identity value="rim" />
+        <map value="N/A" />
+      </mapping>
+    </element>
+    <element id="SampledData.data">
+      <extension url="http://hl7.org/fhir/StructureDefinition/regex">
+        <valueString value="((-{0,1}\d*\.{0,1}\d+)|[EUL])( ((-{0,1}\d*\.{0,1}\d+)|[EUL]))*" />
+      </extension>
+      <path value="SampledData.data" />
+      <short value="Decimal values with spaces, or &quot;E&quot; | &quot;U&quot; | &quot;L&quot;, or another code" />
+      <definition value="A series of data points which are decimal values or codes separated by a single space (character u20). The special codes &quot;E&quot; (error), &quot;L&quot; (below detection limit) and &quot;U&quot; (above detection limit) are also defined for used in place of decimal values." />
+      <comment value="The data may be missing if it is omitted for summarization purposes. In general, data is required for any actual use of a SampledData." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="string" />
+      </type>
+      <mapping>
+        <identity value="rim" />
+        <map value="SLIST.digits" />
+      </mapping>
+    </element>
+  </differential>
+</StructureDefinition>

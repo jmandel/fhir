@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<StructureDefinition xmlns='http://hl7.org/fhir'>
+  <id value='decimal'/>
+  <extension url='http://hl7.org/fhir/tools/StructureDefinition/primitive-schema-type'>
+    <valueString value='xs:decimal, xs:double'/>
+  </extension>
+  <extension url='http://hl7.org/fhir/tools/StructureDefinition/primitive-json-type'>
+    <valueString value='number'/>
+  </extension>
+  <extension url='http://hl7.org/fhir/tools/StructureDefinition/primitive-v2-map'>
+    <valueString value='~NM'/>
+  </extension>
+  <extension url='http://hl7.org/fhir/tools/StructureDefinition/primitive-v3-map'>
+    <valueString value='REAL'/>
+  </extension>
+  <url value='http://hl7.org/fhir/StructureDefinition/decimal'/>
+  <name value='decimal'/>
+  <status value='active'/>
+  <kind value='primitive-type'/>
+  <abstract value='false'/>
+  <type value='decimal'/>
+  <baseDefinition value='http://hl7.org/fhir/StructureDefinition/PrimitiveType'/>
+  <derivation value='specialization'/>
+  <differential>
+    <element>
+      <id value='decimal'/>
+      <path value='decimal'/>
+      <short value='Primitive Type decimal'/>
+      <definition value='A rational number with implicit precision'/>
+      <comment value='Do not use an IEEE type floating point type, instead use something that works like a true decimal, with inbuilt precision (e.g. Java BigInteger)'/>
+      <min value='0'/>
+      <max value='*'/>
+    </element>
+    <element>
+      <id value='decimal.value'/>
+      <path value='decimal.value'/>
+      <representation value='xmlAttr'/>
+      <short value='Primitive value for decimal'/>
+      <definition value='Primitive value for decimal'/>
+      <min value='0'/>
+      <max value='1'/>
+      <type>
+        <extension url='http://hl7.org/fhir/StructureDefinition/regex'>
+          <valueString value='-?(0|[1-9][0-9]{0,17})(\.[0-9]{1,17})?([eE][+-]?[0-9]{1,9})?'/>
+        </extension>
+        <code value='http://hl7.org/fhirpath/System.String'/>
+      </type>
+    </element>
+  </differential>
+</StructureDefinition>

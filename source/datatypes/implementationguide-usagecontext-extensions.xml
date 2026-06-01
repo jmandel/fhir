@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ImplementationGuide xmlns="http://hl7.org/fhir">
+  <id value="metadata-extensions"/>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir"/>
+  </extension>
+  <extension url="http://hl7.org/fhir/tools/StructureDefinition/profile-extension-uri">
+    <valueUri value="http://hl7.org/fhir/StructureDefinition/usagecontext-"/>
+  </extension>
+  <url value="http://hl7.org/fhir/ImplementationGuide/metadata-extensions"/>
+  <version value="0.01"/>
+  <name value="Metadata HL7 Extensions"/>
+  <title value="Metadata HL7 Extensions"/>
+  <status value="draft"/>
+  <publisher value="HL7"/>
+  <description value="Defines common extensions used with or related to conformance and knowledge resources"/>
+  <packageId value="hl7.fhir.r6.metadata-extensions"/>
+  <fhirVersion value="6.0.0"/>
+  <definition/>
+</ImplementationGuide>

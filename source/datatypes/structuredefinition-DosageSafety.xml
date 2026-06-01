@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <id value="DosageSafety" />
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
+    <valueCode value="normative" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-normative-version">
+    <valueCode value="4.0.0" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir" />
+  </extension>
+  <url value="http://hl7.org/fhir/StructureDefinition/DosageSafety" />
+  <version value="6.0.0-ballot4" />
+  <name value="DosageSafety" />
+  <status value="active" />
+  <date value="2026-05-28T21:37:05-05:00" />
+  <publisher value="HL7 International / FHIR Infrastructure" />
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://hl7.org/fhir" />
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://www.hl7.org/Special/committees/fiwg" />
+    </telecom>
+  </contact>
+  <description value="DosageSafety Type: Safety Details about the usage of the medication." />
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm" />
+      <code value="001" />
+      <display value="World" />
+    </coding>
+  </jurisdiction>
+  <fhirVersion value="6.0.0-ballot4" />
+  <mapping>
+    <identity value="rim" />
+    <uri value="http://hl7.org/v3" />
+    <name value="RIM Mapping" />
+  </mapping>
+  <kind value="complex-type" />
+  <abstract value="false" />
+  <type value="DosageSafety" />
+  <baseDefinition value="http://hl7.org/fhir/StructureDefinition/BackboneType" />
+  <derivation value="specialization" />
+  <differential>
+    <element id="DosageSafety">
+      <path value="DosageSafety" />
+      <short value="Safety Details about the usage of the medication" />
+      <definition value="Safety Details about the usage of the medication." />
+      <min value="0" />
+      <max value="*" />
+    </element>
+    <element id="DosageSafety.doseLimit">
+      <path value="DosageSafety.doseLimit" />
+      <short value="A dose limit for safe use of the medication" />
+      <definition value="A dose limit for safe use of the medication." />
+      <min value="0" />
+      <max value="*" />
+      <type>
+        <code value="Element" />
+      </type>
+    </element>
+    <element id="DosageSafety.doseLimit.value[x]">
+      <path value="DosageSafety.doseLimit.value[x]" />
+      <short value="Quantity that is safe to use" />
+      <definition value="Quantity that is safe to use." />
+      <min value="1" />
+      <max value="1" />
+      <type>
+        <code value="integer" />
+      </type>
+      <type>
+        <code value="Quantity" />
+      </type>
+      <type>
+        <code value="Expression" />
+      </type>
+    </element>
+    <element id="DosageSafety.doseLimit.scope">
+      <path value="DosageSafety.doseLimit.scope" />
+      <short value="dosage | period | administration | lifetime - The scope of the dose limitation" />
+      <definition value="dosage | period | administration | lifetime - The scope of the dose limitation." />
+      <min value="1" />
+      <max value="1" />
+      <type>
+        <code value="code" />
+      </type>
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="Definition." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="DoseLimitScope" />
+        </extension>
+        <strength value="required" />
+        <description value="Definition." />
+        <valueSet value="http://hl7.org/fhir/ValueSet/dose-limit-scope" />
+      </binding>
+    </element>
+    <element id="DosageSafety.doseLimit.period">
+      <path value="DosageSafety.doseLimit.period" />
+      <short value="The period over which the quantity is safe to use (if scope = period)" />
+      <definition value="The period over which the quantity is safe to use (if scope = period)." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Duration" />
+      </type>
+    </element>
+    <element id="DosageSafety.doseLimit.text">
+      <path value="DosageSafety.doseLimit.text" />
+      <short value="Additional notes about the dose limit" />
+      <definition value="Additional notes about the dose limit." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="string" />
+      </type>
+    </element>
+    <element id="DosageSafety.ifExceeded">
+      <path value="DosageSafety.ifExceeded" />
+      <short value="What to do if the instructions lead to exceeding the dose limits" />
+      <definition value="What to do if the instructions lead to exceeding the dose limits." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="string" />
+      </type>
+    </element>
+  </differential>
+</StructureDefinition>

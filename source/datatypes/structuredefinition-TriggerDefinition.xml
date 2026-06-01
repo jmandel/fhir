@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<StructureDefinition xmlns="http://hl7.org/fhir">
+  <id value="TriggerDefinition" />
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status">
+    <valueCode value="normative" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-normative-version">
+    <valueCode value="4.0.0" />
+  </extension>
+  <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-wg">
+    <valueCode value="fhir" />
+  </extension>
+  <url value="http://hl7.org/fhir/StructureDefinition/TriggerDefinition" />
+  <version value="6.0.0-ballot4" />
+  <name value="TriggerDefinition" />
+  <status value="active" />
+  <date value="2026-05-28T21:37:05-05:00" />
+  <publisher value="HL7 International / FHIR Infrastructure" />
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://hl7.org/fhir" />
+    </telecom>
+  </contact>
+  <contact>
+    <telecom>
+      <system value="url" />
+      <value value="http://www.hl7.org/Special/committees/fiwg" />
+    </telecom>
+  </contact>
+  <description value="TriggerDefinition Type: A description of a triggering event. Triggering events can be named events, data events, or periodic, as determined by the type element." />
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm" />
+      <code value="001" />
+      <display value="World" />
+    </coding>
+  </jurisdiction>
+  <fhirVersion value="6.0.0-ballot4" />
+  <mapping>
+    <identity value="rim" />
+    <uri value="http://hl7.org/v3" />
+    <name value="RIM Mapping" />
+  </mapping>
+  <kind value="complex-type" />
+  <abstract value="false" />
+  <type value="TriggerDefinition" />
+  <baseDefinition value="http://hl7.org/fhir/StructureDefinition/DataType" />
+  <derivation value="specialization" />
+  <differential>
+    <element id="TriggerDefinition">
+      <path value="TriggerDefinition" />
+      <short value="Defines an expected trigger for a module" />
+      <definition value="A description of a triggering event. Triggering events can be named events, data events, or periodic, as determined by the type element." />
+      <comment value="If an event is a named-event, it means the event is completely pre-coordinated, and no other information can be specified for the event. If the event is one of the data- events, the data and condition elements specify the triggering criteria. The data element specifies the structured component, and the condition element provides additional optional refinement of that structured component. If the event is periodic, the timing element defines when the event is triggered. For both data- and periodic events, a name can be provided as a shorthand for the formal semantics provided by the other elements." />
+      <min value="0" />
+      <max value="*" />
+      <constraint>
+        <key value="trd-3" />
+        <severity value="error" />
+        <human value="A named event requires a name or code, a periodic event requires timing, a data event requires data, and a subscription topic requires a reference to a subscription topic" />
+        <expression value="(type = 'named-event' implies (name.exists() or code.exists())) and (type = 'periodic' implies timing.exists()) and (type.startsWith('data-') implies data.exists()) and (type = 'subscription-topic' implies subscriptionTopic.exists())" />
+        <source value="http://hl7.org/fhir/StructureDefinition/TriggerDefinition" />
+      </constraint>
+      <constraint>
+        <key value="trd-1" />
+        <severity value="error" />
+        <human value="Either timing, or a data requirement, but not both" />
+        <expression value="data.empty() or timing.empty()" />
+        <source value="http://hl7.org/fhir/StructureDefinition/TriggerDefinition" />
+      </constraint>
+    </element>
+    <element id="TriggerDefinition.type">
+      <path value="TriggerDefinition.type" />
+      <short value="named-event | periodic | data-changed | data-added | data-modified | data-removed | data-accessed | data-access-ended | subscription-topic" />
+      <definition value="The type of triggering event." />
+      <min value="1" />
+      <max value="1" />
+      <type>
+        <code value="code" />
+      </type>
+      <condition value="trd-3" />
+      <binding>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-definition">
+          <valueMarkdown value="The type of trigger." />
+        </extension>
+        <extension url="http://hl7.org/fhir/StructureDefinition/elementdefinition-bindingName">
+          <valueString value="TriggerType" />
+        </extension>
+        <extension url="http://hl7.org/fhir/tools/StructureDefinition/binding-method">
+          <valueCode value="code-list" />
+        </extension>
+        <strength value="required" />
+        <description value="The type of trigger." />
+        <valueSet value="http://hl7.org/fhir/ValueSet/trigger-type" />
+      </binding>
+    </element>
+    <element id="TriggerDefinition.name">
+      <path value="TriggerDefinition.name" />
+      <short value="Name or URI that identifies the event" />
+      <definition value="A formal name for the event. This may be an absolute URI that identifies the event formally (e.g. from a trigger registry), or a simple relative URI that identifies the event in a local context." />
+      <comment value="An event name can be provided for all event types, but is required for named events. If a name is provided for a type other than named events, it is considered to be a shorthand for the semantics described by the formal description of the event." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="string" />
+      </type>
+      <condition value="trd-3" />
+    </element>
+    <element id="TriggerDefinition.code">
+      <path value="TriggerDefinition.code" />
+      <short value="Coded definition of the event" />
+      <definition value="A code that identifies the event." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="CodeableConcept" />
+      </type>
+      <condition value="trd-3" />
+    </element>
+    <element id="TriggerDefinition.subscriptionTopic">
+      <path value="TriggerDefinition.subscriptionTopic" />
+      <short value="What event" />
+      <definition value="A reference to a SubscriptionTopic resource that defines the event. If this element is provided, no other information about the trigger definition may be supplied." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="canonical" />
+        <targetProfile value="http://hl7.org/fhir/StructureDefinition/SubscriptionTopic" />
+      </type>
+      <condition value="trd-3" />
+    </element>
+    <element id="TriggerDefinition.timing[x]">
+      <path value="TriggerDefinition.timing[x]" />
+      <short value="Timing of the event" />
+      <definition value="The timing of the event (if this is a periodic trigger)." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Timing" />
+      </type>
+      <type>
+        <code value="date" />
+      </type>
+      <type>
+        <code value="dateTime" />
+      </type>
+      <condition value="trd-3" />
+      <condition value="trd-1" />
+    </element>
+    <element id="TriggerDefinition.data">
+      <path value="TriggerDefinition.data" />
+      <short value="Triggering data of the event (multiple = 'and')" />
+      <definition value="The triggering data of the event (if this is a data trigger). If more than one data is requirement is specified, then all the data requirements must be true." />
+      <comment value="This element shall be present for any data type trigger." />
+      <min value="0" />
+      <max value="*" />
+      <type>
+        <code value="DataRequirement" />
+      </type>
+      <condition value="trd-3" />
+      <condition value="trd-1" />
+    </element>
+    <element id="TriggerDefinition.condition">
+      <path value="TriggerDefinition.condition" />
+      <short value="Whether the event triggers (boolean expression)" />
+      <definition value="A boolean-valued expression that is evaluated in the context of the container of the trigger definition and returns whether or not the trigger fires." />
+      <comment value="This element can be specified for any type of trigger and provides additional criteria for the trigger. The context available within the condition is based on the type of event. For all events, the current resource will be available as context. In addition, for modification events, the previous resource will also be available. The expression may be inlined, or may be a simple absolute URI, which is a reference to a named expression within a logic library referenced by a library element or extension within the containing resource. If the expression is a FHIR Path expression, it evaluates in the context of a resource of one of the type identified in the data requirement, and may also refer to the variable %previous for delta comparisons on events of type data-changed, data-modified, and data-deleted which will always have the same type." />
+      <requirements value="Need to be able to formally describe the triggering criteria." />
+      <min value="0" />
+      <max value="1" />
+      <type>
+        <code value="Expression" />
+      </type>
+    </element>
+  </differential>
+</StructureDefinition>
