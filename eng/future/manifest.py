@@ -10,6 +10,8 @@ TS = [
     re.compile(rb"(Mon|Tue|Wed|Thu|Fri|Sat|Sun), [A-Z][a-z]{2} \d{1,2}, \d{4} \d{2}:\d{2}([+-]\d{4})?"),
     # bare times like 09:45:07
     re.compile(rb"\b\d{2}:\d{2}:\d{2}\b"),
+    # the build embeds the OS username in page footers ("Local Build (jmandel)")
+    re.compile(rb"Local Build \([^)]*\)"),
     # render dates like "11 Jun 2026" (expansion-generated lines on valueset pages)
     re.compile(rb"\b\d{1,2} (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4}\b"),
     # random UUIDs in generated html (table script ids, image names)
@@ -22,7 +24,7 @@ TS = [
 ARCHIVE = (".zip", ".jar", ".pack", ".tgz", ".xlsx")
 BINARY = (".png", ".gif", ".jpg", ".jpeg", ".ico", ".eot", ".woff", ".woff2", ".ttf", ".pdf", ".epub", ".exe", ".dll", ".class")
 
-def norm_hash(path):
+def norm_hash(path, sort_lines=False):
     try:
         with open(path, "rb") as f:
             data = f.read()
@@ -30,6 +32,10 @@ def norm_hash(path):
         return "READ-ERROR"
     for rx in TS:
         data = rx.sub(b"TS", data)
+    if sort_lines:
+        # order-insensitive: for files whose only nondeterminism is element ordering, hash the
+        # sorted line multiset - pure reordering compares equal, any content change still flags
+        data = b"\n".join(sorted(data.split(b"\n")))
     return hashlib.sha256(data).hexdigest()[:16]
 
 def archive_sig(path):
@@ -44,7 +50,11 @@ def archive_sig(path):
         return "ARCHIVE-ERROR"
     return hashlib.sha256(out).hexdigest()[:16]
 
-def main(root):
+def main(root, orderlist_path=None):
+    ordered_tolerant = set()
+    if orderlist_path:
+        with open(orderlist_path) as f:
+            ordered_tolerant = {l.strip() for l in f if l.strip()}
     # the build embeds its absolute checkout path in published links (htmldiff/jira); make
     # manifests location-independent by normalizing the path (raw and url-encoded forms)
     import urllib.parse
@@ -62,9 +72,11 @@ def main(root):
             h = "A:" + archive_sig(p)
         elif low.endswith(BINARY):
             h = "B:" + hashlib.sha256(open(p, "rb").read()).hexdigest()[:16]
+        elif rel in ordered_tolerant:
+            h = "S:" + norm_hash(p, sort_lines=True)
         else:
             h = "N:" + norm_hash(p)
         print(f"{h}\t{rel}")
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)

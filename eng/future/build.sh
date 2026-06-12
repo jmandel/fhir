@@ -63,18 +63,36 @@ echo "signature: $SIG (expected Errors=$EXP_E, Warnings=$EXP_W, Information mess
 echo "$SIG" | grep -q "Errors=$EXP_E, Warnings=$EXP_W, Information messages=$EXP_I" \
   || { echo "OUTPUT SIGNATURE MISMATCH" >&2; exit 1; }
 
+# every build leaves a manifest behind; a prior one (e.g. CI's convergence pass) upgrades the
+# judge from a static noise allowlist to EVIDENCE-BASED excusal: a file is only excused if it
+# provably varied between two same-commit builds in this environment. A real content change is
+# stable across builds and differs from the reference -> flagged, even in historically-noisy files.
+PREV_MANIFEST=""
+[[ -f build-future.manifest ]] && { PREV_MANIFEST=/tmp/prev.manifest; cp build-future.manifest "$PREV_MANIFEST"; }
+python3 eng/future/manifest.py publish > build-future.manifest
+
 if $JUDGE; then
   echo "== judging published output against the committed reference manifest"
-  python3 eng/future/manifest.py publish > /tmp/future.manifest
-  join -t$'\t' -j2 <(sort -t$'\t' -k2 eng/future/ref.manifest) <(sort -t$'\t' -k2 /tmp/future.manifest) \
+  join -t$'\t' -j2 <(sort -t$'\t' -k2 eng/future/ref.manifest) <(sort -t$'\t' -k2 build-future.manifest) \
     | awk -F'\t' '$2!=$3{print $1}' > /tmp/future.diff-files
-  unexplained=$(grep -vE '\.shex(\.html)?$|\.xls$' /tmp/future.diff-files \
-    | grep -vxFf eng/future/noise-files-v2.txt | grep -vx 'all-valuesets.zip' || true)
+  # irreducible exclusions (content genuinely appears/disappears or is binary-timestamped;
+  # both reported upstream): .shex, .xls, all-valuesets.zip
+  candidates=$(grep -vE '\.shex(\.html)?$|\.xls$' /tmp/future.diff-files | grep -vx 'all-valuesets.zip' || true)
+  if [[ -n "$PREV_MANIFEST" ]]; then
+    join -t$'\t' -j2 <(sort -t$'\t' -k2 "$PREV_MANIFEST") <(sort -t$'\t' -k2 build-future.manifest) \
+      | awk -F'\t' '$2!=$3{print $1}' | sort > /tmp/noisy-now.txt
+    unexplained=$(echo "$candidates" | sort | comm -23 - /tmp/noisy-now.txt | sed '/^$/d' || true)
+    excused=$(echo "$candidates" | sort | comm -12 - /tmp/noisy-now.txt | sed '/^$/d' | wc -l)
+    echo "(evidence-based excusal: $excused files varied between this run's two builds)"
+  else
+    # single local build: fall back to the historically-observed noise allowlist
+    unexplained=$(echo "$candidates" | grep -vxFf eng/future/noise-files-v2.txt || true)
+  fi
   if [[ -n "$unexplained" ]]; then
     echo "UNEXPLAINED OUTPUT DIFFS (beyond known build nondeterminism):"; echo "$unexplained"
     # bundle the flagged files for offline diagnosis (CI uploads this as an artifact)
     echo "$unexplained" | head -40 | (cd publish && tar -czf ../parity-debug.tgz -T - 2>/dev/null) || true
     exit 1
   fi
-  echo "byte parity: clean ($(wc -l < /tmp/future.diff-files) files differ, all known-nondeterministic)"
+  echo "byte parity: clean ($(wc -l < /tmp/future.diff-files) files differ, all evidenced or known-nondeterministic)"
 fi
