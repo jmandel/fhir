@@ -1,0 +1,58 @@
+name: txpack future world
+
+on:
+  push:
+    branches: [txpack-future]
+  workflow_dispatch:
+    inputs:
+      stock_baseline:
+        description: "Also run the stock-toolchain cold baseline against tx.fhir.org (slow; be polite - run rarely)"
+        type: boolean
+        default: false
+
+jobs:
+  future-hermetic:
+    name: "Future: hermetic cold build (zero terminology network)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+      - name: Cache FHIR package cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.fhir/packages
+          key: fhir-packages-${{ runner.os }}-v1
+      - name: Cache content-addressed tooling + pack
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.fhir/tx-packs
+            ~/.fhir/tools
+          key: txlock-${{ hashFiles('tx.lock') }}
+      - name: Hermetic build + parity judge
+        run: HEAP=11g ./eng/future/build.sh --hermetic --judge
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with: { name: build-future-log, path: build-future.log }
+
+  stock-baseline:
+    name: "Baseline: stock toolchain, cold, remote tx.fhir.org"
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.stock_baseline }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+      - name: Cache FHIR package cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.fhir/packages
+          key: fhir-packages-${{ runner.os }}-v1
+      - name: Stock cold build (publish.sh path, empty tx cache)
+        run: |
+          start=$(date +%s)
+          ./publish.sh || true
+          echo "STOCK duration=$(( $(date +%s) - start ))s"

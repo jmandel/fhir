@@ -397,3 +397,4 @@ ai-scratch/
 *.skill
 .skills/
 .mcp.json
+build-future.log

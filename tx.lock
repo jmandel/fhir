@@ -1,0 +1,22 @@
+{
+  "format": "fhir-tx-lock/1",
+  "comment": "Pins the immutable terminology answer pack (and, for this demo, the build tooling) this commit of the spec builds against. See FUTURE.md. Updated only by reviewed lock-bump commits.",
+  "pack": {
+    "contentSha256": "36913cc2f65f65ca9cec1b29ebe03ac7367f6b697229524b769e44ba1a9ef01f",
+    "zipSha256": "ab47cdd3c420df194f6228b8559f22becad0cc8f1463457f51c8ddf2d1f65a3d",
+    "url": "https://github.com/jmandel/fhir-perf/releases/download/txpack-future-v1/txpack-36913cc2.zip",
+    "entries": 3086,
+    "recordedAgainst": "FHIRsmith 0.9.5 (the tx.fhir.org server implementation), 2026-06-12"
+  },
+  "tooling": {
+    "name": "kindling-future.jar",
+    "sha256": "0b4740ce775b850e828bc23f93e4735dd4ed1c34a46a196372a8e9bb0564ea6b",
+    "url": "https://github.com/jmandel/fhir-perf/releases/download/txpack-future-v1/kindling-future.jar",
+    "provenance": "kindling perf/integration-eval (perf/integrated + perf/terminology-fold) with fhir-core txpack/chain @ e9e60c989 embedded; both on github.com/jmandel forks"
+  },
+  "expectedSignature": {
+    "errors": 0,
+    "warnings": 3693,
+    "information": 345
+  }
+}

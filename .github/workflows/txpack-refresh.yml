@@ -1,0 +1,93 @@
+name: txpack refresh (lock-bump PR prototype)
+
+# Prototype of the routine pack-refresh flow. In the full design the candidate pack comes from
+# a gated recording run against the canonical terminology server; this prototype takes it as an
+# input so the downstream machinery (canonical compare -> machine-rendered diff -> AI-written
+# explanation -> lock-bump PR) can be exercised without a server in CI.
+#
+# Review model: the pack artifact itself never lands in git (immutable, hash-named, in the pack
+# store). The ONLY thing that changes in git is tx.lock, so the review gate is this PR. Merge
+# policy is a dial on the machine-generated facts (auto-merge additions-only; human review for
+# changed answers) - never on the AI prose, which is explanation, not evidence.
+
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_url:
+        description: "URL of the candidate pack zip (hash-named, already in the pack store)"
+        required: true
+      candidate_sha256:
+        description: "sha256 of the candidate pack zip"
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+  models: read
+
+jobs:
+  compare-and-propose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch current and candidate packs
+        run: |
+          cur_url=$(python3 -c "import json;print(json.load(open('tx.lock'))['pack']['url'])")
+          cur_sha=$(python3 -c "import json;print(json.load(open('tx.lock'))['pack']['zipSha256'])")
+          curl -fsSL -o current.zip "$cur_url";   echo "$cur_sha  current.zip"   | sha256sum -c -
+          curl -fsSL -o candidate.zip "${{ inputs.candidate_url }}"
+          echo "${{ inputs.candidate_sha256 }}  candidate.zip" | sha256sum -c -
+      - name: Canonical compare
+        id: diff
+        run: |
+          set +e
+          python3 eng/future/pack-diff.py current.zip candidate.zip > pack-diff.md
+          rc=$?
+          set -e
+          if [ $rc -eq 0 ]; then
+            echo "No semantic change - keeping the current pack; nothing to propose."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          elif [ $rc -eq 3 ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            exit $rc
+          fi
+          cat pack-diff.md
+      - name: "Explanation section (GitHub Models - narrative only, no tools, no authority)"
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          jq -n --rawfile diff pack-diff.md '{
+            model: "openai/gpt-4o-mini",
+            messages: [
+              {role: "system", content: "You explain terminology answer-pack diffs for FHIR spec build reviewers. Use ONLY facts present in the supplied diff. Group related changes, state the likely kind of cause (new spec content vs server-side curation), and say plainly what a reviewer should look at. 3 short paragraphs max. Do not invent counts or claims."},
+              {role: "user", content: $diff}
+            ]
+          }' > req.json
+          curl -fsS https://models.github.ai/inference/chat/completions \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Content-Type: application/json" \
+            -d @req.json | jq -r '.choices[0].message.content' > explanation.md \
+            || echo "_(explanation service unavailable; machine diff above is authoritative)_" > explanation.md
+      - name: Open lock-bump PR
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          sha_content=$(basename "${{ inputs.candidate_url }}" .zip | sed 's/^txpack-//')
+          python3 - <<EOF
+          import json
+          d = json.load(open('tx.lock'))
+          d['pack']['url'] = "${{ inputs.candidate_url }}"
+          d['pack']['zipSha256'] = "${{ inputs.candidate_sha256 }}"
+          json.dump(d, open('tx.lock','w'), indent=2)
+          EOF
+          branch="txpack-bump-$(date +%Y%m%d-%H%M)"
+          git checkout -b "$branch"
+          git -c user.name=txpack-refresh -c user.email=noreply@github.com commit -am "Bump tx.lock to candidate pack"
+          git push origin "$branch"
+          { echo "Machine-verified canonical diff (authoritative):"; echo; cat pack-diff.md; echo;
+            echo "## Explanation (AI-generated from the diff above - narrative only)"; echo; cat explanation.md; } > body.md
+          gh pr create --base "${{ github.ref_name }}" --head "$branch" \
+            --title "txpack refresh: $(grep -m1 'changed' pack-diff.md || echo 'answer updates')" \
+            --body-file body.md
