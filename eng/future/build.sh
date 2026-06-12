@@ -11,12 +11,13 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
-HERMETIC=true; JUDGE=false
+HERMETIC=true; JUDGE=false; MANIFEST=false
 for a in "$@"; do
   case "$a" in
     --hermetic) HERMETIC=true;;
     --online)   HERMETIC=false;;
-    --judge)    JUDGE=true;;
+    --judge)    JUDGE=true; MANIFEST=true;;
+    --manifest) MANIFEST=true;;  # write the output manifest without judging (CI convergence pass)
     *) echo "unknown arg: $a" >&2; exit 1;;
   esac
 done
@@ -63,13 +64,16 @@ echo "signature: $SIG (expected Errors=$EXP_E, Warnings=$EXP_W, Information mess
 echo "$SIG" | grep -q "Errors=$EXP_E, Warnings=$EXP_W, Information messages=$EXP_I" \
   || { echo "OUTPUT SIGNATURE MISMATCH" >&2; exit 1; }
 
-# every build leaves a manifest behind; a prior one (e.g. CI's convergence pass) upgrades the
+# a manifest from a prior same-commit build (CI's convergence pass, --manifest) upgrades the
 # judge from a static noise allowlist to EVIDENCE-BASED excusal: a file is only excused if it
 # provably varied between two same-commit builds in this environment. A real content change is
-# stable across builds and differs from the reference -> flagged, even in historically-noisy files.
+# stable across builds and differs from the reference -> flagged, even in historically-noisy
+# files. Manifest writing is opt-in (~14s) so default editor builds pay nothing.
 PREV_MANIFEST=""
-[[ -f build-future.manifest ]] && { PREV_MANIFEST=/tmp/prev.manifest; cp build-future.manifest "$PREV_MANIFEST"; }
-python3 eng/future/manifest.py publish > build-future.manifest
+if $MANIFEST; then
+  [[ -f build-future.manifest ]] && { PREV_MANIFEST=/tmp/prev.manifest; cp build-future.manifest "$PREV_MANIFEST"; }
+  python3 eng/future/manifest.py publish > build-future.manifest
+fi
 
 if $JUDGE; then
   echo "== judging published output against the committed reference manifest"

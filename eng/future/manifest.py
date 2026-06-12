@@ -24,13 +24,15 @@ TS = [
 ARCHIVE = (".zip", ".jar", ".pack", ".tgz", ".xlsx")
 BINARY = (".png", ".gif", ".jpg", ".jpeg", ".ico", ".eot", ".woff", ".woff2", ".ttf", ".pdf", ".epub", ".exe", ".dll", ".class")
 
-def norm_hash(path, sort_lines=False):
+def norm_hash(path, sort_lines=False, extra=()):
     try:
         with open(path, "rb") as f:
             data = f.read()
     except OSError as e:
         return "READ-ERROR"
     for rx in TS:
+        data = rx.sub(b"TS", data)
+    for rx in extra:
         data = rx.sub(b"TS", data)
     if sort_lines:
         # order-insensitive: for files whose only nondeterminism is element ordering, hash the
@@ -72,6 +74,24 @@ def archive_sig(path):
         return "ARCHIVE-ERROR"
     return hashlib.sha256(out).hexdigest()[:16]
 
+def _hash_one(args):
+    # extra patterns travel with the task: Python 3.14's default multiprocessing start method
+    # does not inherit parent-process mutations of module globals
+    root, rel, ordered, extra = args
+    p = os.path.join(root, rel)
+    low = rel.lower()
+    if low.endswith(".xlsx"):
+        h = "X:" + xlsx_sig(p)
+    elif low.endswith(ARCHIVE):
+        h = "A:" + archive_sig(p)
+    elif low.endswith(BINARY):
+        h = "B:" + hashlib.sha256(open(p, "rb").read()).hexdigest()[:16]
+    elif rel in ordered:
+        h = "S:" + norm_hash(p, sort_lines=True, extra=extra)
+    else:
+        h = "N:" + norm_hash(p, extra=extra)
+    return f"{h}\t{rel}"
+
 def main(root, orderlist_path=None):
     ordered_tolerant = set()
     if orderlist_path:
@@ -81,26 +101,16 @@ def main(root, orderlist_path=None):
     # manifests location-independent by normalizing the path (raw and url-encoded forms)
     import urllib.parse
     checkout = os.path.dirname(os.path.abspath(root))
-    for pat in (urllib.parse.quote(checkout, safe="").encode(), checkout.encode()):
-        TS.append(re.compile(re.escape(pat)))
+    extra = tuple(re.compile(re.escape(pat))
+                  for pat in (urllib.parse.quote(checkout, safe="").encode(), checkout.encode()))
     files = []
     for dp, dn, fn in os.walk(root):
         for n in fn:
             files.append(os.path.relpath(os.path.join(dp, n), root))
-    for rel in sorted(files):
-        p = os.path.join(root, rel)
-        low = rel.lower()
-        if low.endswith(".xlsx"):
-            h = "X:" + xlsx_sig(p)
-        elif low.endswith(ARCHIVE):
-            h = "A:" + archive_sig(p)
-        elif low.endswith(BINARY):
-            h = "B:" + hashlib.sha256(open(p, "rb").read()).hexdigest()[:16]
-        elif rel in ordered_tolerant:
-            h = "S:" + norm_hash(p, sort_lines=True)
-        else:
-            h = "N:" + norm_hash(p)
-        print(f"{h}\t{rel}")
+    import multiprocessing
+    with multiprocessing.Pool() as pool:
+        for line in pool.imap(_hash_one, ((root, rel, ordered_tolerant, extra) for rel in sorted(files)), chunksize=64):
+            print(line)
 
 if __name__ == "__main__":
     main(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)
