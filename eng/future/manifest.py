@@ -58,13 +58,16 @@ def xlsx_sig(path):
     return h.hexdigest()[:16]
 
 def archive_sig(path):
-    # member names + sizes (zip stores mtimes which always differ)
+    # member names + sizes (zip stores mtimes which always differ). Sorted: archives are
+    # written in filesystem-enumeration order, which differs across machines for identical
+    # content - member ADD/REMOVE/SIZE changes still change the hash
     try:
         if path.endswith(".tgz"):
-            out = subprocess.run(["tar", "-tzf", path], capture_output=True).stdout
+            lines = subprocess.run(["tar", "-tzf", path], capture_output=True).stdout.splitlines()
         else:
             p = subprocess.run(["unzip", "-l", path], capture_output=True)
-            out = b"\n".join(b" ".join(l.split()[:1] + l.split()[3:4]) for l in p.stdout.splitlines()[3:-2])
+            lines = [b" ".join(l.split()[:1] + l.split()[3:4]) for l in p.stdout.splitlines()[3:-2]]
+        out = b"\n".join(sorted(lines))
     except Exception:
         return "ARCHIVE-ERROR"
     return hashlib.sha256(out).hexdigest()[:16]
