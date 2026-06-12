@@ -38,7 +38,7 @@ fetch() { # fetch URL SHA DEST — content-addressed download: verify-or-refetch
 }
 
 PACK="$HOME/.fhir/tx-packs/$PACK_SHA.zip"
-TOOL="$HOME/.fhir/tools/kindling-future-$TOOL_SHA.jar"
+TOOL="$HOME/.fhir/tools/kindling-future-v2-$TOOL_SHA.jar"
 fetch "$PACK_URL" "$PACK_SHA" "$PACK"
 fetch "$TOOL_URL" "$TOOL_SHA" "$TOOL"
 
