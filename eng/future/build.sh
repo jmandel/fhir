@@ -42,7 +42,10 @@ TOOL="$HOME/.fhir/tools/kindling-future-$TOOL_SHA.jar"
 fetch "$PACK_URL" "$PACK_SHA" "$PACK"
 fetch "$TOOL_URL" "$TOOL_SHA" "$TOOL"
 
+# locale and timezone are part of the pinned configuration: the pack's request keys embed the
+# display language (recorded as en-US) and the reference output embeds recording-zone dates
 FLAGS=(-Xmx"${HEAP:-12g}" -XX:+UseParallelGC -Dfile.encoding=UTF-8
+  -Duser.language=en -Duser.country=US -Duser.timezone=America/Chicago
   -Dorg.hl7.fhir.tx.maxConcurrency=12
   -Dorg.hl7.fhir.tx.localFirst=true
   -Dorg.hl7.fhir.tx.pack="$PACK")
