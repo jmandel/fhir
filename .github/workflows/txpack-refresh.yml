@@ -53,12 +53,40 @@ jobs:
             exit $rc
           fi
           cat pack-diff.md
+      # layer 1: what does this bump actually do to the published spec? Same-machine A/B:
+      # build with the current pack, build with the candidate, diff content-level output.
+      # Hermetic both times - a candidate that DROPS needed answers fails loudly right here.
+      - uses: actions/setup-java@v4
+        if: steps.diff.outputs.changed == 'true'
+        with: { distribution: temurin, java-version: "17" }
+      - name: Cache FHIR package cache
+        if: steps.diff.outputs.changed == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.fhir/packages
+          key: fhir-packages-${{ runner.os }}-v1
+      - name: Output A/B (current pack, then candidate)
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          HEAP=11g TXPACK_ZIP="$PWD/current.zip" ./eng/future/build.sh --hermetic --manifest
+          cp build-future.manifest /tmp/old-output.manifest
+          rm -f build-future.manifest
+          HEAP=11g TXPACK_ZIP="$PWD/candidate.zip" ./eng/future/build.sh --hermetic --manifest
+          { echo "## Published-output impact (same-machine A/B, content-level)";
+            echo;
+            join -t$'\t' -j2 <(sort -t$'\t' -k2 /tmp/old-output.manifest) <(sort -t$'\t' -k2 build-future.manifest) \
+              | awk -F'\t' '{split($2,a,"/"); split($3,b,"/"); if ($2!=$3 && (length(a)<2 || a[2]!=b[2])) print "- " $1}' > /tmp/impact-list.txt
+            n=$(wc -l < /tmp/impact-list.txt)
+            if [ "$n" -eq 0 ]; then echo "**No published file changes** - this bump is output-inert."; else
+              echo "**$n published file(s) change with this bump:**"; echo; cat /tmp/impact-list.txt; fi; } > output-impact.md
+          cat output-impact.md
       - name: "Explanation section (GitHub Models - narrative only, no tools, no authority)"
         if: steps.diff.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          jq -n --rawfile diff pack-diff.md '{
+          cat pack-diff.md output-impact.md > /tmp/explain-input.md 2>/dev/null || cp pack-diff.md /tmp/explain-input.md
+          jq -n --rawfile diff /tmp/explain-input.md '{
             model: "openai/gpt-4o-mini",
             messages: [
               {role: "system", content: "You explain terminology answer-pack diffs for FHIR spec build reviewers. Use ONLY facts present in the supplied diff. Group related changes, state the likely kind of cause (new spec content vs server-side curation), and say plainly what a reviewer should look at. 3 short paragraphs max. Do not invent counts or claims."},
@@ -87,7 +115,8 @@ jobs:
           git -c user.name=txpack-refresh -c user.email=noreply@github.com commit -am "Bump tx.lock to candidate pack"
           git push origin "$branch"
           { echo "Machine-verified canonical diff (authoritative):"; echo; cat pack-diff.md; echo;
-            echo "## Explanation (AI-generated from the diff above - narrative only)"; echo; cat explanation.md; } > body.md
+            cat output-impact.md 2>/dev/null || true; echo;
+            echo "## Explanation (AI-generated from the diffs above - narrative only)"; echo; cat explanation.md; } > body.md
           gh pr create --base "${{ github.ref_name }}" --head "$branch" \
             --title "txpack refresh: $(grep -m1 'changed' pack-diff.md || echo 'answer updates')" \
             --body-file body.md

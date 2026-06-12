@@ -44,9 +44,15 @@ fetch() { # fetch URL SHA DEST — content-addressed download: verify-or-refetch
   mv "$dest.part" "$dest"
 }
 
-PACK="$HOME/.fhir/tx-packs/$PACK_SHA.zip"
+# TXPACK_ZIP overrides the lock's pack with a local zip (used by the refresh workflow's
+# old-vs-new output A/B; everything else still comes from the lock)
+if [[ -n "${TXPACK_ZIP:-}" ]]; then
+  PACK="$TXPACK_ZIP"
+else
+  PACK="$HOME/.fhir/tx-packs/$PACK_SHA.zip"
+  fetch "$PACK_URL" "$PACK_SHA" "$PACK"
+fi
 TOOL="$HOME/.fhir/tools/kindling-future-v2-$TOOL_SHA.jar"
-fetch "$PACK_URL" "$PACK_SHA" "$PACK"
 fetch "$TOOL_URL" "$TOOL_SHA" "$TOOL"
 
 # locale and timezone are part of the pinned configuration: the pack's request keys embed the
