@@ -45,6 +45,12 @@ def archive_sig(path):
     return hashlib.sha256(out).hexdigest()[:16]
 
 def main(root):
+    # the build embeds its absolute checkout path in published links (htmldiff/jira); make
+    # manifests location-independent by normalizing the path (raw and url-encoded forms)
+    import urllib.parse
+    checkout = os.path.dirname(os.path.abspath(root))
+    for pat in (urllib.parse.quote(checkout, safe="").encode(), checkout.encode()):
+        TS.append(re.compile(re.escape(pat)))
     files = []
     for dp, dn, fn in os.walk(root):
         for n in fn:

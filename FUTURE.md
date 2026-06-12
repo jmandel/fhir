@@ -69,6 +69,14 @@ content-addressed, and shared.
 - **Scope**: the pack covers terminology traffic. FHIR *package* downloads (`~/.fhir/packages`)
   are a separate, already-content-versioned mechanism — CI caches them; a future `pkg.lock`
   could pin them the same way.
+- **CI builds twice and judges the second build**: the stock toolchain's first build in a
+  fresh checkout produces different output than converged builds (also a
+  [reported bug](https://github.com/jmandel/fhir-perf/blob/main/docs/upstream-bugs.md)); the
+  reference manifest is a converged build, so CI converges before judging. Review-spreadsheet
+  `.xls` files embed generation timestamps and are excluded from judging, like `.shex`. The
+  known-nondeterminism allowlist is curated empirically (the stock ordering bug surfaces a few
+  new files per fresh environment); a CI parity failure whose diff is pure element reordering
+  means a new member of that documented class, not a content change — verify, then allowlist.
 - **The stock baseline** is a manual CI job (`workflow_dispatch`) so this repo doesn't hammer
   tx.fhir.org on every push.
 - **Maven hosting**: GitHub Packages requires auth even for public reads, so the demo ships

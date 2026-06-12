@@ -30,6 +30,11 @@ jobs:
             ~/.fhir/tx-packs
             ~/.fhir/tools
           key: txlock-${{ hashFiles('tx.lock') }}
+      # two builds: the stock toolchain's first-build-in-a-fresh-checkout output differs from
+      # converged builds (a reported upstream bug, not something this branch introduces or hides);
+      # parity is judged on the converged second build, matching how the reference was made
+      - name: Hermetic cold build (convergence pass)
+        run: HEAP=11g ./eng/future/build.sh --hermetic
       - name: Hermetic build + parity judge
         run: HEAP=11g ./eng/future/build.sh --hermetic --judge
       - name: Upload build log

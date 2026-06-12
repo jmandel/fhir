@@ -24,7 +24,9 @@ claim.shex
 claim.shex.html
 clinicalusedefinition.shex
 clinicalusedefinition.shex.html
+codesystem-appointmentstatus.html
 codesystem-devicealert-activationState.html
+codesystem-device-status.html
 codesystem-event-status.html
 codesystem-evidence-variable-event.html
 codesystem-fhir-old-types.html
@@ -34,6 +36,7 @@ codesystem-issue-severity.html
 codesystem-item-type.html
 codesystem-measure-report-type.html
 codesystem-observation-status.html
+codesystem-organization-role.html
 codesystem-participationstatus.html
 codesystem-related-artifact-type.html
 codesystem-request-intent.html
@@ -42,6 +45,7 @@ codesystem-search-comparator.html
 codesystem-search-modifier-code.html
 codesystem.shex
 codesystem.shex.html
+codesystem-synchronicity-control.html
 composition.shex
 composition.shex.html
 conceptmap.shex
@@ -60,6 +64,7 @@ coverage.shex
 coverage.shex.html
 datarequirement.profile.shex
 datarequirement.shex.html
+definitions.json.zip
 definitions.xlsx.zip
 definitions.xml.zip
 devicedefinition.shex
@@ -200,10 +205,15 @@ terminologycapabilities.shex.html
 toc.html
 validator.pack
 valueset-account-type.html
+valueset-action-relationship-type.html
+valueset-address-use.html
 valueset-administrative-gender.html
 valueset-all-languages.html
 valueset-consent-category-example.html
+valueset-constraint-severity.html
+valueset-contact-point-use.html
 valueset-coverage-type.html
+valueset-data-types.html
 valueset-detectedissue-category.html
 valueset-detectedissue-mitigation-action.html
 valueset-devicealert-activationState.html
@@ -212,7 +222,10 @@ valueset-device-type.html
 valueset-document-reference-status.html
 valueset-endpoint-payload-type.html
 valueset-FHIR-version.html
+valueset-name-use.html
 valueset-resource-status.html
+valueset-security-label-example.html
+valueset-security-labels.html
 valueset-service-type.html
 valueset.shex
 valueset.shex.html

@@ -68,7 +68,7 @@ if $JUDGE; then
   python3 eng/future/manifest.py publish > /tmp/future.manifest
   join -t$'\t' -j2 <(sort -t$'\t' -k2 eng/future/ref.manifest) <(sort -t$'\t' -k2 /tmp/future.manifest) \
     | awk -F'\t' '$2!=$3{print $1}' > /tmp/future.diff-files
-  unexplained=$(grep -vE '\.shex(\.html)?$' /tmp/future.diff-files \
+  unexplained=$(grep -vE '\.shex(\.html)?$|\.xls$' /tmp/future.diff-files \
     | grep -vxFf eng/future/noise-files-v2.txt | grep -vx 'all-valuesets.zip' || true)
   if [[ -n "$unexplained" ]]; then
     echo "UNEXPLAINED OUTPUT DIFFS (beyond known build nondeterminism):"; echo "$unexplained"; exit 1
