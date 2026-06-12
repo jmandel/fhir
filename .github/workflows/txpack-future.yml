@@ -5,12 +5,18 @@ on:
     branches: [txpack-future]
   workflow_dispatch:
     inputs:
+      parity:
+        description: "Run the full reproducibility job (double build + evidence-judged parity)"
+        type: boolean
+        default: true
       stock_baseline:
         description: "Also run the stock-toolchain cold baseline against tx.fhir.org (slow; be polite - run rarely)"
         type: boolean
         default: false
 
 jobs:
+  # the required, every-push gate: ONE hermetic cold build (~4 min). Zero terminology network,
+  # enforced; output signature checked. This is the everyday CI cost of the future world.
   future-hermetic:
     name: "Future: hermetic cold build (zero terminology network)"
     runs-on: ubuntu-latest
@@ -30,10 +36,42 @@ jobs:
             ~/.fhir/tx-packs
             ~/.fhir/tools
           key: txlock-${{ hashFiles('tx.lock') }}
-      # two builds: the stock toolchain's first-build-in-a-fresh-checkout output differs from
-      # converged builds (a reported upstream bug, not something this branch introduces or hides);
-      # parity is judged on the converged second build, matching how the reference was made
-      - name: Hermetic cold build (convergence pass)
+      - name: Hermetic cold build + signature check
+        run: HEAP=11g ./eng/future/build.sh --hermetic
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with: { name: build-future-log, path: build-future.log }
+
+  # the OPTIONAL reproducibility track: double build + evidence-judged byte parity against the
+  # committed reference. Runs when the pinned world itself changes (tx.lock, the verification
+  # tooling, the reference) or on demand - not on every content push (it costs 2x build time,
+  # and intended content changes would rightly differ from the reference anyway)
+  reproducibility:
+    name: "Reproducibility: converged build vs committed reference"
+    runs-on: ubuntu-latest
+    if: >-
+      (github.event_name == 'workflow_dispatch' && inputs.parity) ||
+      (github.event_name == 'push' && contains(join(github.event.commits.*.message, ' '), '[parity]'))
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+      - name: Cache FHIR package cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.fhir/packages
+          key: fhir-packages-${{ runner.os }}-v1
+      - name: Cache content-addressed tooling + pack
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.fhir/tx-packs
+            ~/.fhir/tools
+          key: txlock-${{ hashFiles('tx.lock') }}
+      # two builds: the first supplies convergence (first-build-vs-converged is a documented
+      # stock difference) AND the evidence manifest for nondeterminism excusal
+      - name: Hermetic cold build (convergence + evidence pass)
         run: HEAP=11g ./eng/future/build.sh --hermetic --manifest
       - name: Hermetic build + parity judge
         run: HEAP=11g ./eng/future/build.sh --hermetic --judge

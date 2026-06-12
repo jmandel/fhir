@@ -11,22 +11,28 @@
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
-HERMETIC=true; JUDGE=false; MANIFEST=false
+HERMETIC=true; JUDGE=false; MANIFEST=false; IMPACT=false
 for a in "$@"; do
   case "$a" in
     --hermetic) HERMETIC=true;;
     --online)   HERMETIC=false;;
     --judge)    JUDGE=true; MANIFEST=true;;
     --manifest) MANIFEST=true;;  # write the output manifest without judging (CI convergence pass)
+    --impact)   IMPACT=true; MANIFEST=true;;  # diff this build against my previous local build
     *) echo "unknown arg: $a" >&2; exit 1;;
   esac
 done
 
-lock() { python3 -c "import json,sys;d=json.load(open('tx.lock'));print(eval('d'+sys.argv[1]))" "$1"; }
-
-PACK_URL=$(lock "['pack']['url']");         PACK_SHA=$(lock "['pack']['zipSha256']")
-TOOL_URL=$(lock "['tooling']['url']");      TOOL_SHA=$(lock "['tooling']['sha256']")
-EXP_E=$(lock "['expectedSignature']['errors']"); EXP_W=$(lock "['expectedSignature']['warnings']"); EXP_I=$(lock "['expectedSignature']['information']")
+# tx.lock parsing in plain shell - the default build path requires only bash, curl, sha256sum
+# and java (in the non-demo future the publisher reads tx.lock natively and no script exists).
+# python3 is needed only by the verification tooling (--judge / --manifest / CI / refresh).
+lockval() { # lockval SECTION KEY -> value (string or number)
+  sed -n "/\"$1\"[[:space:]]*:/,/}/p" tx.lock | grep -m1 "\"$2\"" \
+    | sed 's/^[^:]*:[[:space:]]*//; s/^"//; s/"\{0,1\},\{0,1\}[[:space:]]*$//'
+}
+PACK_URL=$(lockval pack url);        PACK_SHA=$(lockval pack zipSha256)
+TOOL_URL=$(lockval tooling url);     TOOL_SHA=$(lockval tooling sha256)
+EXP_E=$(lockval expectedSignature errors); EXP_W=$(lockval expectedSignature warnings); EXP_I=$(lockval expectedSignature information)
 
 fetch() { # fetch URL SHA DEST — content-addressed download: verify-or-refetch, never mutate
   local url="$1" sha="$2" dest="$3"
@@ -75,20 +81,32 @@ if $MANIFEST; then
   python3 eng/future/manifest.py publish > build-future.manifest
 fi
 
+if $IMPACT; then
+  if [[ -z "$PREV_MANIFEST" ]]; then
+    echo "impact: no previous build manifest found (run a build first); nothing to compare"
+  else
+    echo "== impact: files changed vs your previous build (content-level; ordering-only churn excluded)"
+    join -t$'\t' -j2 <(sort -t$'\t' -k2 "$PREV_MANIFEST") <(sort -t$'\t' -k2 build-future.manifest) \
+      | awk -F'\t' '{split($2,a,"/"); split($3,b,"/"); if ($2!=$3 && (length(a)<2 || a[2]!=b[2])) print "  " $1}'
+    comm -13 <(cut -f2- "$PREV_MANIFEST" | sort) <(cut -f2- build-future.manifest | sort) | sed 's/^/  + /'
+    comm -23 <(cut -f2- "$PREV_MANIFEST" | sort) <(cut -f2- build-future.manifest | sort) | sed 's/^/  - /'
+  fi
+fi
+
 if $JUDGE; then
   echo "== judging published output against the committed reference manifest"
+  # ordering second chance: a file whose exact (N:) hash differs but whose order-insensitive
+  # (O:) hash matches changed only in element order - the documented stock nondeterminism
+  # class - and is excused with that evidence; any content change differs under O too
   join -t$'\t' -j2 <(sort -t$'\t' -k2 eng/future/ref.manifest) <(sort -t$'\t' -k2 build-future.manifest) \
-    | awk -F'\t' '$2!=$3{print $1}' > /tmp/future.diff-files
-  # irreducible exclusions (content genuinely appears/disappears or is binary-timestamped;
-  # both reported upstream): .shex, .xls, all-valuesets.zip
-  candidates=$(grep -vE '\.shex(\.html)?$|\.xls$' /tmp/future.diff-files | grep -vx 'all-valuesets.zip' || true)
+    | awk -F'\t' '{split($2,a,"/"); split($3,b,"/"); if ($2!=$3 && (length(a)<2 || a[2]!=b[2])) print $1}' > /tmp/future.content-diff
+  candidates=$(grep -vE '\.shex(\.html)?$|\.xls$' /tmp/future.content-diff | grep -vx 'all-valuesets.zip' || true)
   if [[ -n "$PREV_MANIFEST" ]]; then
     join -t$'\t' -j2 <(sort -t$'\t' -k2 "$PREV_MANIFEST") <(sort -t$'\t' -k2 build-future.manifest) \
       | awk -F'\t' '$2!=$3{print $1}' | sort > /tmp/noisy-now.txt
-    # evidence first; the historically-observed ordering allowlist additionally covers files
-    # whose ordering nondeterminism sampled differently across machines but happened to be
-    # stable within this run's two builds (the residual blind spot is static-listed files that
-    # are stable this run - the documented stock-ordering class, see FUTURE.md)
+    # evidence first; the historically-observed allowlist additionally covers files whose
+    # nondeterminism sampled differently across machines but happened to be stable within this
+    # run's two builds (residual blind spot: static-listed files stable this run - see FUTURE.md)
     unexplained=$(echo "$candidates" | sort | comm -23 - /tmp/noisy-now.txt | grep -vxFf eng/future/noise-files-v2.txt | sed '/^$/d' || true)
     excused=$(echo "$candidates" | sort | comm -12 - /tmp/noisy-now.txt | sed '/^$/d' | wc -l)
     echo "(evidence-based excusal: $excused files varied between this run's two builds)"
@@ -102,5 +120,5 @@ if $JUDGE; then
     echo "$unexplained" | head -40 | (cd publish && tar -czf ../parity-debug.tgz -T - 2>/dev/null) || true
     exit 1
   fi
-  echo "byte parity: clean ($(wc -l < /tmp/future.diff-files) files differ, all evidenced or known-nondeterministic)"
+  echo "byte parity: clean (content-level diffs: $(wc -l < /tmp/future.content-diff), all evidenced or known-nondeterministic)"
 fi

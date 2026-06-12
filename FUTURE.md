@@ -23,7 +23,7 @@ Three files and one directory — nothing else in the spec changed:
 | [`tx.lock`](tx.lock) | Pins the immutable **terminology answer pack** (content sha256 + URL) and, for this demo, the tooling jar. The repo now *names* exactly which terminology answers this commit builds against. |
 | [`eng/future/build.sh`](eng/future/build.sh) | Resolves both by hash into content-addressed caches (`~/.fhir/tx-packs`, `~/.fhir/tools`), verifies, builds, checks the output signature, optionally judges byte parity. |
 | [`eng/future/`](eng/future/) | The parity judge: a normalizing manifest hasher, the reference manifest, and the known-nondeterminism allowlist (the stock build is not byte-deterministic; that's [a reported bug](https://github.com/jmandel/fhir-perf/blob/main/docs/upstream-bugs.md), not something this branch hides). |
-| [`.github/workflows/txpack-future.yml`](.github/workflows/txpack-future.yml) | CI runs the hermetic build + parity judge on every push. There is no terminology server anywhere in the job. |
+| [`.github/workflows/txpack-future.yml`](.github/workflows/txpack-future.yml) | CI: every push runs ONE hermetic build + signature check (~4 min, no terminology server anywhere). A separate reproducibility job (double build + judged byte parity) runs only when the pinned world changes or on demand. |
 
 The tooling jar is one artifact: kindling (with the perf work: no forced GC per example,
 parallel validation, indexed lookups, terminology fold) embedding the fhir-core txpack branch
@@ -69,19 +69,34 @@ content-addressed, and shared.
 - **Scope**: the pack covers terminology traffic. FHIR *package* downloads (`~/.fhir/packages`)
   are a separate, already-content-versioned mechanism — CI caches them; a future `pkg.lock`
   could pin them the same way.
-- **CI builds twice and judges the second build**: the stock toolchain's first build in a
-  fresh checkout produces different output than converged builds (also a
-  [reported bug](https://github.com/jmandel/fhir-perf/blob/main/docs/upstream-bugs.md)); the
-  reference manifest is a converged build, so CI converges before judging. Review-spreadsheet
-  `.xls` files embed generation timestamps and are excluded from judging, like `.shex`. The
-  known-nondeterminism allowlist is curated empirically (the stock ordering bug surfaces a few
-  new files per fresh environment); a CI parity failure whose diff is pure element reordering
-  means a new member of that documented class, not a content change — verify, then allowlist.
+- **Byte-parity is the stretch goal, not the requirement.** The txpack goals (fast, offline,
+  poison-free, pinned answers) need only hash-verified inputs + hermetic mode + the signature
+  check — one build, no comparison. The reproducibility track (same commit → same bytes on any
+  machine) is a separate ambition this demo also pursues; chasing it surfaced six classes of
+  environment leak in the stock toolchain (locale → request keys, checkout path and OS username
+  → page content, installed fonts → spreadsheet column widths, filesystem enumeration order →
+  archive member order, thread timing → element ordering and a flickering designations table),
+  each handled by pinning or by normalization in the judge.
+- **How the judge stays honest about noise without going blind**: exact hashes are compared
+  first; a file differing only under exact-but-not-order-insensitive hashing changed purely in
+  element order (the documented stock ordering bug) and is excused with that evidence; the
+  reproducibility job builds twice, and files that differed between its own two builds are
+  excused as proven-nondeterministic-here; the small historical allowlist covers cross-machine
+  ordering samples. A planted content change in an allowlisted file is still caught (verified).
 - **The stock baseline** is a manual CI job (`workflow_dispatch`) so this repo doesn't hammer
   tx.fhir.org on every push.
 - **Maven hosting**: GitHub Packages requires auth even for public reads, so the demo ships
   artifacts as content-addressed GitHub Release assets instead — which is also the more honest
   model for immutable, hash-named artifacts.
+
+## Local modes and dependencies
+
+`./eng/future/build.sh` (default): bash + curl + sha256sum + java, nothing else — and the
+script itself is demo scaffolding for what would be ~30 lines of publisher code reading
+`tx.lock` natively. `--impact`: after an edit, lists exactly which published files your change
+touched (content-level; ordering churn excluded) — a capability the stock build cannot offer at
+any price, since its output drowns intent in nondeterminism. `--judge`: verifies your
+environment reproduces the pinned output (python3; used by CI and when bumping the lock).
 
 ## The refresh flow (prototyped here too)
 

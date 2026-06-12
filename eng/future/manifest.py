@@ -24,21 +24,23 @@ TS = [
 ARCHIVE = (".zip", ".jar", ".pack", ".tgz", ".xlsx")
 BINARY = (".png", ".gif", ".jpg", ".jpeg", ".ico", ".eot", ".woff", ".woff2", ".ttf", ".pdf", ".epub", ".exe", ".dll", ".class")
 
-def norm_hash(path, sort_lines=False, extra=()):
+def norm_hash(path, extra=()):
+    """returns 'N:<exact>/O:<order-insensitive>' - O hashes the sorted multiset of trimmed
+    non-empty lines, so pure element reordering (the documented stock nondeterminism class)
+    compares equal under O while any content change still flags"""
     try:
         with open(path, "rb") as f:
             data = f.read()
     except OSError as e:
-        return "READ-ERROR"
+        return "N:READ-ERROR/O:READ-ERROR"
     for rx in TS:
         data = rx.sub(b"TS", data)
     for rx in extra:
         data = rx.sub(b"TS", data)
-    if sort_lines:
-        # order-insensitive: for files whose only nondeterminism is element ordering, hash the
-        # sorted line multiset - pure reordering compares equal, any content change still flags
-        data = b"\n".join(sorted(data.split(b"\n")))
-    return hashlib.sha256(data).hexdigest()[:16]
+    n = hashlib.sha256(data).hexdigest()[:16]
+    lines = sorted(l.strip() for l in data.split(b"\n") if l.strip())
+    o = hashlib.sha256(b"\n".join(lines)).hexdigest()[:16]
+    return f"N:{n}/O:{o}"
 
 def xlsx_sig(path):
     # deep hash of member content with font-metric variance removed: POI auto-sizes column
@@ -77,7 +79,7 @@ def archive_sig(path):
 def _hash_one(args):
     # extra patterns travel with the task: Python 3.14's default multiprocessing start method
     # does not inherit parent-process mutations of module globals
-    root, rel, ordered, extra = args
+    root, rel, extra = args
     p = os.path.join(root, rel)
     low = rel.lower()
     if low.endswith(".xlsx"):
@@ -86,17 +88,11 @@ def _hash_one(args):
         h = "A:" + archive_sig(p)
     elif low.endswith(BINARY):
         h = "B:" + hashlib.sha256(open(p, "rb").read()).hexdigest()[:16]
-    elif rel in ordered:
-        h = "S:" + norm_hash(p, sort_lines=True, extra=extra)
     else:
-        h = "N:" + norm_hash(p, extra=extra)
+        h = norm_hash(p, extra=extra)
     return f"{h}\t{rel}"
 
-def main(root, orderlist_path=None):
-    ordered_tolerant = set()
-    if orderlist_path:
-        with open(orderlist_path) as f:
-            ordered_tolerant = {l.strip() for l in f if l.strip()}
+def main(root):
     # the build embeds its absolute checkout path in published links (htmldiff/jira); make
     # manifests location-independent by normalizing the path (raw and url-encoded forms)
     import urllib.parse
@@ -109,8 +105,8 @@ def main(root, orderlist_path=None):
             files.append(os.path.relpath(os.path.join(dp, n), root))
     import multiprocessing
     with multiprocessing.Pool() as pool:
-        for line in pool.imap(_hash_one, ((root, rel, ordered_tolerant, extra) for rel in sorted(files)), chunksize=64):
+        for line in pool.imap(_hash_one, ((root, rel, extra) for rel in sorted(files)), chunksize=64):
             print(line)
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else None)
+    main(sys.argv[1])

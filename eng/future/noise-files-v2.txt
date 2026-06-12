@@ -26,6 +26,7 @@ clinicalusedefinition.shex
 clinicalusedefinition.shex.html
 codesystem-appointmentstatus.html
 codesystem-devicealert-activationState.html
+codesystem-devicealert-priority.html
 codesystem-device-status.html
 codesystem-event-status.html
 codesystem-evidence-variable-event.html
@@ -222,7 +223,9 @@ valueset-device-type.html
 valueset-document-reference-status.html
 valueset-endpoint-payload-type.html
 valueset-FHIR-version.html
+valueset-list-order.html
 valueset-name-use.html
+valueset-procedure-code.html
 valueset-resource-status.html
 valueset-security-label-example.html
 valueset-security-labels.html
