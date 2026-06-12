@@ -81,7 +81,11 @@ if $JUDGE; then
   if [[ -n "$PREV_MANIFEST" ]]; then
     join -t$'\t' -j2 <(sort -t$'\t' -k2 "$PREV_MANIFEST") <(sort -t$'\t' -k2 build-future.manifest) \
       | awk -F'\t' '$2!=$3{print $1}' | sort > /tmp/noisy-now.txt
-    unexplained=$(echo "$candidates" | sort | comm -23 - /tmp/noisy-now.txt | sed '/^$/d' || true)
+    # evidence first; the historically-observed ordering allowlist additionally covers files
+    # whose ordering nondeterminism sampled differently across machines but happened to be
+    # stable within this run's two builds (the residual blind spot is static-listed files that
+    # are stable this run - the documented stock-ordering class, see FUTURE.md)
+    unexplained=$(echo "$candidates" | sort | comm -23 - /tmp/noisy-now.txt | grep -vxFf eng/future/noise-files-v2.txt | sed '/^$/d' || true)
     excused=$(echo "$candidates" | sort | comm -12 - /tmp/noisy-now.txt | sed '/^$/d' | wc -l)
     echo "(evidence-based excusal: $excused files varied between this run's two builds)"
   else

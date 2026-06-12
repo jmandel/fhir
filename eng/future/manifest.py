@@ -38,6 +38,25 @@ def norm_hash(path, sort_lines=False):
         data = b"\n".join(sorted(data.split(b"\n")))
     return hashlib.sha256(data).hexdigest()[:16]
 
+def xlsx_sig(path):
+    # deep hash of member content with font-metric variance removed: POI auto-sizes column
+    # widths using the JVM's installed fonts, so width attributes differ across machines while
+    # the actual sheet content is identical. Any real content change still changes the hash.
+    import zipfile
+    h = hashlib.sha256()
+    try:
+        with zipfile.ZipFile(path) as z:
+            for n in sorted(z.namelist()):
+                data = z.read(n)
+                data = re.sub(rb'width="[0-9.]+"', b'width="W"', data)
+                for rx in TS:
+                    data = rx.sub(b"TS", data)
+                h.update(n.encode())
+                h.update(data)
+    except Exception:
+        return "XLSX-ERROR"
+    return h.hexdigest()[:16]
+
 def archive_sig(path):
     # member names + sizes (zip stores mtimes which always differ)
     try:
@@ -68,7 +87,9 @@ def main(root, orderlist_path=None):
     for rel in sorted(files):
         p = os.path.join(root, rel)
         low = rel.lower()
-        if low.endswith(ARCHIVE):
+        if low.endswith(".xlsx"):
+            h = "X:" + xlsx_sig(p)
+        elif low.endswith(ARCHIVE):
             h = "A:" + archive_sig(p)
         elif low.endswith(BINARY):
             h = "B:" + hashlib.sha256(open(p, "rb").read()).hexdigest()[:16]

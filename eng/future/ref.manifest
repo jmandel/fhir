@@ -172,7 +172,7 @@ N:2cc950b2a6a43b35	account.schema.json.html
 N:26b7253953d342b0	account.shex
 N:277af7a7f685a43b	account.shex.html
 N:422ca75d0edcab78	account.svg
-A:5fa8931ef7df9500	account.xlsx
+X:0ecb636fa466c1fe	account.xlsx
 N:7955f9239459a4f3	account.xsd
 B:02fe9efd26345faf	action-and-activity-definition.png
 N:108d73349ea9c2fe	activitydefinition-administer-zika-virus-exposure-assessment.canonical.json
@@ -285,7 +285,7 @@ N:7a88f4a8c7fab63a	activitydefinition.schema.json.html
 N:27c5511d62143b61	activitydefinition.shex
 N:58c7bef043715571	activitydefinition.shex.html
 N:dadefa41bd08722a	activitydefinition.svg
-A:9c52c9600ca7e2b9	activitydefinition.xlsx
+X:efe50ee2477abccb	activitydefinition.xlsx
 N:5ebfe8a8148097b8	activitydefinition.xsd
 N:ff3c3dcf62db9938	actordefinition-core.html
 N:e4fa35812828f858	actordefinition-definitions.html
@@ -333,7 +333,7 @@ N:ddcc8b2ab2f9b767	actordefinition.schema.json.html
 N:58f77e4458e73c6a	actordefinition.shex
 N:495005951b1f22cb	actordefinition.shex.html
 N:9aac5401650177bb	actordefinition.svg
-A:be4693b08be05f74	actordefinition.xlsx
+X:b195256b5a7ef88b	actordefinition.xlsx
 N:875eb2b0d2fb0bbd	actordefinition.xsd
 N:3b4cc83ae567e668	address.profile.canonical.json
 N:6d52821250280d95	address.profile.canonical.xml
@@ -381,7 +381,7 @@ N:70d963662265124c	administrableproductdefinition.schema.json.html
 N:dea48905b308f422	administrableproductdefinition.shex
 N:d771f6151954b596	administrableproductdefinition.shex.html
 N:7f5902ef0a59720c	administrableproductdefinition.svg
-A:01124bcc2dc3e486	administrableproductdefinition.xlsx
+X:250b9bf81dc14283	administrableproductdefinition.xlsx
 N:bcf9d3a6401a9a38	administrableproductdefinition.xsd
 B:4dd1eac415c97381	administration-module-interactions.png
 B:8f3c9ccf0921b5d2	administration-module-person.png
@@ -418,7 +418,7 @@ N:27083e32ad7d34af	adverseevent.schema.json.html
 N:cf1337aa2c433e10	adverseevent.shex
 N:460420d4edf09031	adverseevent.shex.html
 N:632e8d3299361995	adverseevent.svg
-A:88bf982e8722a826	adverseevent.xlsx
+X:d4db7eb5ce580807	adverseevent.xlsx
 N:acbe48abd59db556	adverseevent.xsd
 N:7d71363df8a6e32f	age.profile.canonical.json
 N:32e528b41624143f	age.profile.canonical.xml
@@ -514,7 +514,7 @@ N:020abd8b37a6fc6e	allergyintolerance.schema.json.html
 N:ed93c08f67135d6e	allergyintolerance.shex
 N:b844f2d129b9d70d	allergyintolerance.shex.html
 N:9f62cac694a52ceb	allergyintolerance.svg
-A:7095f468e3e32620	allergyintolerance.xlsx
+X:69c00121e9af07fe	allergyintolerance.xlsx
 N:808ed8b79b1a1a59	allergyintolerance.xsd
 N:13c34b3c4db0706e	annotation.profile.canonical.json
 N:60d898cfa29c4056	annotation.profile.canonical.xml
@@ -581,7 +581,7 @@ N:b371d96baff70391	appointment.schema.json.html
 N:58578067c1dcdd69	appointment.shex
 N:674b03eb1726b7d8	appointment.shex.html
 N:517aed5fa2312f66	appointment.svg
-A:a418d650944977b3	appointment.xlsx
+X:12b554a81d4fa30f	appointment.xlsx
 N:28212a7d66a313b6	appointment.xsd
 N:71a80390bd7a73e4	appointmentresponse-definitions.html
 N:5cbd40a0cf82472d	appointmentresponse-dependencies.html
@@ -637,7 +637,7 @@ N:7a305c169455424d	appointmentresponse.schema.json.html
 N:c6ed736164c16536	appointmentresponse.shex
 N:5e52947d544f4f25	appointmentresponse.shex.html
 N:558b566a2ddddcee	appointmentresponse.svg
-A:5668a990ecf4a5f7	appointmentresponse.xlsx
+X:30a399db4d4df576	appointmentresponse.xlsx
 N:7f5ba908631a683f	appointmentresponse.xsd
 B:2f578fa8797211ec	arch-uml1.png
 B:ae8d458bba5b5708	arch-uml2.png
@@ -706,7 +706,7 @@ N:a32ac57e019d0755	artifactassessment.schema.json.html
 N:76d9253b597cc596	artifactassessment.shex
 N:bb2772f93ff7d4f0	artifactassessment.shex.html
 N:bf96d99c0188f489	artifactassessment.svg
-A:c43c93d8cbddfc9d	artifactassessment.xlsx
+X:0e3bf56042dd7dec	artifactassessment.xlsx
 N:0625ec0cc485c7f3	artifactassessment.xsd
 N:dcd5c661370c7a87	assets/css/bootstrap-fhir.css
 N:9ec029bfeb41cac8	assets/css/bootstrap-glyphicons.css
@@ -922,7 +922,7 @@ N:c8c96c6c278232e5	auditevent.schema.json.html
 N:0b1c821044c3c5bb	auditevent.shex
 N:6fdb80d8fb98fc0e	auditevent.shex.html
 N:68853564f736fc5d	auditevent.svg
-A:813606bdb7378c62	auditevent.xlsx
+X:f5299f1198dd65b1	auditevent.xlsx
 N:643b3c31e119c530	auditevent.xsd
 N:e874404c3c109fa4	availability.profile.canonical.json
 N:195af56fb2184888	availability.profile.canonical.xml
@@ -1036,7 +1036,7 @@ N:ccf8f7f8d8604853	basic.schema.json.html
 N:8903bf4ae2cec497	basic.shex
 N:fce339c9b68d6054	basic.shex.html
 N:8d778fd942749e07	basic.svg
-A:09e7c8de9d7337ba	basic.xlsx
+X:7cfd0c6e1095a9fa	basic.xlsx
 N:c478288308d782a6	basic.xsd
 N:ece876ee08b7dfaf	batch-bundle-definitions.html
 N:5bdd6006e716dd23	batch-bundle-mappings.html
@@ -1103,7 +1103,7 @@ N:3bc25bb19a30c498	binary.schema.json.html
 N:b70f502eebfcbbe9	binary.shex
 N:5a147fa4f346b748	binary.shex.html
 N:f825b49a5a1f5d8e	binary.svg
-A:5baeb4f35bb1500e	binary.xlsx
+X:7f9ae19f28af1a33	binary.xlsx
 N:a7640a6496f9d048	binary.xsd
 N:f804ef8827daabe3	bindings-list.html
 N:fa82b87d0949a3ff	biologically-derived-product-module.html
@@ -1165,7 +1165,7 @@ N:8cd48d412d461166	biologicallyderivedproduct.schema.json.html
 N:8049739bbfdda0ba	biologicallyderivedproduct.shex
 N:db452dc479f815d3	biologicallyderivedproduct.shex.html
 N:b65d51c0822bc118	biologicallyderivedproduct.svg
-A:435de32fdb08f928	biologicallyderivedproduct.xlsx
+X:1136d0a30c02ceae	biologicallyderivedproduct.xlsx
 N:7fbd333a3ca2f065	biologicallyderivedproduct.xsd
 B:478cb4f124cf3f21	blood-bag.png
 N:5948322b20c9a041	bmi-definitions.html
@@ -1247,7 +1247,7 @@ N:6ff032731dbe9fb1	bodystructure.schema.json.html
 N:657a111d6d037aa3	bodystructure.shex
 N:17a4e52d5971d34d	bodystructure.shex.html
 N:88d396703b93779a	bodystructure.svg
-A:3a2ff07cb276df7f	bodystructure.xlsx
+X:33be6f827f240cbb	bodystructure.xlsx
 N:efea49a988b13c4c	bodystructure.xsd
 N:3d7818717c47f448	bodytemp-definitions.html
 N:80e6368fe459102d	bodytemp-mappings.html
@@ -1420,7 +1420,7 @@ N:9480cc4986f676d3	bundle.schema.json.html
 N:05ca79b27668dd58	bundle.shex
 N:ccf29e51de251661	bundle.shex.html
 N:a41ae56e73a9306e	bundle.svg
-A:0bcddb7084030fb2	bundle.xlsx
+X:975bba929079199c	bundle.xlsx
 N:6a2dc3b6c3095947	bundle.xsd
 B:4cb92ca5a2db2e1f	c2b14b1e-8d45-410c-a37e-b7c476c7b892.gif
 B:795e87d9d17d95c1	c2dad810-8229-4a04-8ff7-df0495278aa5.png
@@ -1467,7 +1467,7 @@ N:eb448ab570819042	canonicalresource.schema.json.html
 N:3fa73e04e94c1b8a	canonicalresource.shex
 N:2d70aa3919f483ee	canonicalresource.shex.html
 N:caf2a3afa153253e	canonicalresource.svg
-A:b662200510b82c9a	canonicalresource.xlsx
+X:0785110c961b151b	canonicalresource.xlsx
 N:f480cd0586bff188	capabilitystatement-base.canonical.json
 N:c5100bcc7cf42599	capabilitystatement-base.canonical.xml
 N:39913ff07bdcfbe9	capabilitystatement-base.json
@@ -1567,7 +1567,7 @@ N:ba5b3d2f10c56d37	capabilitystatement.schema.json.html
 N:1d36afcdce0074d0	capabilitystatement.shex
 N:f4493b6870f702d7	capabilitystatement.shex.html
 N:a9e08933a161c4aa	capabilitystatement.svg
-A:9a5cd13aac683c18	capabilitystatement.xlsx
+X:b19206ea7e7b1c5d	capabilitystatement.xlsx
 N:9e78d1b58d07c640	capabilitystatement.xsd
 N:a25002176f02911d	careplan-core.html
 N:881089653d439a61	careplan-definitions.html
@@ -1696,7 +1696,7 @@ N:ba2f1b88ad0f9f50	careplan.schema.json.html
 N:8ded86622ad3934b	careplan.shex
 N:dfa6c2e343140dfc	careplan.shex.html
 N:b540c7b92bc3199f	careplan.svg
-A:3225c01d9f8a224f	careplan.xlsx
+X:5a57a8880a6c696a	careplan.xlsx
 N:ab088f30f02b31f4	careplan.xsd
 N:58875eaca7ef617b	careteam-core.html
 N:a377a698d04d19b8	careteam-definitions.html
@@ -1735,7 +1735,7 @@ N:7087616fa7711123	careteam.schema.json.html
 N:74ffa94de0697798	careteam.shex
 N:7cee411e7595b37e	careteam.shex.html
 N:e34337d0339ba13d	careteam.svg
-A:678cea0f484f8f6e	careteam.xlsx
+X:9231ffe6e54ce400	careteam.xlsx
 N:e354c3ebcc5eead5	careteam.xsd
 N:4f96d785cd907d9c	catalog-definitions.html
 N:9203f6c7580cef22	catalog-mappings.html
@@ -1932,7 +1932,7 @@ N:274c11547b5b7e74	claim.schema.json.html
 N:5c653fb453128de2	claim.shex
 N:e84587d71bbdf310	claim.shex.html
 N:1d159f6c573288ca	claim.svg
-A:801f1d9409ae907e	claim.xlsx
+X:f0ce12fc90246079	claim.xlsx
 N:26dba0f6c4f9eaeb	claim.xsd
 N:947ffba1ef211324	claimresponse-definitions.html
 N:581c33d68aaf33d4	claimresponse-dependencies.html
@@ -2006,7 +2006,7 @@ N:d8dfbb785b37bd6b	claimresponse.schema.json.html
 N:6b68955c5ca75268	claimresponse.shex
 N:3de02d6ebf2c106e	claimresponse.shex.html
 N:056b2d12501b54d2	claimresponse.svg
-A:93c5ca9c568d58e1	claimresponse.xlsx
+X:987865466ac2b8ac	claimresponse.xlsx
 N:17944fe99f45bd33	claimresponse.xsd
 B:6715f6df35c61f5e	clinical.png
 N:4ff7985c8dd79730	clinicalreasoning-cds-on-fhir.html
@@ -2118,7 +2118,7 @@ N:0a64cdbc7fd86908	clinicalusedefinition.schema.json.html
 N:65e1eed7d2ab9413	clinicalusedefinition.shex
 N:38a063d837836d19	clinicalusedefinition.shex.html
 N:d78b16da19662a03	clinicalusedefinition.svg
-A:d424a71f529611f9	clinicalusedefinition.xlsx
+X:c3a8200d0e151f96	clinicalusedefinition.xlsx
 N:69313674f3ca1a4d	clinicalusedefinition.xsd
 N:f0d07e2da4ba1821	cm-address-type-v3.canonical.json
 N:db3c749cf903c98e	cm-address-type-v3.canonical.xml
@@ -5970,7 +5970,7 @@ N:10bed84011e19408	codesystem.schema.json.html
 N:0dc7f5e4c2a58b2e	codesystem.shex
 N:8a88582858fa0c08	codesystem.shex.html
 N:dad3369b042d4d97	codesystem.svg
-A:bcef19856368b4f3	codesystem.xlsx
+X:fbada4a9abdd2192	codesystem.xlsx
 N:3840942b440e5d3a	codesystem.xsd
 N:f10b423d3a9f08ba	coding-extensions.html
 N:8f5ae0aeabbadd9c	coding.profile.canonical.json
@@ -6038,7 +6038,7 @@ N:2bd0a66a089725e9	communication.schema.json.html
 N:c6b3d0d72a761d38	communication.shex
 N:066a511545143682	communication.shex.html
 N:5dd0cace903c0b0a	communication.svg
-A:f51643e244f79240	communication.xlsx
+X:4f798c0816a45219	communication.xlsx
 N:e5c30e2893fb5295	communication.xsd
 N:810a92ccaf1fdd62	communicationrequest-core.html
 N:92813a2a213ec6b9	communicationrequest-definitions.html
@@ -6086,7 +6086,7 @@ N:ffff005c60a5aac7	communicationrequest.schema.json.html
 N:093e93e11a3930f3	communicationrequest.shex
 N:adc8e604a7ab93ad	communicationrequest.shex.html
 N:98626feb89584b43	communicationrequest.svg
-A:906dd2a1e1384b20	communicationrequest.xlsx
+X:6937d9d3e9e7db24	communicationrequest.xlsx
 N:6fc31de7b79ae77a	communicationrequest.xsd
 B:21a61064dc4f9207	compare-links-r5-ballot.png
 B:8ea5f60b61be710b	compare-to-r3.png
@@ -6185,7 +6185,7 @@ N:050ea59c52287679	compartmentdefinition.schema.json.html
 N:2eadea88be9b8d07	compartmentdefinition.shex
 N:060c83edac05490c	compartmentdefinition.shex.html
 N:938154d7695ef66c	compartmentdefinition.svg
-A:522917dfb4988649	compartmentdefinition.xlsx
+X:f82a0857a0a612e2	compartmentdefinition.xlsx
 N:b00c7f759bfef5fc	compartmentdefinition.xsd
 B:1f17aaa523053161	complex-pack-2(mix-and-device).png
 B:47ce04815176a037	complex-pack-3(tablet-and-cream).png
@@ -6236,7 +6236,7 @@ N:0f0c8a46e78cb27a	composition.schema.json.html
 N:76e160ad926cc9fa	composition.shex
 N:5e7bd12ba5cfb3d5	composition.shex.html
 N:43ecdbe4491c607e	composition.svg
-A:3c8ae496daa4caed	composition.xlsx
+X:7bfb954444eb0d72	composition.xlsx
 N:cab58964bd77fca5	composition.xsd
 N:63b0b5a6d7c80ef9	conceptmap-103.canonical.json
 N:f5649ac913922781	conceptmap-103.canonical.xml
@@ -6339,7 +6339,7 @@ N:ed7830c0bee277fa	conceptmap.schema.json.html
 N:bec2e1a0591b650d	conceptmap.shex
 N:57fe8f2c1e2c146b	conceptmap.shex.html
 N:b79a515983ef7f9b	conceptmap.svg
-A:ea28c74d369c9834	conceptmap.xlsx
+X:b246c6631f48200d	conceptmap.xlsx
 N:f3d2a02fec513284	conceptmap.xsd
 N:43e34eb17205d3b6	conceptmaps.json
 N:cdda35a10fcf3986	conceptmaps.xml
@@ -6488,7 +6488,7 @@ N:b02a443fa16315e3	condition.schema.json.html
 N:edbf500dc3c95517	condition.shex
 N:a380c6d300f66f07	condition.shex.html
 N:9095bc0504771a51	condition.svg
-A:fbf91d114be5ad24	condition.xlsx
+X:1d3d1ceded0e227e	condition.xlsx
 N:ff48d002ddd8a321	condition.xsd
 B:1092a99824044357	conformance-module-resources.png
 N:90757f5d26cb21ef	conformance-module.html
@@ -6632,7 +6632,7 @@ N:e145bfb4d3462e61	consent.schema.json.html
 N:eb9f477b704c8856	consent.shex
 N:77d142492fa25697	consent.shex.html
 N:3a052dc9646f824d	consent.svg
-A:97cae4a0dda29011	consent.xlsx
+X:b666d0c73155d984	consent.xlsx
 N:64c36cd1524446ca	consent.xsd
 N:94f13dcb129ad0c9	contactdetail.profile.canonical.json
 N:d323852d8559afcd	contactdetail.profile.canonical.xml
@@ -6709,7 +6709,7 @@ N:d0389fb069dcb237	contract.schema.json.html
 N:a2cfdb162b5c495b	contract.shex
 N:d49b8f8d2b427433	contract.shex.html
 N:80d82b12dd6ab3b9	contract.svg
-A:ee44cd7232daa59e	contract.xlsx
+X:1040cc7a4c590034	contract.xlsx
 N:b20b1ba2aa91d2f9	contract.xsd
 N:f00c07e752376dbb	count.profile.canonical.json
 N:2f6ecf52715ba46c	count.profile.canonical.xml
@@ -6784,7 +6784,7 @@ N:71499e632b6e5b6b	coverage.schema.json.html
 N:9da180e3c6b1cd68	coverage.shex
 N:377657a669e79df4	coverage.shex.html
 N:e8712799af83377b	coverage.svg
-A:d22740c7efdc57cc	coverage.xlsx
+X:a1a2f9efe5b75fdf	coverage.xlsx
 N:4849fbdae55474f6	coverage.xsd
 N:db64b80c0c0c7064	coverageeligibilityrequest-definitions.html
 N:843ab2b126c6938e	coverageeligibilityrequest-dependencies.html
@@ -6832,7 +6832,7 @@ N:3dbbd2cde7f77140	coverageeligibilityrequest.schema.json.html
 N:7f92c72d640e6804	coverageeligibilityrequest.shex
 N:b24c98520e769bba	coverageeligibilityrequest.shex.html
 N:bcd5e010716e8aa0	coverageeligibilityrequest.svg
-A:41177aef9f519e2a	coverageeligibilityrequest.xlsx
+X:c39acc914c4b89c8	coverageeligibilityrequest.xlsx
 N:5fa3c1d4ba223db8	coverageeligibilityrequest.xsd
 N:81d084167881e607	coverageeligibilityresponse-definitions.html
 N:5b4c9e7e868ce147	coverageeligibilityresponse-dependencies.html
@@ -6897,7 +6897,7 @@ N:fe4954ab69313721	coverageeligibilityresponse.schema.json.html
 N:1acb86e9b5a02324	coverageeligibilityresponse.shex
 N:77c1c0c570367b00	coverageeligibilityresponse.shex.html
 N:6146b81cf368c438	coverageeligibilityresponse.svg
-A:9c7d732986d490bd	coverageeligibilityresponse.xlsx
+X:0c688f26b5fcffb5	coverageeligibilityresponse.xlsx
 N:da7536edb997b021	coverageeligibilityresponse.xsd
 N:9a999ade085016f8	credits.html
 B:795e87d9d17d95c1	d154f214-e69e-4328-8634-aad36b278294.png
@@ -7049,7 +7049,7 @@ N:9ca3a56e926abc8b	detectedissue.schema.json.html
 N:903ca3bcee125c33	detectedissue.shex
 N:898ac5646be66ef7	detectedissue.shex.html
 N:2730bdddff9f07cb	detectedissue.svg
-A:6bacd571459cf375	detectedissue.xlsx
+X:15eaaa42c5726140	detectedissue.xlsx
 N:f5e8491a166017ea	detectedissue.xsd
 N:5ebec55c6e1bd7b7	device-core.html
 N:373d70fd8a43bdc6	device-definitions.html
@@ -7288,7 +7288,7 @@ N:8df0a4b59b89431e	device.schema.json.html
 N:5b9c442c40c867b0	device.shex
 N:bcc7d2611783a51c	device.shex.html
 N:cf162061e2ae7e3e	device.svg
-A:5fd345c9e1a617e1	device.xlsx
+X:896dfe235e49bd60	device.xlsx
 N:0ccdd3c8818c1676	device.xsd
 N:18617ce1f94773ab	devicealert-definitions.html
 N:38a290e29c162a4c	devicealert-dependencies.html
@@ -7327,7 +7327,7 @@ N:f155597528b972e1	devicealert.schema.json.html
 N:ce1fd66a0f634b27	devicealert.shex
 N:211cb843cd67f32a	devicealert.shex.html
 N:2147f44ed9f37e83	devicealert.svg
-A:23dee84dc73ed39e	devicealert.xlsx
+X:75dd64fd90f54f2d	devicealert.xlsx
 N:44f701da0745e190	devicealert.xsd
 N:3d9a468af5b2ca59	deviceassociation-bp-monitor-association.canonical.json
 N:0f6dcec92c2970c4	deviceassociation-bp-monitor-association.canonical.xml
@@ -7419,7 +7419,7 @@ N:0646c227a2249b97	deviceassociation.schema.json.html
 N:8a735f50f96b537b	deviceassociation.shex
 N:50c6d1ee50d1d56d	deviceassociation.shex.html
 N:fab4b443ec9c1485	deviceassociation.svg
-A:ae398214dc757968	deviceassociation.xlsx
+X:01a02240bd30cfe4	deviceassociation.xlsx
 N:e66cda9772e975c8	deviceassociation.xsd
 N:ceddb8d6d0e68cad	devicedefinition-definitions.html
 N:1bcceeeedb89ae74	devicedefinition-dependencies.html
@@ -7466,7 +7466,7 @@ N:58b3dc40a7bb1615	devicedefinition.schema.json.html
 N:7440031cc35bb7df	devicedefinition.shex
 N:c643519629ced483	devicedefinition.shex.html
 N:52e8f577c70406fd	devicedefinition.svg
-A:c63e989c066908a3	devicedefinition.xlsx
+X:fb3d8867ce902732	devicedefinition.xlsx
 N:528f2d11664dbd31	devicedefinition.xsd
 N:5e520567b7675301	devicemetric-definitions.html
 N:805a7ba8a596cf36	devicemetric-dependencies.html
@@ -7504,7 +7504,7 @@ N:eb10f60fbb0539e8	devicemetric.schema.json.html
 N:d50cb681afe312c1	devicemetric.shex
 N:b0f740c04cb89239	devicemetric.shex.html
 N:7383968339adf460	devicemetric.svg
-A:3f2061ab7df16d19	devicemetric.xlsx
+X:f0aad064e0c6f359	devicemetric.xlsx
 N:4fb7f625984af0e0	devicemetric.xsd
 N:34f62ac768504a7a	devicerequest-core.html
 N:2b631bcf1d6686d2	devicerequest-definitions.html
@@ -7579,7 +7579,7 @@ N:bd7854abd234b142	devicerequest.schema.json.html
 N:636fab225a8b99d8	devicerequest.shex
 N:a1848c3350e87b09	devicerequest.shex.html
 N:51574aca60f71d8e	devicerequest.svg
-A:10fb3833f31fbc83	devicerequest.xlsx
+X:c3648970fa47b8b0	devicerequest.xlsx
 N:f17b2f3d0ebc5e27	devicerequest.xsd
 B:df385cde9a5cd69b	devices.png
 B:b07b7b5808ff9084	diagnostic-module-imaging-fig1.png
@@ -7730,7 +7730,7 @@ N:9046aac66be2e92e	diagnosticreport.schema.json.html
 N:c2c7499f01bbe523	diagnosticreport.shex
 N:280037280144c13e	diagnosticreport.shex.html
 N:34406ed7e629a5ae	diagnosticreport.svg
-A:16509d4d2519a976	diagnosticreport.xlsx
+X:b2a4f53bb8dd5028	diagnosticreport.xlsx
 N:4832d4fc89e8947a	diagnosticreport.xsd
 N:6f50c376e71e8ef5	diagnostics-module.html
 B:b01fe6585a28da4f	diagnostics.jpg
@@ -7969,7 +7969,7 @@ N:1960b340d2b8dcd9	documentreference.schema.json.html
 N:f46c5168a22e21fd	documentreference.shex
 N:071e622668b01c51	documentreference.shex.html
 N:f896f87c657e5c0b	documentreference.svg
-A:d60cf49d3c1ac8e8	documentreference.xlsx
+X:a2fdd13aa3d6ca93	documentreference.xlsx
 N:4e3c106073a77556	documentreference.xsd
 N:d3778e947f5ef15c	documents.html
 N:6399f4bc88bc800c	domainresource-definitions.html
@@ -7996,7 +7996,7 @@ N:4d50bbae17d288d4	domainresource.schema.json.html
 N:e200b2230b55369e	domainresource.shex
 N:ba608da52c1b895b	domainresource.shex.html
 N:0a4290e7be8dbfc9	domainresource.svg
-A:b056ddc6157fc371	domainresource.xlsx
+X:1d2fab1074ee8d63	domainresource.xlsx
 N:ab55ae48b8d3b61e	dosage-definitions.html
 N:007424a27041ff9e	dosage-examples.html
 N:e0236c6f0c7ff486	dosage-mappings.html
@@ -8215,7 +8215,7 @@ N:60e361b49bf0343f	encounter.schema.json.html
 N:b990b48e64849c9b	encounter.shex
 N:5531e003e39cb52d	encounter.shex.html
 N:3ec3b833ae7c3198	encounter.svg
-A:ddc1950e5db87edc	encounter.xlsx
+X:efb86d2d4e4e8cd1	encounter.xlsx
 N:907aeb2e04f7c93c	encounter.xsd
 N:2f424465698c5f75	endpoint-definitions.html
 N:01696c1761ac80ad	endpoint-dependencies.html
@@ -8307,7 +8307,7 @@ N:90829bcb045f1df4	endpoint.schema.json.html
 N:73cd7bbd97871a47	endpoint.shex
 N:2599d42f77727232	endpoint.shex.html
 N:a096853f281e3af2	endpoint.svg
-A:9b20598f496927be	endpoint.xlsx
+X:d276fbe5728203d6	endpoint.xlsx
 N:44b530ee0dcbf5f6	endpoint.xsd
 N:736e8cda637d147c	enrollmentrequest-definitions.html
 N:35f1c6526fd3f00a	enrollmentrequest-dependencies.html
@@ -8345,7 +8345,7 @@ N:18b6c2f16bcdedbe	enrollmentrequest.schema.json.html
 N:de2911026f47e3bd	enrollmentrequest.shex
 N:4d192cba6ff6fdd9	enrollmentrequest.shex.html
 N:fdccd74263118bd8	enrollmentrequest.svg
-A:bb70552eaf5d54d4	enrollmentrequest.xlsx
+X:d7762d5fd1c93ef0	enrollmentrequest.xlsx
 N:2a45b7dc5ab538b7	enrollmentrequest.xsd
 N:c180d9bd14d60231	enrollmentresponse-definitions.html
 N:4f5aa350b4946ad7	enrollmentresponse-dependencies.html
@@ -8383,7 +8383,7 @@ N:84b0e244417aceb6	enrollmentresponse.schema.json.html
 N:be52986217d49d65	enrollmentresponse.shex
 N:f18dc8fd99c35c3b	enrollmentresponse.shex.html
 N:562e2a6029adaaa7	enrollmentresponse.svg
-A:52b09a243334490d	enrollmentresponse.xlsx
+X:6b2c86988d4583a2	enrollmentresponse.xlsx
 N:ba615d368c1916fb	enrollmentresponse.xsd
 N:50cd1e78efccb950	episodeofcare-definitions.html
 N:492f1cc7fe8cefd7	episodeofcare-dependencies.html
@@ -8421,7 +8421,7 @@ N:a5ab30b8439945ff	episodeofcare.schema.json.html
 N:edcb278bf874f88c	episodeofcare.shex
 N:c6653929367199da	episodeofcare.shex.html
 N:e80165bb9b3a5fc8	episodeofcare.svg
-A:23bae2cdbb8452fe	episodeofcare.xlsx
+X:94bf266a0e370941	episodeofcare.xlsx
 N:909df8cecfbcd15b	episodeofcare.xsd
 N:c7e6fe23ade8982f	event-analysis.html
 N:c55c899b1246ab02	event-definitions.html
@@ -8509,7 +8509,7 @@ N:4c878031fac031d6	eventdefinition.schema.json.html
 N:8788b64903ada74c	eventdefinition.shex
 N:d5558f1be5d8a05c	eventdefinition.shex.html
 N:413cc0cc65e0e733	eventdefinition.svg
-A:65b2d9f7106adc35	eventdefinition.xlsx
+X:95ce45e1609441ef	eventdefinition.xlsx
 N:1e32471c6beecc6b	eventdefinition.xsd
 N:2b1fb506421e7f2c	evidence-definitions.html
 N:3276faccb1ae1e1e	evidence-dependencies.html
@@ -8610,7 +8610,7 @@ N:4c061ff54c27402d	evidence.schema.json.html
 N:e5cc3e8a8545778e	evidence.shex
 N:43e3d60f422793a7	evidence.shex.html
 N:15c8d1a7ad94b6a6	evidence.svg
-A:095d985e458e87ba	evidence.xlsx
+X:b587747942f59ac1	evidence.xlsx
 N:883df39ce311d841	evidence.xsd
 N:8e10dbd32433c5a7	evidencevariable-definitions.html
 N:9b167317c8822be3	evidencevariable-dependencies.html
@@ -8738,7 +8738,7 @@ N:127656532dae103e	evidencevariable.schema.json.html
 N:c4e62720b71f5434	evidencevariable.shex
 N:1c32c42f26061eff	evidencevariable.shex.html
 N:6265b85e35c0f305	evidencevariable.svg
-A:f48ac03a0e478fa8	evidencevariable.xlsx
+X:aede0dd0d0a20310	evidencevariable.xlsx
 N:a4a59011ee3a0af8	evidencevariable.xsd
 A:4d00ee709fc6d33c	examples-json.zip
 A:749cb7639d364ba5	examples-ndjson.zip
@@ -10050,7 +10050,7 @@ N:b81ef728a23aca98	examplescenario.schema.json.html
 N:bab79b8bf021cf45	examplescenario.shex
 N:db9fa1f3262e5458	examplescenario.shex.html
 N:3ff1cd13e19f1c79	examplescenario.svg
-A:803c157dc4aff36f	examplescenario.xlsx
+X:7c70e0167cd16b5f	examplescenario.xlsx
 N:b12f4ecaf94747be	examplescenario.xsd
 N:a518b4407b8fd57f	exchange-module.html
 B:8918ae2edd5e78f0	exchange.png
@@ -10109,7 +10109,7 @@ N:4ec7c7d653dbdcb3	explanationofbenefit.schema.json.html
 N:39161d86b6b13930	explanationofbenefit.shex
 N:d040cb532901ac94	explanationofbenefit.shex.html
 N:57f528e8f5edfd51	explanationofbenefit.svg
-A:98d8492a876f57ca	explanationofbenefit.xlsx
+X:4a9b30ed7179b143	explanationofbenefit.xlsx
 N:29818ad54873440a	explanationofbenefit.xsd
 N:1ea3088cfc4f1aa0	expression.profile.canonical.json
 N:630b3ad2d792d64c	expression.profile.canonical.xml
@@ -10213,7 +10213,7 @@ N:edd188da5a646a7b	familymemberhistory.schema.json.html
 N:f38522b4242b9729	familymemberhistory.shex
 N:e8212ca93444f49c	familymemberhistory.shex.html
 N:d1554817f9533f40	familymemberhistory.svg
-A:47d1ee32b774003c	familymemberhistory.xlsx
+X:3aa7636616e40412	familymemberhistory.xlsx
 N:201965a4422b5321	familymemberhistory.xsd
 A:b68b05880ab7b718	fhir-all-xsd.zip
 N:ff9b8bd3bbc967eb	fhir-all.xsd
@@ -10359,7 +10359,7 @@ N:63a38d5e1fb07643	flag.schema.json.html
 N:0d38399a91b7281a	flag.shex
 N:75dc953f4b1b6431	flag.shex.html
 N:6237d09cbd9e5788	flag.svg
-A:c2b08264703bdd70	flag.xlsx
+X:f945ff26f09955c7	flag.xlsx
 N:ffa702db843bbf24	flag.xsd
 N:6b425eda3f7d61fe	fmg.html
 N:d80860f61ecad88d	formats.html
@@ -10440,7 +10440,7 @@ N:d00497b4e9dae44c	goal.schema.json.html
 N:7c80aed5b1f79363	goal.shex
 N:a8f0e64f5f3439ec	goal.shex.html
 N:5652cc26f2b7ea67	goal.svg
-A:85b0d7ec68b7d056	goal.xlsx
+X:786333eac3347cbb	goal.xlsx
 N:47815b9416616faf	goal.xsd
 N:75db8d8a5106802e	graphql.html
 N:1d54de7f06e748e9	group-core.html
@@ -10563,7 +10563,7 @@ N:98e325f8fada7170	group.schema.json.html
 N:6b8d0148e59163b1	group.shex
 N:059690c783fe5ed7	group.shex.html
 N:6ff4441a8ec90745	group.svg
-A:93b4f29ed0e86ddf	group.xlsx
+X:5aea3ee59dbfb565	group.xlsx
 N:2f0a71f76d07bb76	group.xsd
 N:6348634afdbb56ee	guidanceresponse-additional-data-example.canonical.json
 N:b8a37c2cf2a50102	guidanceresponse-additional-data-example.canonical.xml
@@ -10610,7 +10610,7 @@ N:2a17bfeb7cca5fb3	guidanceresponse.schema.json.html
 N:b6514f35d940fae3	guidanceresponse.shex
 N:d2916aaaf8f3b1e4	guidanceresponse.shex.html
 N:2ad4f264617043eb	guidanceresponse.svg
-A:aa86287b3e33ecf4	guidanceresponse.xlsx
+X:f1cc5f6d5e8b7687	guidanceresponse.xlsx
 N:cc0b4bc9ac24fafb	guidanceresponse.xsd
 N:b412ab2544cf108d	headcircum-definitions.html
 N:938495e9d7d7688b	headcircum-mappings.html
@@ -10657,7 +10657,7 @@ N:5b274570ab6f99fe	healthcareservice.schema.json.html
 N:a69b51fef5fbe149	healthcareservice.shex
 N:1a1a025a36a524e1	healthcareservice.shex.html
 N:abf9db884b97b29a	healthcareservice.svg
-A:fa061acacd311ec1	healthcareservice.xlsx
+X:b678ffe21a450b7d	healthcareservice.xlsx
 N:0a0951357ea2bf60	healthcareservice.xsd
 N:ff12b2441ea8c6e1	heartrate-definitions.html
 N:f39a819bd6853629	heartrate-mappings.html
@@ -11064,7 +11064,7 @@ N:0b6d4648258df1b9	imagingselection.schema.json.html
 N:608d5b3e75e850c1	imagingselection.shex
 N:7ec07162ef86a506	imagingselection.shex.html
 N:8c8ee9deae99cd9d	imagingselection.svg
-A:4d8825c96f58e8cf	imagingselection.xlsx
+X:85479fcd38f9611f	imagingselection.xlsx
 N:ee0d1199a1660928	imagingselection.xsd
 N:a5104d6884c993e4	imagingstudy-definitions.html
 N:909d6c4aefda3cea	imagingstudy-dependencies.html
@@ -11111,7 +11111,7 @@ N:eb27e66849c827bc	imagingstudy.schema.json.html
 N:d3169bcdd2735b53	imagingstudy.shex
 N:75a522bf6743b329	imagingstudy.shex.html
 N:1107f51754138620	imagingstudy.svg
-A:29ecab8a5fec7160	imagingstudy.xlsx
+X:526194d43def550a	imagingstudy.xlsx
 N:73ab1e67fd5610ef	imagingstudy.xsd
 N:4a66af3f5a129f9d	immunization-core.html
 N:15d9bfd16bd99e38	immunization-definitions.html
@@ -11195,7 +11195,7 @@ N:ba8faa0e1307a4f3	immunization.schema.json.html
 N:89c0aa2cc46a1457	immunization.shex
 N:d61f9c3974472963	immunization.shex.html
 N:99672e0651c9d801	immunization.svg
-A:b3c608a89c47c0d5	immunization.xlsx
+X:bdde6970a11ea76a	immunization.xlsx
 N:b82c4541c3103248	immunization.xsd
 B:6918b3555fcd7f60	immunizationrecommendation.png
 N:5487c9e0dafa0f2d	implementationguide-core.html
@@ -11235,7 +11235,7 @@ N:262402c8e8d8008a	implementationguide.schema.json.html
 N:be80f9e2f1c06180	implementationguide.shex
 N:1215e9c8c26227d5	implementationguide.shex.html
 N:21db44823b476e66	implementationguide.svg
-A:f4ed31c8361fa9f4	implementationguide.xlsx
+X:00f2daf9ae18247a	implementationguide.xlsx
 N:8a51a1411cb17268	implementationguide.xsd
 N:216b70c8910c0bd8	implsupport-module.html
 B:e121f0928fa3c862	implsupport.png
@@ -11286,7 +11286,7 @@ N:3b355286bb132172	ingredient.schema.json.html
 N:00617c5a8272e264	ingredient.shex
 N:58d097cf2387c1a6	ingredient.shex.html
 N:78686ca0d30c4a0e	ingredient.svg
-A:1a0ec9bd9c98b5c7	ingredient.xlsx
+X:bf57107311246a29	ingredient.xlsx
 N:c0501391ec415db9	ingredient.xsd
 N:61d93e0caff3391f	instant.profile.canonical.json
 N:26feac8c3127f6c2	instant.profile.canonical.xml
@@ -11334,7 +11334,7 @@ N:3e1526a38421d68f	insuranceplan.schema.json.html
 N:39a902dea3b0224d	insuranceplan.shex
 N:e3cf2f51b88a0cf2	insuranceplan.shex.html
 N:c52c083199198076	insuranceplan.svg
-A:1a54afd7cd844638	insuranceplan.xlsx
+X:167be55e471bc564	insuranceplan.xlsx
 N:2caef299fd75ad65	insuranceplan.xsd
 N:0c3c25c3ccd02a59	insuranceproduct-definitions.html
 N:367b4f761baa83d4	insuranceproduct-dependencies.html
@@ -11372,7 +11372,7 @@ N:96261642798e03f5	insuranceproduct.schema.json.html
 N:92a86c830eb944e7	insuranceproduct.shex
 N:d2416b60716f6079	insuranceproduct.shex.html
 N:a8b26a2d0b908cff	insuranceproduct.svg
-A:2664839d68640046	insuranceproduct.xlsx
+X:1a85e501b3511cdc	insuranceproduct.xlsx
 N:9d75672915812498	insuranceproduct.xsd
 N:883d7b03fe443eaf	integer.profile.canonical.json
 N:da37ae2ba3382f03	integer.profile.canonical.xml
@@ -11432,7 +11432,7 @@ N:b1dff91e614fa687	invoice.schema.json.html
 N:dcbaf40b7141f446	invoice.shex
 N:762223fa9bfe072b	invoice.shex.html
 N:640d0ae4480cb9b4	invoice.svg
-A:a16b86425186193c	invoice.xlsx
+X:e09203eced21e3ac	invoice.xlsx
 N:56e2eec6fdd4eef4	invoice.xsd
 N:cd466934a49182b4	iso-21090.html
 N:1cba09a8d92bfa82	jquery-ui.css
@@ -11754,7 +11754,7 @@ N:506c26312c72360c	library.schema.json.html
 N:26daaf25d9a0acbd	library.shex
 N:a76489747401124a	library.shex.html
 N:ffbfcb9f1038198f	library.svg
-A:f523a1c3decbd5c6	library.xlsx
+X:38a18fe519e7b193	library.xlsx
 N:7ae30327dc7b939a	library.xsd
 N:bbf94127c4e5a4df	license.html
 N:ebdf1e119ef604a8	lifecycle.html
@@ -11886,7 +11886,7 @@ N:f60588f2611742f3	list.schema.json.html
 N:501cce6fd1ee10ee	list.shex
 N:ea8cc76e0a40decd	list.shex.html
 N:9e424ebea8fc4d52	list.svg
-A:5f7e4a70dc4eeffb	list.xlsx
+X:8c73e6be40958d18	list.xlsx
 N:037c18c187f84491	list.xsd
 N:068506cac5168adf	location-core.html
 N:5b305cb1db381147	location-definitions.html
@@ -11988,7 +11988,7 @@ N:8b4b29f76b5292a7	location.schema.json.html
 N:5caeaf7988244a4d	location.shex
 N:95a1554b668155a5	location.shex.html
 N:fa22005426edc7a5	location.svg
-A:97731b27fe61e1af	location.xlsx
+X:d39c46607ff9fd34	location.xlsx
 N:f4a5e08c9909a072	location.xsd
 B:a15f7abc12b4b04f	lock.png
 N:60a00035499826f6	logical.html
@@ -12032,7 +12032,7 @@ N:0bc90f48baacf35a	manufactureditemdefinition.schema.json.html
 N:30a677df993c9855	manufactureditemdefinition.shex
 N:dc4430ec32b2d656	manufactureditemdefinition.shex.html
 N:f4843d54a788dd30	manufactureditemdefinition.svg
-A:ab18a1beb7c2c126	manufactureditemdefinition.xlsx
+X:30a5720039bac26a	manufactureditemdefinition.xlsx
 N:f19f16e0ded4e39e	manufactureditemdefinition.xsd
 N:2a199b8627ad9432	mapping-language.html
 N:cbd8a95feadf2f6e	mapping-tutorial.html
@@ -12186,7 +12186,7 @@ N:d5991ac8a39f2d83	measure.schema.json.html
 N:7fbbb58f85df8ce9	measure.shex
 N:199ec665164ee83c	measure.shex.html
 N:8780033241ac30f7	measure.svg
-A:615ae085f8d1d50f	measure.xlsx
+X:684f64af27fe6987	measure.xlsx
 N:944b5c0b1f9935c5	measure.xsd
 N:209ab99796fb50d7	measurereport-788ca455-e11b1a59.canonical.json
 N:f586c50f5ef5fe54	measurereport-788ca455-e11b1a59.canonical.xml
@@ -12260,7 +12260,7 @@ N:66d58b2966741bfb	measurereport.schema.json.html
 N:cc4860f7fc1dd5c6	measurereport.shex
 N:1c3ffea09530ab0d	measurereport.shex.html
 N:4cd36d09adf61699	measurereport.svg
-A:430a9c1f3ff77559	measurereport.xlsx
+X:6d5dc6603fd8d32d	measurereport.xlsx
 N:90d40a3739bd59c0	measurereport.xsd
 N:6e86b452df262431	medication-core.html
 B:bc23391e20b62ef9	medication-definition-and-prescribing-resources.png
@@ -12294,7 +12294,7 @@ N:1fb40d04ad392827	medication.schema.json.html
 N:32ee8a22215000a2	medication.shex
 N:8cf3d5e32a59f138	medication.shex.html
 N:568cfe1e16302929	medication.svg
-A:561bd763018f2d05	medication.xlsx
+X:8dd26f82e25fb866	medication.xlsx
 N:8c16ebb4046609a6	medication.xsd
 N:ed7c3ebf977c899f	medicationadministration-definitions.html
 N:b9fe11bd352d2bb5	medicationadministration-dependencies.html
@@ -12323,7 +12323,7 @@ N:5aadfb8a1d9e82cc	medicationadministration.schema.json.html
 N:f8d8b75789452de4	medicationadministration.shex
 N:9dac8e9384a855b0	medicationadministration.shex.html
 N:440ebe9817b7c011	medicationadministration.svg
-A:ef8c67b7eb30b93e	medicationadministration.xlsx
+X:1bcfbebacb178a22	medicationadministration.xlsx
 N:547e0cd17be70c13	medicationadministration.xsd
 N:e407b1bc6d5ef5a3	medicationadministration0301.canonical.json
 N:7176ba61915c527a	medicationadministration0301.canonical.xml
@@ -12479,7 +12479,7 @@ N:7a5bbd8e7d53ab02	medicationdispense.schema.json.html
 N:4aaf259f7a801f28	medicationdispense.shex
 N:3bc4469be5f65529	medicationdispense.shex.html
 N:4d2606d6f28249d0	medicationdispense.svg
-A:f9865a1d6763ca41	medicationdispense.xlsx
+X:e65e39ff1cc5fd35	medicationdispense.xlsx
 N:72f26f1ba74123ef	medicationdispense.xsd
 N:24dec6b760838984	medicationdispense0301.canonical.json
 N:f214128290d683eb	medicationdispense0301.canonical.xml
@@ -13030,7 +13030,7 @@ N:a6e0b9b645d8397f	medicationrequest.schema.json.html
 N:67348dc7a3a4e4a3	medicationrequest.shex
 N:79e0d0e15918292e	medicationrequest.shex.html
 N:b6703b85cbee16bb	medicationrequest.svg
-A:e610b54cb2f703e3	medicationrequest.xlsx
+X:d55a574d81bb08ac	medicationrequest.xlsx
 N:a8c2d8dfc62adcbb	medicationrequest.xsd
 N:8082317d4e15d78b	medicationrequest0301.canonical.json
 N:ccf422f0044d43e7	medicationrequest0301.canonical.xml
@@ -13474,7 +13474,7 @@ N:01561d86a7e388b8	medicationstatement.schema.json.html
 N:6634f71b0d66abc0	medicationstatement.shex
 N:b2c5e7ccf7556fca	medicationstatement.shex.html
 N:85906c48c1d81ddc	medicationstatement.svg
-A:3e5131e44ef0aa58	medicationstatement.xlsx
+X:f28f548ed7fce5af	medicationstatement.xlsx
 N:7bb6c5bdd44ba732	medicationstatement.xsd
 N:c18516b199ce90db	medicationstatementexample1.canonical.json
 N:7b995e626fa9a380	medicationstatementexample1.canonical.xml
@@ -13675,7 +13675,7 @@ N:92e54c0b7d17c428	medicinalproductdefinition.schema.json.html
 N:38db7e8bd8f07096	medicinalproductdefinition.shex
 N:29f40b905ae1e90f	medicinalproductdefinition.shex.html
 N:5a755f1d7efe1dd3	medicinalproductdefinition.svg
-A:cae5f03ff373a266	medicinalproductdefinition.xlsx
+X:629c837d63dc8e4e	medicinalproductdefinition.xlsx
 N:332ebccf904cdbd5	medicinalproductdefinition.xsd
 N:4d56ae67411e9bad	message-request-link.canonical.json
 N:29ddaec0b5b1d630	message-request-link.canonical.xml
@@ -13749,7 +13749,7 @@ N:054ab3736f3f8e6d	messagedefinition.schema.json.html
 N:a6ac205c766367a6	messagedefinition.shex
 N:b13af2b9b2aa4de8	messagedefinition.shex.html
 N:dd7fcdd1c1364c45	messagedefinition.svg
-A:56d53af3508a6c06	messagedefinition.xlsx
+X:57a4f468e9f0b23e	messagedefinition.xlsx
 N:6f021fbda8778a55	messagedefinition.xsd
 N:cae6ad441cb2a170	messageheader-core.html
 N:7a932a4f6d9e4115	messageheader-definitions.html
@@ -13789,7 +13789,7 @@ N:c7655597047e4d61	messageheader.schema.json.html
 N:98510f37e580d536	messageheader.shex
 N:86fcdcb5bb3f84f4	messageheader.shex.html
 N:c205ec8b3ed66a54	messageheader.svg
-A:a96b9fc9c2802875	messageheader.xlsx
+X:68b08413a3efd418	messageheader.xlsx
 N:ecd2d83282a390ff	messageheader.xsd
 N:0947731d604a5527	messaging.html
 N:11b2b59cb7321281	meta-extensions.html
@@ -13828,7 +13828,7 @@ N:c223e3beed594bdc	metadataresource.schema.json.html
 N:a7b513849934aa2c	metadataresource.shex
 N:b6a0dd26a3455890	metadataresource.shex.html
 N:7969ff1fe7c50b48	metadataresource.svg
-A:022cb5a68e777efc	metadataresource.xlsx
+X:77a9527c1a8d81c5	metadataresource.xlsx
 N:dc196f70711002e9	metadatatypes-definitions.html
 N:2d047a1b89bf5ce1	metadatatypes-examples.html
 N:968382bbdf3fbd6c	metadatatypes-mappings.html
@@ -13943,7 +13943,7 @@ N:b457b839969506f7	namingsystem.schema.json.html
 N:b13e0e1bcacfbd32	namingsystem.shex
 N:ddf06abf80d76d8e	namingsystem.shex.html
 N:984c869aca7a74d1	namingsystem.svg
-A:84cb2f2a901d7b3c	namingsystem.xlsx
+X:336331874c24a79f	namingsystem.xlsx
 N:6c64d84aabbcb399	namingsystem.xsd
 N:88cfc0c9be8f1a95	narrative-definitions.html
 N:aaa69d6ea4413f75	narrative-examples.html
@@ -14163,7 +14163,7 @@ N:1791e60bd4cbf046	nutritionintake.schema.json.html
 N:f0e776295e394a9c	nutritionintake.shex
 N:a5924e44dffd2a29	nutritionintake.shex.html
 N:f6ee8499f446c0a2	nutritionintake.svg
-A:bf28183f61875bc7	nutritionintake.xlsx
+X:2a61f3dee080c51b	nutritionintake.xlsx
 N:c2ef49ee65faa315	nutritionintake.xsd
 N:6db181a10c43381e	nutritionorder-core.html
 N:9e2358fb8ae7d7a8	nutritionorder-definitions.html
@@ -14337,7 +14337,7 @@ N:5d02f70ab8cb6827	nutritionorder.schema.json.html
 N:42371decdb7be9fa	nutritionorder.shex
 N:d41dd14f4f2d50c7	nutritionorder.shex.html
 N:890d4cfdd90e1f66	nutritionorder.svg
-A:cdcfedd12b636abd	nutritionorder.xlsx
+X:89809390d0e7e890	nutritionorder.xlsx
 N:fc58fcaa552db706	nutritionorder.xsd
 N:68fdecdcfc3ca6c8	nutritionproduct-definitions.html
 N:9f744a9c4cb78122	nutritionproduct-dependencies.html
@@ -14420,7 +14420,7 @@ N:8f3a03508343f5a7	nutritionproduct.schema.json.html
 N:551eb62a82497e4d	nutritionproduct.shex
 N:a74fe2787c2a729f	nutritionproduct.shex.html
 N:ba1576b7fee00298	nutritionproduct.svg
-A:df3c54ba3a86dc66	nutritionproduct.xlsx
+X:1fa442f87f873d8f	nutritionproduct.xlsx
 N:31702d9649a5cc54	nutritionproduct.xsd
 N:9c00eee76e048031	obligations.html
 N:b86bfc17886940e0	observation-decimal.canonical.json
@@ -14985,7 +14985,7 @@ N:2fc5b0dccefe61e5	observation.schema.json.html
 N:90f47744ca7985f1	observation.shex
 N:aaa555d02a664c13	observation.shex.html
 N:2640a755a41349af	observation.svg
-A:3c02855d3fe2db97	observation.xlsx
+X:3f62d02f9a37e851	observation.xlsx
 N:642dde87c5c964d0	observation.xsd
 N:10702891efc03124	observationdefinition-definitions.html
 N:6621458129f61b51	observationdefinition-dependencies.html
@@ -15023,7 +15023,7 @@ N:fe358be9ad7778e1	observationdefinition.schema.json.html
 N:4c4c942488184f6b	observationdefinition.shex
 N:a3d6eb54918f9979	observationdefinition.shex.html
 N:a02431a8ae3c334c	observationdefinition.svg
-A:f7bad49c14c72a80	observationdefinition.xlsx
+X:3e10219700f765d8	observationdefinition.xlsx
 N:371b6e6f246fc5d0	observationdefinition.xsd
 N:a6c9323587f4d3ce	oid.profile.canonical.json
 N:ad6e98429420bfe9	oid.profile.canonical.xml
@@ -15443,7 +15443,7 @@ N:1bdd28d81b76a227	operationdefinition.schema.json.html
 N:a57e5d959983401b	operationdefinition.shex
 N:b4a528b930b891a0	operationdefinition.shex.html
 N:3fad50bea1b4db93	operationdefinition.svg
-A:4699a983796b336f	operationdefinition.xlsx
+X:ea4cfa1aa1725674	operationdefinition.xlsx
 N:2dd13b3e9215805b	operationdefinition.xsd
 N:02558d5ad2f54ec1	operationoutcome-core.html
 N:99d3104c38f5a2fa	operationoutcome-definitions.html
@@ -15527,7 +15527,7 @@ N:b8a51ce13af9da7f	operationoutcome.schema.json.html
 N:50abecae56ac5893	operationoutcome.shex
 N:7ba286126f813a25	operationoutcome.shex.html
 N:7be18743a03f1630	operationoutcome.svg
-A:3809188c4ce38083	operationoutcome.xlsx
+X:e7a9dc606605a67c	operationoutcome.xlsx
 N:54a940085e1ed05b	operationoutcome.xsd
 N:26dc6752d516203a	operations-for-large-resources.html
 N:289977f39b07abcc	operations.html
@@ -15686,7 +15686,7 @@ N:83c98697eedbe294	organization.schema.json.html
 N:add4b0af52942be2	organization.shex
 N:a5d165c8808299f1	organization.shex.html
 N:6cc39d7328391961	organization.svg
-A:9c69e725d5ae83f3	organization.xlsx
+X:ac8634e35a1686fd	organization.xlsx
 N:850f695b95526444	organization.xsd
 N:f137bfe9a76396d8	organizationaffiliation-core.html
 N:a59cb64c17cbafff	organizationaffiliation-definitions.html
@@ -15725,7 +15725,7 @@ N:813cf219ba13a3fd	organizationaffiliation.schema.json.html
 N:4f077dc716a672d2	organizationaffiliation.shex
 N:438d89286c474fc0	organizationaffiliation.shex.html
 N:ec61b6e65e626079	organizationaffiliation.svg
-A:ecc30765a98e6523	organizationaffiliation.xlsx
+X:7315c792b0612c7d	organizationaffiliation.xlsx
 N:c5f5b1871bbe56ea	organizationaffiliation.xsd
 N:deae54b14f162f3e	orgrole-example-hie.canonical.json
 N:66e27b15172abbd7	orgrole-example-hie.canonical.xml
@@ -15804,7 +15804,7 @@ N:03f911422cf6ce2d	packagedproductdefinition.schema.json.html
 N:01ba95e93d9a8935	packagedproductdefinition.shex
 N:16e5660e35d8c718	packagedproductdefinition.shex.html
 N:0912254f34c80188	packagedproductdefinition.svg
-A:27b8b7232c164299	packagedproductdefinition.xlsx
+X:a398d822f6799602	packagedproductdefinition.xlsx
 N:52ae9de26930a82f	packagedproductdefinition.xsd
 B:e75c2fd5d5f950f1	packages-and-backbone.png
 B:ccd07e3eac84166c	packages-for-products-1.png
@@ -15856,7 +15856,7 @@ N:0e9a620baf92bd82	parameters.schema.json.html
 N:edf71b49b74ff391	parameters.shex
 N:be2f0d4732d5b1b9	parameters.shex.html
 N:6bd1e84f6fa94876	parameters.svg
-A:4b4bdc1fe4e2ed50	parameters.xlsx
+X:f3fc5a0ab0a3df38	parameters.xlsx
 N:f30c8eaa44c9a713	parameters.xsd
 B:25e64c477e549a7d	parent-child-structure-1.png
 B:eedde449df3efa15	parent-child-structure-2.png
@@ -16170,7 +16170,7 @@ N:d180217109ec00a6	patient.schema.json.html
 N:6f3223b74602c72c	patient.shex
 N:be5a5cf7e746de3f	patient.shex.html
 N:03b5b830a1487a76	patient.svg
-A:47ba8632f81fb94c	patient.xlsx
+X:446b690906405741	patient.xlsx
 N:ecf25180ef5ec814	patient.xsd
 N:2e13e2c47b4598ab	patterns.html
 N:0ca577486c2c3530	paymentnotice-definitions.html
@@ -16209,7 +16209,7 @@ N:c72b11d27ec4913a	paymentnotice.schema.json.html
 N:202d5ab631e79b96	paymentnotice.shex
 N:b12cee9f26cdb057	paymentnotice.shex.html
 N:e50333d39e4554da	paymentnotice.svg
-A:639996c2febaefd2	paymentnotice.xlsx
+X:4f130a4b03be9046	paymentnotice.xlsx
 N:29c22ef49100cca4	paymentnotice.xsd
 N:6548e1be1dc0aa1f	paymentreconciliation-definitions.html
 N:c1721ad2706b6d60	paymentreconciliation-dependencies.html
@@ -16247,7 +16247,7 @@ N:d6113f6c75dab639	paymentreconciliation.schema.json.html
 N:e39979ce66bd29ed	paymentreconciliation.shex
 N:bb052af910e9997e	paymentreconciliation.shex.html
 N:1b7e899e3650879c	paymentreconciliation.svg
-A:ebd39a1cb96867cf	paymentreconciliation.xlsx
+X:5d6f093fc8f145d9	paymentreconciliation.xlsx
 N:16ed91b7e17321fd	paymentreconciliation.xsd
 N:e705fcc016f144eb	pcd-example-notAuthor.canonical.json
 N:3b332558c2e5c3af	pcd-example-notAuthor.canonical.xml
@@ -16385,7 +16385,7 @@ N:34d6ad9fa1e6ef12	person.schema.json.html
 N:a00d8f0335006c16	person.shex
 N:5ea5f13a944cb7e0	person.shex.html
 N:23c4b4215deb3cb4	person.svg
-A:da038dbbbf7a54ce	person.xlsx
+X:72352775bade9a5e	person.xlsx
 N:9abdffc60e05c549	person.xsd
 B:0b787fd9e7653270	pha-sample-measure-outline.png
 N:54f102d7be2db0f2	pharmacy-core.html
@@ -16581,7 +16581,7 @@ N:61a7cb320c63404f	plandefinition.schema.json.html
 N:d0115b6788e44f02	plandefinition.shex
 N:db992b450126e282	plandefinition.shex.html
 N:ca07753936e87756	plandefinition.svg
-A:f4925d2e32bf932c	plandefinition.xlsx
+X:7ccde1ece12d0304	plandefinition.xlsx
 N:0953323d79aa7f51	plandefinition.xsd
 N:ed1eb647d0b8c1f1	positiveint.profile.canonical.json
 N:b21f9562e6f858bf	positiveint.profile.canonical.xml
@@ -16765,7 +16765,7 @@ N:78d228ea4b081a46	practitioner.schema.json.html
 N:f3111e532c9166b1	practitioner.shex
 N:b274e8ce97b04c3a	practitioner.shex.html
 N:bf38506cb3ee2ae4	practitioner.svg
-A:3417d9a3576d31c8	practitioner.xlsx
+X:444aaff6c002c895	practitioner.xlsx
 N:985c83d577fd20b9	practitioner.xsd
 N:bf49cc1c4deccc89	practitionerrole-core.html
 N:4250c4529c2bcafd	practitionerrole-definitions.html
@@ -16813,7 +16813,7 @@ N:cddc84ed22d54cc9	practitionerrole.schema.json.html
 N:2658fb8b69df1e30	practitionerrole.shex
 N:abe5f89b8418ce33	practitionerrole.shex.html
 N:faf5bea1be5981c8	practitionerrole.svg
-A:521ecb58e1b72738	practitionerrole.xlsx
+X:39c2b96f29feddf4	practitionerrole.xlsx
 N:737941052602c4c4	practitionerrole.xsd
 N:acdbe0f96e794588	primitivetype.profile.canonical.json
 N:fddfd689598a6202	primitivetype.profile.canonical.xml
@@ -17015,7 +17015,7 @@ N:e01772d4ef9b4efc	procedure.schema.json.html
 N:532acca92d3a0ee2	procedure.shex
 N:3f01af83b50bbb66	procedure.shex.html
 N:cf8376e49e60ee5a	procedure.svg
-A:c895a59d7877fed6	procedure.xlsx
+X:df7d9c8bd224cd17	procedure.xlsx
 N:502726c231311433	procedure.xsd
 N:0db08512498582c3	product-analysis.html
 N:ab843c2305384a91	product-definitions.html
@@ -17260,7 +17260,7 @@ N:314ef5405d1f20f2	provenance.schema.json.html
 N:a82eef30ebd51f37	provenance.shex
 N:ddb2ab5a922ca561	provenance.shex.html
 N:e5b13c7eb5a16140	provenance.svg
-A:0a9b5d5b5beb7f4f	provenance.xlsx
+X:b09873ab9d0a10be	provenance.xlsx
 N:fb00f2bd5a28e10b	provenance.xsd
 N:9b8e311ee4b4ca3d	publishable-analysis.html
 N:2583a9366b665b8d	publishable-definitions.html
@@ -17387,7 +17387,7 @@ N:2ce6f1de55c30345	questionnaire.schema.json.html
 N:0afa00d911b7f29a	questionnaire.shex
 N:1562f8024c1d2976	questionnaire.shex.html
 N:9761625cc7736b4e	questionnaire.svg
-A:2e78618d2dfd86c6	questionnaire.xlsx
+X:80309e92b6fe7c9f	questionnaire.xlsx
 N:819769fb829d8717	questionnaire.xsd
 N:6a9c0d8a88fcf70a	questionnaireresponse-core.html
 N:fe5467a3a024612d	questionnaireresponse-definitions.html
@@ -17462,7 +17462,7 @@ N:465ff2f46ca698fe	questionnaireresponse.schema.json.html
 N:0b4d5828dc7c2975	questionnaireresponse.shex
 N:ed38e95da7c03a6d	questionnaireresponse.shex.html
 N:42a30dc802e65fec	questionnaireresponse.svg
-A:cd0193e7f79f16a6	questionnaireresponse.xlsx
+X:e96207cb735acc7b	questionnaireresponse.xlsx
 N:f71260e8f4b8831a	questionnaireresponse.xsd
 N:e590d9cd36635720	r4maps.html
 N:43d35fc385f319e8	range.profile.canonical.json
@@ -17558,7 +17558,7 @@ N:e40b036608d6cea2	regulatedauthorization.schema.json.html
 N:66bd44c291a4a4ca	regulatedauthorization.shex
 N:79f5a15fddff9d2d	regulatedauthorization.shex.html
 N:34862f5ba007b70c	regulatedauthorization.svg
-A:d2c4e1ed2bf2e801	regulatedauthorization.xlsx
+X:34d53999b9b58502	regulatedauthorization.xlsx
 N:b5e5a99239c30e5d	regulatedauthorization.xsd
 N:bb7328b5717cfd99	relatedartifact.profile.canonical.json
 N:da59e804593b568b	relatedartifact.profile.canonical.xml
@@ -17642,7 +17642,7 @@ N:e277d58b86722b4a	relatedperson.schema.json.html
 N:63ae289447910185	relatedperson.shex
 N:56ad7ed58924b7ca	relatedperson.shex.html
 N:e8c01886c7b9b289	relatedperson.svg
-A:07c624c59eaf7b69	relatedperson.xlsx
+X:15b3985b261c5da8	relatedperson.xlsx
 N:7947f01ae494a8c2	relatedperson.xsd
 N:52435d4d1547c50e	relativetime.profile.canonical.json
 N:6b83accbae66d1a9	relativetime.profile.canonical.xml
@@ -17714,7 +17714,7 @@ N:2c2257d09b1a788b	requestorchestration.schema.json.html
 N:7f2dc0777c7a7045	requestorchestration.shex
 N:79df0b06c6b6ea59	requestorchestration.shex.html
 N:c85e52534a0c62fa	requestorchestration.svg
-A:02dbf7acd5b7291f	requestorchestration.xlsx
+X:51e59dec96d0c221	requestorchestration.xlsx
 N:6d7ec7a06fac46e9	requestorchestration.xsd
 N:94dcc59bf1e326ca	requirements-core.html
 N:6843ae981c4aad7b	requirements-definitions.html
@@ -17744,7 +17744,7 @@ N:2e3ce90807c7a650	requirements.schema.json.html
 N:85105e23355cc4fa	requirements.shex
 N:38ed085c05e63419	requirements.shex.html
 N:a864e804e14320b4	requirements.svg
-A:fbd5e2a45fb2395c	requirements.xlsx
+X:539b95468f1b49ea	requirements.xlsx
 N:3f59309e140d8daa	requirements.xsd
 B:98b28fc5c51e21df	res-map.png
 N:57e14cea579f95e3	researchstudy-core.html
@@ -17786,7 +17786,7 @@ N:bd7da6e8168fc2a3	researchstudy.schema.json.html
 N:03ca74707797f21c	researchstudy.shex
 N:3bcbecb5b4abbea7	researchstudy.shex.html
 N:c7247339005c4c31	researchstudy.svg
-A:9474b82af98da661	researchstudy.xlsx
+X:8e79a5f059f98a02	researchstudy.xlsx
 N:583a6fa4771845fe	researchstudy.xsd
 N:9c56d931d2e2e375	researchsubject-definitions.html
 N:6f00e55cd3b59c93	researchsubject-dependencies.html
@@ -17825,7 +17825,7 @@ N:65e5ec6f3394880a	researchsubject.schema.json.html
 N:afd50ee29084b25c	researchsubject.shex
 N:4b8c34dd47edd1bb	researchsubject.shex.html
 N:9ca04841842b6b34	researchsubject.svg
-A:3b05ca2370a50714	researchsubject.xlsx
+X:b2bf801d15f5916b	researchsubject.xlsx
 N:7eeaa41f2c81fef7	researchsubject.xsd
 N:8a3060faa835005f	resource-core.html
 N:efe26340c94fb6a8	resource-definitions.html
@@ -17856,7 +17856,7 @@ N:6552b8db503b0cb6	resource.schema.json.html
 N:6429354ef6672d9d	resource.shex
 N:a1160de3f77546f4	resource.shex.html
 N:be20e570e69dbd7e	resource.svg
-A:8a9103cd997fee11	resource.xlsx
+X:d254d600079bf609	resource.xlsx
 N:8b5c0646042ac44a	resourceguide.html
 N:0e25b800ce1f313c	resourcelist.html
 N:156fa91a7c1ba5b3	resprate-definitions.html
@@ -17949,7 +17949,7 @@ N:51222d75f077a98a	riskassessment.schema.json.html
 N:0a0c837170cf9fd9	riskassessment.shex
 N:e2dd3b2d1e5d9bc6	riskassessment.shex.html
 N:7220eeeda7b669f2	riskassessment.svg
-A:abb4ce5813e70b91	riskassessment.xlsx
+X:44fcaf53fdd2130c	riskassessment.xlsx
 N:4fd66675e89b65ac	riskassessment.xsd
 B:edb1162e786beee4	rss.png
 N:f708886987e6c96f	safety.html
@@ -18559,7 +18559,7 @@ N:c80d1499e39807c5	schedule.schema.json.html
 N:50fd88e919a2bccd	schedule.shex
 N:af7d93c3a82a9b89	schedule.shex.html
 N:a674130bff1b2ae9	schedule.svg
-A:8e47d3d553e11530	schedule.xlsx
+X:8f4f3c2392682b0b	schedule.xlsx
 N:e4c0b14f82163ace	schedule.xsd
 N:d12f2d29f4e970c8	search-build.html
 N:32cacebd7fa21ae4	search-parameters.json
@@ -18649,7 +18649,7 @@ N:cf49088fe3ba52fc	searchparameter.schema.json.html
 N:a68500b83b83e8a6	searchparameter.shex
 N:5757bbdfaa7b6161	searchparameter.shex.html
 N:bbb5706492c38f31	searchparameter.svg
-A:8a1c058c99ab5818	searchparameter.xlsx
+X:17e9c24eaac32966	searchparameter.xlsx
 N:c9f2349df9f0d7a1	searchparameter.xsd
 N:2e3a0ddb37a5a1a6	secpriv-module.html
 B:3fe129278b292b66	secpriv.jpg
@@ -18877,7 +18877,7 @@ N:140d22c7d6453996	servicerequest.schema.json.html
 N:db2529a424433cf0	servicerequest.shex
 N:d9e16793c5c28b32	servicerequest.shex.html
 N:0d5fb22cd7ca5ab9	servicerequest.svg
-A:3af5b6b2df83bb99	servicerequest.xlsx
+X:5a0ef9023adc52ba	servicerequest.xlsx
 N:7ed90d626304d250	servicerequest.xsd
 N:6999e7d3606ec1e7	services.html
 N:1bcb5bd533936e34	shareable-analysis.html
@@ -18990,7 +18990,7 @@ N:9a7977ccdf20a212	slot.schema.json.html
 N:f001d6183e8856e2	slot.shex
 N:190d88785e8368a9	slot.shex.html
 N:6c1356a3f7645384	slot.svg
-A:0fb8f25eabde8f26	slot.xlsx
+X:b81ebbf04dd8d39c	slot.xlsx
 N:de1eb982940292da	slot.xsd
 N:4376b3bdddf70ead	smart-app-launch.html
 N:4022ccf08a85be54	snomedct-usage.html
@@ -19077,7 +19077,7 @@ N:831c7f6cf3bae7aa	specimen.schema.json.html
 N:3033eba71f5ba00d	specimen.shex
 N:f734060a3b499ff7	specimen.shex.html
 N:ea48bdeeb9981e54	specimen.svg
-A:9b9798d4b6510482	specimen.xlsx
+X:5892a30bfc170009	specimen.xlsx
 N:4908b8c2f2e896d7	specimen.xsd
 N:94e7d74d081c6b97	specimendefinition-definitions.html
 N:057dd0bc53df044c	specimendefinition-dependencies.html
@@ -19124,7 +19124,7 @@ N:1250997fdb1c7a1e	specimendefinition.schema.json.html
 N:a5cd8d5a540caf52	specimendefinition.shex
 N:a74fbc8a07ccf24f	specimendefinition.shex.html
 N:dfb084ac9899d610	specimendefinition.svg
-A:1490f582cb11665f	specimendefinition.xlsx
+X:d0d6a772121d67da	specimendefinition.xlsx
 N:1a47e47b749b5a2e	specimendefinition.xsd
 N:e1512e72bfa3d354	storage.html
 N:eb002cda4caff623	string.profile.canonical.json
@@ -19185,7 +19185,7 @@ N:a058affd8e29ab98	structuredefinition.schema.json.html
 N:b2d8236b74af0023	structuredefinition.shex
 N:558bb9f1472e9c1c	structuredefinition.shex.html
 N:a98e6709ad131ac8	structuredefinition.svg
-A:713e268928a33c64	structuredefinition.xlsx
+X:a4dc66cc19558d54	structuredefinition.xlsx
 N:d8f387a0f2f2845c	structuredefinition.xsd
 N:72706f46b140a139	structuremap-definitions.html
 N:26114ab3cec901ff	structuremap-dependencies.html
@@ -19224,7 +19224,7 @@ N:a84d559e36a8186f	structuremap.schema.json.html
 N:1f2b2cba75f4237d	structuremap.shex
 N:adaf13720d77db5e	structuremap.shex.html
 N:b1234e74bbd6a549	structuremap.svg
-A:b7191d05e12b35d1	structuremap.xlsx
+X:e1b04cc3bd52b72f	structuremap.xlsx
 N:2a88b5f62714bdbc	structuremap.xsd
 N:7d935cfa85793dfe	subscription-admission.canonical.json
 N:ad88c652137d6064	subscription-admission.canonical.xml
@@ -19290,7 +19290,7 @@ N:7e58fb2c3625d256	subscription.schema.json.html
 N:4247e3f9ca9cfb08	subscription.shex
 N:64a39d94a79f6240	subscription.shex.html
 N:e4594e084ec771b0	subscription.svg
-A:4f4ad438b386234c	subscription.xlsx
+X:2231364ceb081248	subscription.xlsx
 N:765448d47db377e5	subscription.xsd
 N:662625d78e2b5865	subscriptions.html
 N:051acb739c246798	subscriptionstatus-definitions.html
@@ -19329,7 +19329,7 @@ N:2a4e7c9371222eb7	subscriptionstatus.schema.json.html
 N:adfb36a08ba16c75	subscriptionstatus.shex
 N:790a48edf7ef4dc4	subscriptionstatus.shex.html
 N:7ce49b2406d9765d	subscriptionstatus.svg
-A:ee3278aa6e9dd016	subscriptionstatus.xlsx
+X:940dfc71ccca0d8f	subscriptionstatus.xlsx
 N:33cdca34c8d62113	subscriptionstatus.xsd
 N:7f4a716f9f27f85a	subscriptiontopic-definitions.html
 N:dca5506db5a8d0df	subscriptiontopic-dependencies.html
@@ -19412,7 +19412,7 @@ N:ae95f5b091ef2170	subscriptiontopic.schema.json.html
 N:00c245e53ff8b549	subscriptiontopic.shex
 N:75aebc28e5e49bfe	subscriptiontopic.shex.html
 N:b1cb261e5180fed8	subscriptiontopic.svg
-A:99a19e6fe33763ca	subscriptiontopic.xlsx
+X:43c337cf119b642a	subscriptiontopic.xlsx
 N:c3c297f93efb855c	subscriptiontopic.xsd
 N:a1d9014b8b8a3fdf	substance-definitions.html
 N:c267c881aa007f0e	substance-dependencies.html
@@ -19495,7 +19495,7 @@ N:c168304267dfbdeb	substance.schema.json.html
 N:da24aa968c517651	substance.shex
 N:fb03eaa848a8e5e8	substance.shex.html
 N:005f332a9b159eeb	substance.svg
-A:45a7830e4383618f	substance.xlsx
+X:c03ab0e621d8af34	substance.xlsx
 N:b3170b3afc07d7e2	substance.xsd
 N:833fd88ed9f4931a	substancedefinition-definitions.html
 N:a687cbc55668a044	substancedefinition-dependencies.html
@@ -19533,7 +19533,7 @@ N:b138cc1ce6a9bd1a	substancedefinition.schema.json.html
 N:a559ce6b5be06c95	substancedefinition.shex
 N:da9e6399cab27b8b	substancedefinition.shex.html
 N:00ff6a5474b2a7a5	substancedefinition.svg
-A:695ad8e93568aa2f	substancedefinition.xlsx
+X:4470b03d8e70326c	substancedefinition.xlsx
 N:3dd0a14ca4f5a431	substancedefinition.xsd
 N:30facd6d0e946813	summary.html
 B:59a2263a94bd83fd	summary.png
@@ -19684,7 +19684,7 @@ N:ca93bc3c51da7b4e	task.schema.json.html
 N:5fc294d38cf8c61c	task.shex
 N:aa166130d01be104	task.shex.html
 N:54468e09e2153191	task.svg
-A:3a26e0bbe494cfc2	task.xlsx
+X:c48717eac4292314	task.xlsx
 N:e3d8a34cbdef2833	task.xsd
 B:455e6de53398ce44	tbl_bck0.png
 B:455e6de53398ce44	tbl_bck00.png
@@ -19953,7 +19953,7 @@ N:d517686f70bb997a	terminologycapabilities.schema.json.html
 N:7dcf06b4cbfe5563	terminologycapabilities.shex
 N:2b026df182ff32db	terminologycapabilities.shex.html
 N:8433019794602d5a	terminologycapabilities.svg
-A:f39822aa43d9690a	terminologycapabilities.xlsx
+X:49a8fae08708983e	terminologycapabilities.xlsx
 N:102d366e8e53369c	terminologycapabilities.xsd
 N:112b3282e22cb478	time.profile.canonical.json
 N:3ba563a6147a6327	time.profile.canonical.xml
@@ -26733,7 +26733,7 @@ N:f36a47de8e64c5f9	valueset.schema.json.html
 N:6151a0ca10743994	valueset.shex
 N:61e1c7503b532654	valueset.shex.html
 N:54b6daa2c6cd279e	valueset.svg
-A:46dd37f74ea2f6a7	valueset.xlsx
+X:a43663b0ae67eb6e	valueset.xlsx
 N:fc7b6bf72d948528	valueset.xsd
 N:50db14570f81144f	valuesets.json
 N:d6bb2115bb26a3ff	valuesets.xml
@@ -26795,7 +26795,7 @@ N:6b6b3cb5dfcf4b16	visionprescription.schema.json.html
 N:c7f3eab4de168979	visionprescription.shex
 N:0ace54ea559c09f7	visionprescription.shex.html
 N:fae3735d86df5314	visionprescription.svg
-A:469fa7e02c1aa222	visionprescription.xlsx
+X:e0da0d319511fac7	visionprescription.xlsx
 N:72237a44914356bc	visionprescription.xsd
 N:d2e99f1c41d75768	vitalsigns-definitions.html
 N:262e301b6701ecf3	vitalsigns-mappings.html
