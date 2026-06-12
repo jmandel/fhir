@@ -71,7 +71,10 @@ if $JUDGE; then
   unexplained=$(grep -vE '\.shex(\.html)?$|\.xls$' /tmp/future.diff-files \
     | grep -vxFf eng/future/noise-files-v2.txt | grep -vx 'all-valuesets.zip' || true)
   if [[ -n "$unexplained" ]]; then
-    echo "UNEXPLAINED OUTPUT DIFFS (beyond known build nondeterminism):"; echo "$unexplained"; exit 1
+    echo "UNEXPLAINED OUTPUT DIFFS (beyond known build nondeterminism):"; echo "$unexplained"
+    # bundle the flagged files for offline diagnosis (CI uploads this as an artifact)
+    echo "$unexplained" | head -40 | (cd publish && tar -czf ../parity-debug.tgz -T - 2>/dev/null) || true
+    exit 1
   fi
   echo "byte parity: clean ($(wc -l < /tmp/future.diff-files) files differ, all known-nondeterministic)"
 fi
