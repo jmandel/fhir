@@ -10,15 +10,13 @@ name: txpack refresh (lock-bump PR prototype)
 # policy is a dial on the machine-generated facts (auto-merge additions-only; human review for
 # changed answers) - never on the AI prose, which is explanation, not evidence.
 
+# Trigger: push a request file (the dispatch API requires workflows to exist on the default
+# branch, which this demo branch is not; on a real deployment this workflow lives on main and
+# plain workflow_dispatch works). The request file carries the candidate pack's url + sha256.
 on:
-  workflow_dispatch:
-    inputs:
-      candidate_url:
-        description: "URL of the candidate pack zip (hash-named, already in the pack store)"
-        required: true
-      candidate_sha256:
-        description: "sha256 of the candidate pack zip"
-        required: true
+  push:
+    branches: [txpack-future]
+    paths: ['.txpack/refresh-request.json']
 
 permissions:
   contents: write
@@ -30,13 +28,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Fetch current and candidate packs
+      - name: Read request, fetch current and candidate packs
+        id: req
         run: |
+          cand_url=$(python3 -c "import json;print(json.load(open('.txpack/refresh-request.json'))['candidate_url'])")
+          cand_sha=$(python3 -c "import json;print(json.load(open('.txpack/refresh-request.json'))['candidate_sha256'])")
+          echo "cand_url=$cand_url" >> "$GITHUB_OUTPUT"; echo "cand_sha=$cand_sha" >> "$GITHUB_OUTPUT"
           cur_url=$(python3 -c "import json;print(json.load(open('tx.lock'))['pack']['url'])")
           cur_sha=$(python3 -c "import json;print(json.load(open('tx.lock'))['pack']['zipSha256'])")
           curl -fsSL -o current.zip "$cur_url";   echo "$cur_sha  current.zip"   | sha256sum -c -
-          curl -fsSL -o candidate.zip "${{ inputs.candidate_url }}"
-          echo "${{ inputs.candidate_sha256 }}  candidate.zip" | sha256sum -c -
+          curl -fsSL -o candidate.zip "$cand_url"
+          echo "$cand_sha  candidate.zip" | sha256sum -c -
       - name: Canonical compare
         id: diff
         run: |
@@ -102,12 +104,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          sha_content=$(basename "${{ inputs.candidate_url }}" .zip | sed 's/^txpack-//')
+          sha_content=$(basename "${{ steps.req.outputs.cand_url }}" .zip | sed 's/^txpack-//')
           python3 - <<EOF
           import json
           d = json.load(open('tx.lock'))
-          d['pack']['url'] = "${{ inputs.candidate_url }}"
-          d['pack']['zipSha256'] = "${{ inputs.candidate_sha256 }}"
+          d['pack']['url'] = "${{ steps.req.outputs.cand_url }}"
+          d['pack']['zipSha256'] = "${{ steps.req.outputs.cand_sha }}"
           json.dump(d, open('tx.lock','w'), indent=2)
           EOF
           branch="txpack-bump-$(date +%Y%m%d-%H%M)"
