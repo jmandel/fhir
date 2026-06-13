@@ -64,6 +64,34 @@ state nobody can inspect.
 there is no mutable per-machine terminology state left to rot. Packs are immutable,
 content-addressed, and shared.
 
+## Commands, times, and what to expect
+
+| Who | What they run | When | Takes | Expect |
+|---|---|---|---|---|
+| **Editor (any OS)** | `SpecBuild build .` (or `./eng/future/build.sh`) | every edit cycle | **~3.5 min** (12-core; ~4 min on a 4-core CI runner) | hermetic, zero terminology network, signature checked; first-ever run adds a one-time pack+jar fetch (~200MB) |
+| Editor, adding new codes | `SpecBuild build . --online` | when the spec gains terminology | same + ~1s per new code | misses answered live and reported; PR carries content only — **never `tx.lock`** |
+| Editor, checking blast radius | `SpecBuild build . --impact` | before pushing | build + ~30s | "your edit changed these 4 published files" — not a 226-file noise dump |
+| **Content-PR reviewer** | nothing | — | — | content diff only; CI annotates "introduces N new terminology questions" |
+| **CI, every push** | one `build` | per push | ~4 min | the entire everyday CI cost |
+| **Refresh bot (the only `tx.lock` writer)** | recording run + `diff-packs` | nightly | one build | most nights: canonical hash unchanged → silence (a free daily server-consistency proof) |
+| **Lock-bump reviewer (Grahame's seat)** | reads the PR | on real change | ~1 min | layered evidence: answer diff (machine), published-output impact, AI explanation (prose only); auto-merge for additions-only |
+| **Anyone proving reproducibility** | `build --judge` (CI: double build) | lock/tooling bumps, optional nightly | 2× build + ~1 min | byte parity vs the committed reference, noise excused with per-run evidence |
+
+Full CLI: `SpecBuild <build | manifest | compare | impact | diff-packs>` — one jar, one
+command surface, identical on Windows/macOS/Linux (`java -Xmx12g -cp kindling-future-v5.jar
+org.hl7.fhir.tools.publisher.SpecBuild help`).
+
+### The Grahame story, end to end
+
+His server fixes a display string overnight. The nightly recording sees it; the gate passes;
+the canonical diff is non-empty for the first time in weeks; a lock-bump PR opens itself:
+*"1 answer changed (SNOMED display for X); 3 published pages change, listed; explanation
+attached."* He (or policy) merges it; every editor receives the fix with their next `git pull`
+— visibly, atomically, identically. His server's total load for propagating the fix to the
+entire world: **one build's worth of requests**. Today the same fix propagates never, or
+instantly, or per-machine, depending on cache states nobody can inspect — while every cold
+build anywhere hammers him with ~2,000 requests.
+
 ## What this demo deliberately keeps honest
 
 - **Numbers**: warm 683s → ~197s and cold 1117s → ~211s were measured on a 12-core/62GB
