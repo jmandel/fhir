@@ -6,7 +6,7 @@ for the core FHIR spec build. Everything it claims is runnable here, now:
 ```bash
 git clone -b txpack-future https://github.com/jmandel/fhir.git && cd fhir
 ./eng/future/build.sh --judge        # or, on any OS, fetch the jar named in tx.lock and:
-# java -Xmx12g -cp kindling-future-v4.jar org.hl7.fhir.tools.publisher.SpecBuild build . --judge
+# java -Xmx12g -cp kindling-future-v5.jar org.hl7.fhir.tools.publisher.SpecBuild build . --judge
 ```
 
 Everything is Java: the publisher reads `tx.lock` natively (content-addressed, sha256-verified

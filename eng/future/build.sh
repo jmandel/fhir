@@ -4,7 +4,7 @@
 # locale/timezone pinning, signature check, judge/impact) lives in the Java CLI, so Windows
 # users skip this file entirely:
 #   1. download the jar from tx.lock's tooling.url, check its sha256
-#   2. java -Xmx12g -cp kindling-future-v4.jar org.hl7.fhir.tools.publisher.SpecBuild build . [--judge|--impact|--online|--manifest]
+#   2. java -Xmx12g -cp kindling-future-v5.jar org.hl7.fhir.tools.publisher.SpecBuild build . [--judge|--impact|--online|--manifest]
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 lockval() {
