@@ -73,8 +73,15 @@ echo "BUILD rc=$rc duration=$(( $(date +%s) - start ))s"
 
 SIG=$(grep -E "Summary: Errors=" build-future.log | tail -1)
 echo "signature: $SIG (expected Errors=$EXP_E, Warnings=$EXP_W, Information messages=$EXP_I)"
-echo "$SIG" | grep -q "Errors=$EXP_E, Warnings=$EXP_W, Information messages=$EXP_I" \
-  || { echo "OUTPUT SIGNATURE MISMATCH" >&2; exit 1; }
+if ! echo "$SIG" | grep -q "Errors=$EXP_E, Warnings=$EXP_W, Information messages=$EXP_I"; then
+  if [[ "${SIGNATURE_GATE:-enforce}" == "report" ]]; then
+    # A/B candidate leg: a signature change is the finding, not a failure - the proposal
+    # surfaces it for review instead of silently dying
+    echo "SIGNATURE CHANGED (reported, not enforced)"
+  else
+    echo "OUTPUT SIGNATURE MISMATCH" >&2; exit 1
+  fi
+fi
 
 # a manifest from a prior same-commit build (CI's convergence pass, --manifest) upgrades the
 # judge from a static noise allowlist to EVIDENCE-BASED excusal: a file is only excused if it

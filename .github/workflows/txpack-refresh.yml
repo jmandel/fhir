@@ -73,8 +73,11 @@ jobs:
           HEAP=11g TXPACK_ZIP="$PWD/current.zip" ./eng/future/build.sh --hermetic --manifest
           cp build-future.manifest /tmp/old-output.manifest
           rm -f build-future.manifest
-          HEAP=11g TXPACK_ZIP="$PWD/candidate.zip" ./eng/future/build.sh --hermetic --manifest
+          HEAP=11g TXPACK_ZIP="$PWD/candidate.zip" SIGNATURE_GATE=report ./eng/future/build.sh --hermetic --manifest
+          CAND_SIG=$(grep -E "Summary: Errors=" build-future.log | tail -1 | sed 's/.*Summary: //')
           { echo "## Published-output impact (same-machine A/B, content-level)";
+            echo;
+            echo "**Output signature with candidate: $CAND_SIG** (current pack: Errors=0, Warnings=3693, Information messages=345)";
             echo;
             join -t$'\t' -j2 <(sort -t$'\t' -k2 /tmp/old-output.manifest) <(sort -t$'\t' -k2 build-future.manifest) \
               | awk -F'\t' '{split($2,a,"/"); split($3,b,"/"); if ($2!=$3 && (length(a)<2 || a[2]!=b[2])) print "- " $1}' > /tmp/impact-list.txt

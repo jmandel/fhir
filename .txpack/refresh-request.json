@@ -1,5 +1,6 @@
 {
   "comment": "Demo refresh request: proposes the PREVIOUS pack as candidate (a downgrade), exercising the change path end-to-end: canonical diff (63 removals) -> output A/B -> AI explanation -> lock-bump PR. Close the PR after inspection.",
   "candidate_url": "https://github.com/jmandel/fhir-perf/releases/download/txpack-future-v1/txpack-ee7af63b.zip",
-  "candidate_sha256": "f42a0757432312f6c24d9b134baa8f4f37e487c580e818eef913fb15f2735bb5"
+  "candidate_sha256": "f42a0757432312f6c24d9b134baa8f4f37e487c580e818eef913fb15f2735bb5",
+  "nonce": "retrigger-1"
 }
