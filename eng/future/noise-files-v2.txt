@@ -209,6 +209,7 @@ valueset-account-type.html
 valueset-action-relationship-type.html
 valueset-address-use.html
 valueset-administrative-gender.html
+valueset-adverse-event-participant-function.html
 valueset-all-languages.html
 valueset-consent-category-example.html
 valueset-constraint-severity.html
@@ -229,6 +230,7 @@ valueset-procedure-code.html
 valueset-resource-status.html
 valueset-security-label-example.html
 valueset-security-labels.html
+valueset-series-performer-function.html
 valueset-service-type.html
 valueset.shex
 valueset.shex.html

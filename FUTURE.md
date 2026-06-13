@@ -5,8 +5,15 @@ for the core FHIR spec build. Everything it claims is runnable here, now:
 
 ```bash
 git clone -b txpack-future https://github.com/jmandel/fhir.git && cd fhir
-./eng/future/build.sh --hermetic --judge
+./eng/future/build.sh --judge        # or, on any OS, fetch the jar named in tx.lock and:
+# java -Xmx12g -cp kindling-future-v4.jar org.hl7.fhir.tools.publisher.SpecBuild build . --judge
 ```
+
+Everything is Java: the publisher reads `tx.lock` natively (content-addressed, sha256-verified
+pack fetch), the `SpecBuild` CLI pins locale/timezone in-process, runs hermetic by default,
+checks the output signature against the lock, and carries the verification subcommands
+(`manifest` / `compare` / `impact` / `diff-packs`). The bash file is a 20-line bootstrap that
+fetches the jar and execs it; Windows users skip it. **Dependency footprint: a JDK.**
 
 That is a **fully cold build that makes zero terminology network requests** — provably (any
 attempted request is a hard failure) — and ends by checking the published output byte-for-byte
@@ -39,12 +46,13 @@ already uses.** `./eng/future/build.sh` (hermetic by default): every terminology
 answered locally from the pack, byte-identically to what the server would say. Cold clone,
 airplane, CI — all identical, all warm-speed.
 
-**You add an example with three genuinely new SNOMED codes.** Hermetic mode fails loudly,
-naming the exact three requests (that's its job — proving completeness). Run
-`./eng/future/build.sh --online`: the three misses go to the configured server (everything else
-still comes from the pack), the build completes. A maintainer top-up run then folds the three
-answers into a new pack and bumps `tx.lock` in a reviewed commit whose diff *is* the
-terminology change.
+**You add an example with three genuinely new SNOMED codes.** Build with `--online`: the three
+misses go to the server (everything else still comes from the pack), and CI reports "this PR
+introduces 3 new terminology questions" as a signal, not a gate. **Your PR contains only the
+content change — you never touch `tx.lock`**, so nothing conflicts with anyone's long-lived
+branch. After merge, the nightly refresh recording folds the three answers into a new pack and
+bumps the lock in its own single-writer commit. (Hermetic mode stays available to *prove* the
+no-new-codes case: it fails loudly naming any request that escapes.)
 
 **The terminology server fixes a bug.** Nothing on your machine changes silently. A refresh
 recording-run produces a new pack; the lock-bump PR renders exactly what changed ("12 SNOMED
@@ -100,13 +108,18 @@ environment reproduces the pinned output (python3; used by CI and when bumping t
 
 ## The refresh flow (prototyped here too)
 
-[`txpack-refresh.yml`](.github/workflows/txpack-refresh.yml) prototypes the routine update
-path: canonical pack comparison ([`pack-diff.py`](eng/future/pack-diff.py) — volatile fields
-like server step-timings and expansion timestamps are normalized, so "nothing really changed"
-is detectable and ends the job silently), then a lock-bump PR whose body is layered:
-the machine-verified diff table (authoritative), plus an **AI-generated explanation section**
+Bumps are ordinary commits with a single writer (the refresh bot), and **the recording run is
+the verification**: it is a fully-gated live build, so a bump inherits its trust rather than
+re-earning it. [`txpack-refresh.yml`](.github/workflows/txpack-refresh.yml) prototypes the
+pipeline: canonical pack comparison (`SpecBuild diff-packs` — volatile fields like server
+step-timings and expansion timestamps are normalized, so "nothing really changed" is detectable
+and ends the job silently), then a lock-bump PR whose body layers the machine-verified answer
+diff (authoritative), the published-output impact, and an **AI-generated explanation section**
 (GitHub Models, plain inference with the built-in token — no tools, no write access, prose
-only). Merge policy keys off the machine facts, never the prose.
+only). Merge policy keys off the machine facts, never the prose. *(In production the impact
+evidence falls out of the recording run's own before/after at zero extra cost; this demo has no
+recorder in CI, so the workflow synthesizes it with a same-machine old-vs-new A/B. The E2E test
+of a regressing candidate — the previous pack offered as a "refresh" — was correctly blocked.)*
 
 ## Where the real proposal lives
 

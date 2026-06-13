@@ -31,19 +31,25 @@ jobs:
       - name: Read request, fetch current and candidate packs
         id: req
         run: |
-          cand_url=$(python3 -c "import json;print(json.load(open('.txpack/refresh-request.json'))['candidate_url'])")
-          cand_sha=$(python3 -c "import json;print(json.load(open('.txpack/refresh-request.json'))['candidate_sha256'])")
+          cand_url=$(jq -r .candidate_url .txpack/refresh-request.json)
+          cand_sha=$(jq -r .candidate_sha256 .txpack/refresh-request.json)
           echo "cand_url=$cand_url" >> "$GITHUB_OUTPUT"; echo "cand_sha=$cand_sha" >> "$GITHUB_OUTPUT"
-          cur_url=$(python3 -c "import json;print(json.load(open('tx.lock'))['pack']['url'])")
-          cur_sha=$(python3 -c "import json;print(json.load(open('tx.lock'))['pack']['zipSha256'])")
+          cur_url=$(jq -r .pack.url tx.lock)
+          cur_sha=$(jq -r .pack.zipSha256 tx.lock)
           curl -fsSL -o current.zip "$cur_url";   echo "$cur_sha  current.zip"   | sha256sum -c -
           curl -fsSL -o candidate.zip "$cand_url"
           echo "$cand_sha  candidate.zip" | sha256sum -c -
-      - name: Canonical compare
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+      - name: Fetch tooling jar (from tx.lock)
+        run: |
+          url=$(jq -r .tooling.url tx.lock); sha=$(jq -r .tooling.sha256 tx.lock)
+          curl -fsSL -o tool.jar "$url"; echo "$sha  tool.jar" | sha256sum -c -
+      - name: Canonical compare (Java packager diff)
         id: diff
         run: |
           set +e
-          python3 eng/future/pack-diff.py current.zip candidate.zip > pack-diff.md
+          java -cp tool.jar org.hl7.fhir.r5.terminologies.utilities.TerminologyCachePackager diff current.zip candidate.zip > pack-diff.md
           rc=$?
           set -e
           if [ $rc -eq 0 ]; then
@@ -58,9 +64,6 @@ jobs:
       # layer 1: what does this bump actually do to the published spec? Same-machine A/B:
       # build with the current pack, build with the candidate, diff content-level output.
       # Hermetic both times - a candidate that DROPS needed answers fails loudly right here.
-      - uses: actions/setup-java@v4
-        if: steps.diff.outputs.changed == 'true'
-        with: { distribution: temurin, java-version: "17" }
       - name: Cache FHIR package cache
         if: steps.diff.outputs.changed == 'true'
         uses: actions/cache@v4
@@ -70,17 +73,18 @@ jobs:
       - name: Output A/B (current pack, then candidate)
         if: steps.diff.outputs.changed == 'true'
         run: |
-          HEAP=11g TXPACK_ZIP="$PWD/current.zip" ./eng/future/build.sh --hermetic --manifest
+          java -Xmx11g -Dorg.hl7.fhir.tx.pack="$PWD/current.zip" -cp tool.jar \
+            org.hl7.fhir.tools.publisher.SpecBuild build . --manifest
           cp build-future.manifest /tmp/old-output.manifest
           rm -f build-future.manifest
-          HEAP=11g TXPACK_ZIP="$PWD/candidate.zip" SIGNATURE_GATE=report ./eng/future/build.sh --hermetic --manifest
+          SIGNATURE_GATE=report java -Xmx11g -Dorg.hl7.fhir.tx.pack="$PWD/candidate.zip" -cp tool.jar \
+            org.hl7.fhir.tools.publisher.SpecBuild build . --manifest
           CAND_SIG=$(grep -E "Summary: Errors=" build-future.log | tail -1 | sed 's/.*Summary: //')
           { echo "## Published-output impact (same-machine A/B, content-level)";
             echo;
             echo "**Output signature with candidate: $CAND_SIG** (current pack: Errors=0, Warnings=3693, Information messages=345)";
             echo;
-            join -t$'\t' -j2 <(sort -t$'\t' -k2 /tmp/old-output.manifest) <(sort -t$'\t' -k2 build-future.manifest) \
-              | awk -F'\t' '{split($2,a,"/"); split($3,b,"/"); if ($2!=$3 && (length(a)<2 || a[2]!=b[2])) print "- " $1}' > /tmp/impact-list.txt
+            java -cp tool.jar org.hl7.fhir.tools.publisher.SpecBuild impact /tmp/old-output.manifest build-future.manifest | sed 's/^/- /' > /tmp/impact-list.txt
             n=$(wc -l < /tmp/impact-list.txt)
             if [ "$n" -eq 0 ]; then echo "**No published file changes** - this bump is output-inert."; else
               echo "**$n published file(s) change with this bump:**"; echo; cat /tmp/impact-list.txt; fi; } > output-impact.md
@@ -108,13 +112,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           sha_content=$(basename "${{ steps.req.outputs.cand_url }}" .zip | sed 's/^txpack-//')
-          python3 - <<EOF
-          import json
-          d = json.load(open('tx.lock'))
-          d['pack']['url'] = "${{ steps.req.outputs.cand_url }}"
-          d['pack']['zipSha256'] = "${{ steps.req.outputs.cand_sha }}"
-          json.dump(d, open('tx.lock','w'), indent=2)
-          EOF
+          jq --arg url "${{ steps.req.outputs.cand_url }}" --arg sha "${{ steps.req.outputs.cand_sha }}" \
+             '.pack.url=$url | .pack.zipSha256=$sha' tx.lock > tx.lock.new && mv tx.lock.new tx.lock
           branch="txpack-bump-$(date +%Y%m%d-%H%M)"
           git checkout -b "$branch"
           git -c user.name=txpack-refresh -c user.email=noreply@github.com commit -am "Bump tx.lock to candidate pack"

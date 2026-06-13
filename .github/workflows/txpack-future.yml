@@ -37,7 +37,7 @@ jobs:
             ~/.fhir/tools
           key: txlock-${{ hashFiles('tx.lock') }}
       - name: Hermetic cold build + signature check
-        run: HEAP=11g ./eng/future/build.sh --hermetic
+        run: HEAP=11g ./eng/future/build.sh
       - name: Upload build log
         if: always()
         uses: actions/upload-artifact@v4
@@ -72,9 +72,9 @@ jobs:
       # two builds: the first supplies convergence (first-build-vs-converged is a documented
       # stock difference) AND the evidence manifest for nondeterminism excusal
       - name: Hermetic cold build (convergence + evidence pass)
-        run: HEAP=11g ./eng/future/build.sh --hermetic --manifest
+        run: HEAP=11g ./eng/future/build.sh --manifest
       - name: Hermetic build + parity judge
-        run: HEAP=11g ./eng/future/build.sh --hermetic --judge
+        run: HEAP=11g ./eng/future/build.sh --judge
       - name: Upload build log + parity debug bundle
         if: always()
         uses: actions/upload-artifact@v4

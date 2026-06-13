@@ -9,10 +9,10 @@
     "recordedAgainst": "FHIRsmith 0.9.5 (the tx.fhir.org server implementation), 2026-06-12"
   },
   "tooling": {
-    "name": "kindling-future-v2.jar",
-    "sha256": "5a7444a32a83e673383c2b1cbe2a121b85ad44ec9a22ac3a6bad1cf166e81c9e",
-    "url": "https://github.com/jmandel/fhir-perf/releases/download/txpack-future-v1/kindling-future-v2.jar",
-    "provenance": "kindling perf/integration-eval @ 480f3db (perf/integrated incl. prefetch retry guard + perf/terminology-fold) with fhir-core txpack/chain @ e9e60c989 embedded; github.com/jmandel forks"
+    "name": "kindling-future-v4.jar",
+    "sha256": "ad37b80de2c3de5506ae417a5a343e0f2c731b4bb30200470a812a5f19970a59",
+    "url": "https://github.com/jmandel/fhir-perf/releases/download/txpack-future-v1/kindling-future-v4.jar",
+    "provenance": "kindling perf/integration-eval @ f598079 (SpecBuild CLI + OutputManifest + tx.lock-native Publisher + fold) with fhir-core txpack/chain @ be3effaac embedded; github.com/jmandel forks"
   },
   "expectedSignature": {
     "errors": 0,
