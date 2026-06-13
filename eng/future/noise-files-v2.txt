@@ -211,6 +211,7 @@ valueset-address-use.html
 valueset-administrative-gender.html
 valueset-adverse-event-participant-function.html
 valueset-all-languages.html
+valueset-common-tags.html
 valueset-consent-category-example.html
 valueset-constraint-severity.html
 valueset-contact-point-use.html
