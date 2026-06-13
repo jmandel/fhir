@@ -6,7 +6,7 @@ name: txpack refresh (lock-bump PR prototype)
 # explanation -> lock-bump PR) can be exercised without a server in CI.
 #
 # Review model: the pack artifact itself never lands in git (immutable, hash-named, in the pack
-# store). The ONLY thing that changes in git is tx.lock, so the review gate is this PR. Merge
+# store). The ONLY thing that changes in git is fhir.lock, so the review gate is this PR. Merge
 # policy is a dial on the machine-generated facts (auto-merge additions-only; human review for
 # changed answers) - never on the AI prose, which is explanation, not evidence.
 
@@ -34,22 +34,24 @@ jobs:
           cand_url=$(jq -r .candidate_url .txpack/refresh-request.json)
           cand_sha=$(jq -r .candidate_sha256 .txpack/refresh-request.json)
           echo "cand_url=$cand_url" >> "$GITHUB_OUTPUT"; echo "cand_sha=$cand_sha" >> "$GITHUB_OUTPUT"
-          cur_url=$(jq -r .pack.url tx.lock)
-          cur_sha=$(jq -r .pack.zipSha256 tx.lock)
+          cur_url=$(jq -r '.packages[] | select(.contentSha256) | .resolved' fhir.lock)
+          cur_int=$(jq -r '.packages[] | select(.contentSha256) | .integrity' fhir.lock)
+          cur_sha=$(echo "$cur_int" | sed 's/^sha256-//' | base64 -d | xxd -p -c64)
           curl -fsSL -o current.zip "$cur_url";   echo "$cur_sha  current.zip"   | sha256sum -c -
           curl -fsSL -o candidate.zip "$cand_url"
           echo "$cand_sha  candidate.zip" | sha256sum -c -
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: "17" }
-      - name: Fetch tooling jar (from tx.lock)
+      - name: Fetch tooling jar (from kindling-wrapper.properties)
         run: |
-          url=$(jq -r .tooling.url tx.lock); sha=$(jq -r .tooling.sha256 tx.lock)
+          url=$(grep '^toolUrl=' eng/future/kindling-wrapper.properties | cut -d= -f2-)
+          sha=$(grep '^toolSha256=' eng/future/kindling-wrapper.properties | cut -d= -f2-)
           curl -fsSL -o tool.jar "$url"; echo "$sha  tool.jar" | sha256sum -c -
       - name: Canonical compare (Java packager diff)
         id: diff
         run: |
           set +e
-          java -cp tool.jar org.hl7.fhir.r5.terminologies.utilities.TerminologyCachePackager diff current.zip candidate.zip > pack-diff.md
+          java -cp tool.jar org.hl7.fhir.tools.publisher.SpecBuild diff-packs current.zip candidate.zip > pack-diff.md
           rc=$?
           set -e
           if [ $rc -eq 0 ]; then
@@ -112,11 +114,13 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           sha_content=$(basename "${{ steps.req.outputs.cand_url }}" .zip | sed 's/^txpack-//')
-          jq --arg url "${{ steps.req.outputs.cand_url }}" --arg sha "${{ steps.req.outputs.cand_sha }}" \
-             '.pack.url=$url | .pack.zipSha256=$sha' tx.lock > tx.lock.new && mv tx.lock.new tx.lock
+          ssri="sha256-$(echo "${{ steps.req.outputs.cand_sha }}" | xxd -r -p | base64)"
+          name=$(jq -r '.packages | to_entries[] | select(.key | endswith(".txpack")) | .key' fhir.lock)
+          jq --arg n "$name" --arg url "${{ steps.req.outputs.cand_url }}" --arg int "$ssri" \
+             '.packages[$n].resolved=$url | .packages[$n].integrity=$int' fhir.lock > fhir.lock.new && mv fhir.lock.new fhir.lock
           branch="txpack-bump-$(date +%Y%m%d-%H%M)"
           git checkout -b "$branch"
-          git -c user.name=txpack-refresh -c user.email=noreply@github.com commit -am "Bump tx.lock to candidate pack"
+          git -c user.name=txpack-refresh -c user.email=noreply@github.com commit -am "Bump fhir.lock to candidate pack"
           git push origin "$branch"
           { echo "Machine-verified canonical diff (authoritative):"; echo; cat pack-diff.md; echo;
             cat output-impact.md 2>/dev/null || true; echo;

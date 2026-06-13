@@ -35,7 +35,7 @@ jobs:
           path: |
             ~/.fhir/tx-packs
             ~/.fhir/tools
-          key: txlock-${{ hashFiles('tx.lock') }}
+          key: fhirlock-${{ hashFiles('fhir.lock', 'eng/future/kindling-wrapper.properties') }}
       - name: Hermetic cold build + signature check
         run: HEAP=11g ./eng/future/build.sh
       - name: Upload build log
@@ -44,7 +44,7 @@ jobs:
         with: { name: build-future-log, path: build-future.log }
 
   # the OPTIONAL reproducibility track: double build + evidence-judged byte parity against the
-  # committed reference. Runs when the pinned world itself changes (tx.lock, the verification
+  # committed reference. Runs when the pinned world itself changes (fhir.lock, the wrapper pin, the verification
   # tooling, the reference) or on demand - not on every content push (it costs 2x build time,
   # and intended content changes would rightly differ from the reference anyway)
   reproducibility:
@@ -68,7 +68,7 @@ jobs:
           path: |
             ~/.fhir/tx-packs
             ~/.fhir/tools
-          key: txlock-${{ hashFiles('tx.lock') }}
+          key: fhirlock-${{ hashFiles('fhir.lock', 'eng/future/kindling-wrapper.properties') }}
       # two builds: the first supplies convergence (first-build-vs-converged is a documented
       # stock difference) AND the evidence manifest for nondeterminism excusal
       - name: Hermetic cold build (convergence + evidence pass)

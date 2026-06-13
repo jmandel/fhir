@@ -1,0 +1,18 @@
+{
+  "lockfileVersion": 3,
+  "comment": "FHIR content lock (npm package-lock v3 profile; see FUTURE.md). Registries FIND bytes (resolved), this file TRUSTS bytes (integrity, verified on every use), the shared content-addressed store KEEPS bytes. Keys are plain package names - no vendor folder exists. Single writer: the refresh bot. expectedOutput lives here because it changes in the same commit as the pack it describes.",
+  "packages": {
+    "hl7.fhir.r6.txpack": {
+      "version": "20260612",
+      "resolved": "https://github.com/jmandel/fhir-perf/releases/download/txpack-future-v1/txpack-36913cc2.zip",
+      "integrity": "sha256-q0fN08Qg3xlPYii4VZ8ivsrQzI8UY0V/Ucjd8tH2Wj0=",
+      "contentSha256": "36913cc2f65f65ca9cec1b29ebe03ac7367f6b697229524b769e44ba1a9ef01f",
+      "recordedAgainst": "FHIRsmith 0.9.5 (the tx.fhir.org server implementation), 2026-06-12"
+    }
+  },
+  "expectedOutput": {
+    "errors": 0,
+    "warnings": 3693,
+    "information": 345
+  }
+}
