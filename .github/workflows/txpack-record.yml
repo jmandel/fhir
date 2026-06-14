@@ -1,0 +1,72 @@
+name: txpack record (nightly refresh — recorder half)
+
+# The UPSTREAM half of the lock-bump pipeline: re-capture any terminology questions the current
+# pinned pack is missing, and (if the answers actually changed) hand a candidate pack to the
+# downstream txpack-refresh workflow, which diffs it, measures its published-output impact, and
+# opens the lock-bump PR.
+#
+# How it works: `SpecBuild record` seeds the build with the CURRENT pinned pack and runs it
+# ONLINE with recording on — so every question the pack already answers is served locally and
+# only the genuinely-missing ones reach the server and get captured. The captured delta is
+# merged onto the current pack to form a candidate, which is diffed back against the current
+# pack. Unchanged → exit silently (the common nightly outcome, and a free daily proof the
+# server still answers consistently). Changed → emit the candidate for proposal.
+#
+# In production this is a nightly `schedule:` against the canonical terminology server, run
+# serially and off-peak — one build's worth of requests to propagate any change to the whole
+# world. It is workflow_dispatch ONLY here on purpose: a public demo must not point a cron at
+# tx.fhir.org. Set `server` when dispatching; nothing fires automatically.
+
+on:
+  workflow_dispatch:
+    inputs:
+      server:
+        description: "Terminology server to record against (a recording run hits it once, serially)"
+        required: true
+        default: "https://tx.fhir.org"
+
+permissions:
+  contents: write
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+      - name: Cache FHIR package cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.fhir/packages
+          key: fhir-packages-${{ runner.os }}-v1
+      - name: Fetch tooling jar (from kindling-wrapper.properties)
+        run: |
+          url=$(grep '^toolUrl=' tools/build/kindling-wrapper.properties | cut -d= -f2-)
+          sha=$(grep '^toolSha256=' tools/build/kindling-wrapper.properties | cut -d= -f2-)
+          curl -fsSL -o tool.jar "$url"; echo "$sha  tool.jar" | sha256sum -c -
+      - name: Record the delta and build a candidate pack
+        run: |
+          printf '{ "txFhirProduction": "%s" }\n' "${{ inputs.server }}" > /tmp/record-settings.json
+          java -Xmx11g -cp tool.jar org.hl7.fhir.tools.publisher.SpecBuild record . \
+            -fhir-settings /tmp/record-settings.json -out candidate-pack
+      - name: Propose, if changed
+        run: |
+          if [ ! -f candidate-pack.zip ]; then
+            echo "no change — current pack is still complete; nothing to propose."
+            exit 0
+          fi
+          sha=$(sha256sum candidate-pack.zip | cut -d' ' -f1)
+          name="txpack-${sha:0:8}.zip"
+          # In production: upload candidate-pack.zip to the pack store (a hash-named, immutable
+          # release/registry asset), then record the request that drives the downstream
+          # txpack-refresh workflow (canonical diff -> output A/B -> AI explanation -> bump PR):
+          #   gh release upload <pack-store-tag> candidate-pack.zip
+          #   jq -n --arg u "<asset-url>" --arg s "$sha" \
+          #     '{candidate_url:$u, candidate_sha256:$s}' > .txpack/refresh-request.json
+          #   git add .txpack/refresh-request.json && git commit -m "refresh: propose $name" && git push
+          echo "candidate ready: $name (sha256 $sha) — hand to txpack-refresh to open the bump PR"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: record-log, path: record.log, if-no-files-found: ignore }

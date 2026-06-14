@@ -74,19 +74,29 @@ the fix to the entire world: one build's worth of requests. Today the same fix a
 instantly, or per-machine — depending on cache state nobody can inspect — while every cold
 build anywhere sends him ~2,000 requests.
 
-## The refresh pipeline (prototyped here)
+## The refresh pipeline — two halves
 
 Bumps are ordinary commits; **the recording run is the verification**, so no bump-time
-re-verification ceremony exists. [`txpack-refresh.yml`](.github/workflows/txpack-refresh.yml)
-exercises the downstream machinery: canonical pack comparison (`SpecBuild diff-packs` —
-volatile fields like server step-timings and expansion timestamps normalized, so "nothing
-really changed" is detectable and ends the job silently), then a PR layering the
-machine-verified answer diff, the published-output impact, and an AI-written explanation
-(GitHub Models, plain inference, no tools, no authority). *(In production the impact evidence
-falls out of the recording run's own before/after at zero cost; this demo has no recorder in
-CI, so the workflow synthesizes it with a same-machine A/B.)* CI-validated so far: the
-no-change path (silent stop) and the harmful path — a candidate that removed answers was
-blocked twice before any PR existed.
+re-verification ceremony exists. The pipeline has an upstream half (re-capture) and a
+downstream half (propose), each a committed workflow.
+
+**Upstream — the nightly recorder** ([`txpack-record.yml`](.github/workflows/txpack-record.yml),
+`SpecBuild record`). Seeds the build with the *current* pinned pack and runs it **online with
+recording on**, so everything the pack already answers is served locally and only the
+genuinely-missing questions reach the server and get captured. The delta is merged onto the
+current pack to form a candidate, which is diffed back: unchanged → exit silently (the common
+nightly outcome, and a free daily proof the server still answers consistently); changed → emit
+the candidate. One build's worth of requests propagates any change to the whole world. In
+production this is a `schedule:` against the canonical server; it is dispatch-only here so a
+public demo never points a cron at tx.fhir.org.
+
+**Downstream — the proposer** ([`txpack-refresh.yml`](.github/workflows/txpack-refresh.yml)).
+Takes a candidate and opens the lock-bump PR: canonical pack comparison (`SpecBuild diff-packs`
+— volatile fields like server step-timings and expansion timestamps normalized), then a PR body
+layering the machine-verified answer diff, the published-output impact, and an AI-written
+explanation (GitHub Models, plain inference, no tools, no authority; merge policy keys off the
+machine facts). CI-validated: the no-change path (silent stop) and the harmful path — a
+candidate that removed answers was blocked twice before any PR existed.
 
 ## The reproducibility track (optional, separate)
 
