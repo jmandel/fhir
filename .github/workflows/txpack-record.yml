@@ -12,12 +12,19 @@ name: txpack record (nightly refresh — recorder half)
 # pack. Unchanged → exit silently (the common nightly outcome, and a free daily proof the
 # server still answers consistently). Changed → emit the candidate for proposal.
 #
-# In production this is a nightly `schedule:` against the canonical terminology server, run
-# serially and off-peak — one build's worth of requests to propagate any change to the whole
-# world. It is workflow_dispatch ONLY here on purpose: a public demo must not point a cron at
-# tx.fhir.org. Set `server` when dispatching; nothing fires automatically.
+# Scheduled nightly against the canonical server (tx.fhir.org), seeded from the current pack so
+# it sends only the pack's MISSES — one build's worth of light traffic, off-peak. This is the
+# ONE daily action that matters: it is what produces a new pack version when the server's answers
+# change. (Provenance note: this demo's pinned pack was recorded against a local FHIRsmith the
+# nightly can't reach, so a real rollout would re-base the pack on tx.fhir.org for consistent
+# provenance; the loop itself — record -> diff -> propose — runs the same either way.)
 
 on:
+  schedule:
+    # the daily recapture: re-record against the canonical server, propose a pack bump if the
+    # server's answers changed. Fires from the default branch (txpack-future). 09:11 UTC is
+    # off-peak for tx.fhir.org; a seeded recording sends only the pack's MISSES, not a cold load.
+    - cron: "11 9 * * *"
   workflow_dispatch:
     inputs:
       server:
@@ -48,7 +55,8 @@ jobs:
           curl -fsSL -o tool.jar "$url"; echo "$sha  tool.jar" | sha256sum -c -
       - name: Record the delta and build a candidate pack
         run: |
-          printf '{ "txFhirProduction": "%s" }\n' "${{ inputs.server }}" > /tmp/record-settings.json
+          SERVER="${{ inputs.server }}"; SERVER="${SERVER:-https://tx.fhir.org}"
+          printf '{ "txFhirProduction": "%s" }\n' "$SERVER" > /tmp/record-settings.json
           java -Xmx11g -cp tool.jar org.hl7.fhir.tools.publisher.SpecBuild record . \
             -fhir-settings /tmp/record-settings.json -out candidate-pack
       - name: Propose, if changed
