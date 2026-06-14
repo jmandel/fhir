@@ -223,6 +223,7 @@ valueset-devicealert-activationState.html
 valueset-devicealert-priority.html
 valueset-device-type.html
 valueset-document-reference-status.html
+valueset-encounter-participant-type.html
 valueset-endpoint-payload-type.html
 valueset-FHIR-version.html
 valueset-list-order.html

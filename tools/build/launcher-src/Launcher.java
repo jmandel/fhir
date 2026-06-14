@@ -12,9 +12,9 @@ import java.util.List;
 /**
  * The committed bootstrap for the tx.lock-driven spec build - the gradle-wrapper pattern:
  * this tiny jar is stable and lives in the repo; the real tooling is named (url + sha256) by
- * eng/future/kindling-wrapper.properties and fetched/verified/cached automatically. The whole developer experience is:
+ * tools/build/kindling-wrapper.properties and fetched/verified/cached automatically. The whole developer experience is:
  *
- *   java -jar eng/future/launch.jar build .
+ *   java -jar tools/build/launch.jar build .
  *
  * No bash, no curl, no python; identical on Windows/macOS/Linux. Dependency footprint: a JDK.
  * The launcher downloads the pinned tooling jar into ~/.fhir/tools/<sha256>.jar (verifying the
@@ -25,9 +25,9 @@ import java.util.List;
 public class Launcher {
 
   public static void main(String[] args) throws Exception {
-    File props = new File("eng/future/kindling-wrapper.properties");
+    File props = new File("tools/build/kindling-wrapper.properties");
     if (!props.exists()) {
-      System.err.println("no eng/future/kindling-wrapper.properties - run from the spec checkout root");
+      System.err.println("no tools/build/kindling-wrapper.properties - run from the spec checkout root");
       System.exit(2);
     }
     java.util.Properties pin = new java.util.Properties();

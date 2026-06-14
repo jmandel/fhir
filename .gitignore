@@ -27,6 +27,8 @@ holder.txt
 
 # Package Files #
 *.jar
+# ...except the committed build launcher (gradle-wrapper.jar pattern)
+!tools/build/launch.jar
 *.war
 *.nar
 *.ear

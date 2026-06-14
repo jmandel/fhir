@@ -5,7 +5,7 @@ spec build. **A JDK is the entire dependency footprint, on any OS.** Try it:
 
 ```
 git clone -b txpack-future https://github.com/jmandel/fhir.git && cd fhir
-java -jar eng/future/launch.jar build .
+java -jar tools/build/launch.jar build .
 ```
 
 That is a fully cold build that finishes in ~3.5 minutes (12-core; ~4 on a small CI runner)
@@ -18,8 +18,8 @@ hours), failing outright when the server has a bad day.
 
 | Artifact | Written by | What it does |
 |---|---|---|
-| [`eng/future/launch.jar`](eng/future/launcher-src/Launcher.java) — **4KB, committed, source alongside** | almost never changes | The gradle-wrapper move: the only thing you run. Reads the wrapper pin, fetches the build tooling once (sha256-verified, cached in `~/.fhir/tools`), runs it with a sane heap (`HEAP` env to override). |
-| [`eng/future/kindling-wrapper.properties`](eng/future/kindling-wrapper.properties) | **humans**, deliberately, on toolchain releases | The toolchain pin: `toolUrl` + `toolSha256` (exactly `gradle-wrapper.properties`' shape; with Maven-released tooling the URL is a pure function of the version). |
+| [`tools/build/launch.jar`](tools/build/launcher-src/Launcher.java) — **4KB, committed, source alongside** | almost never changes | The gradle-wrapper move: the only thing you run. Reads the wrapper pin, fetches the build tooling once (sha256-verified, cached in `~/.fhir/tools`), runs it with a sane heap (`HEAP` env to override). |
+| [`tools/build/kindling-wrapper.properties`](tools/build/kindling-wrapper.properties) | **humans**, deliberately, on toolchain releases | The toolchain pin: `toolUrl` + `toolSha256` (exactly `gradle-wrapper.properties`' shape; with Maven-released tooling the URL is a pure function of the version). |
 | [`fhir.lock`](fhir.lock) | **the refresh bot — its only writer** | The content lock: which terminology answers this commit builds against. |
 
 Each stage bootstraps the next; nothing downloads itself. Two writers — maintainer and bot —
@@ -50,7 +50,7 @@ downstream consumer inherits that trust through the hash chain.
 
 | Who | What they run | When | Takes | What happens |
 |---|---|---|---|---|
-| **Editor, any OS** | `java -jar eng/future/launch.jar build .` | every edit cycle | ~3.5 min | hermetic, zero terminology traffic, signature checked against the lock |
+| **Editor, any OS** | `java -jar tools/build/launch.jar build .` | every edit cycle | ~3.5 min | hermetic, zero terminology traffic, signature checked against the lock |
 | Editor adding new codes | `… build . --online` | when the spec gains terminology | + ~1s per new code | only the new questions go to the server; the build reports "terminology questions not answered by the pack: N" |
 | Editor checking blast radius | `… build . --impact` | before pushing | + ~30s | "your edit changed these 4 published files" — possible only because output is reproducible |
 | **Content-PR author/reviewer** | nothing extra | — | — | PRs carry content only; **editors never touch `fhir.lock`**; the miss count surfaces in the CI log as a signal, not a gate |

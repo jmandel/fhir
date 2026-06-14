@@ -44,8 +44,8 @@ jobs:
         with: { distribution: temurin, java-version: "17" }
       - name: Fetch tooling jar (from kindling-wrapper.properties)
         run: |
-          url=$(grep '^toolUrl=' eng/future/kindling-wrapper.properties | cut -d= -f2-)
-          sha=$(grep '^toolSha256=' eng/future/kindling-wrapper.properties | cut -d= -f2-)
+          url=$(grep '^toolUrl=' tools/build/kindling-wrapper.properties | cut -d= -f2-)
+          sha=$(grep '^toolSha256=' tools/build/kindling-wrapper.properties | cut -d= -f2-)
           curl -fsSL -o tool.jar "$url"; echo "$sha  tool.jar" | sha256sum -c -
       - name: Canonical compare (Java packager diff)
         id: diff
