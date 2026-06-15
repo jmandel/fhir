@@ -3,11 +3,11 @@
   "comment": "FHIR content lock (npm package-lock v3 profile; see FUTURE.md). Registries FIND bytes (resolved), this file TRUSTS bytes (integrity, verified on every use), the shared content-addressed store KEEPS bytes. Keys are plain package names - no vendor folder exists. Single writer: the refresh bot. expectedOutput lives here because it changes in the same commit as the pack it describes.",
   "packages": {
     "hl7.fhir.r6.txpack": {
-      "version": "20260614",
-      "resolved": "https://github.com/jmandel/fhir-perf/releases/download/txpack-future-v1/txpack-78abc477.zip",
-      "integrity": "sha256-UF5bLyQYSzc2WLA484JTvuk374Xe1bP8QEhMzqcfMk0=",
-      "contentSha256": "78abc4773bb45c4f526c5e4adcb701e147b00810e2aa2579d9af0c76c3931906",
-      "recordedAgainst": "tx.fhir.org (the canonical public server; federates to tx.hl7europe.eu), 2026-06-14"
+      "version": "20260615",
+      "resolved": "https://github.com/jmandel/fhir-perf/releases/download/txpack-future-v1/txpack-fa8828e5.zip",
+      "integrity": "sha256-+ogo5S8ClXr73ma1upOEAVjq418hz9VCTTTyw/SgEfY=",
+      "contentSha256": "fa8828e52f02957afbde66b5ba93840158eae35f21cfd5424d34f2c3f4a011f6",
+      "recordedAgainst": "tx.fhir.org (the canonical public server; federates to tx.hl7europe.eu), 2026-06-15 (recorded from scratch in GitHub Actions via the full_pin bootstrap, no prior pin)"
     }
   },
   "expectedOutput": {
