@@ -16,9 +16,13 @@ name: txpack record (nightly refresh — recorder half)
 # by construction, a real change in the canonical server's answers, never our noise and never a hiccup.
 #
 # Scheduled nightly against the canonical server (tx.fhir.org). Most nights: one cold build, no delta,
-# silent. On a real change: a second build confirms it and a candidate is emitted. (Provenance note:
-# this demo's pinned pack was recorded against a local FHIRsmith the nightly can't reach, so a real
-# rollout would re-base the pack on tx.fhir.org for consistent provenance; the loop is identical.)
+# silent. On a real change: a second build confirms it and a candidate is emitted.
+#
+# Manual `full_pin` dispatch: instead of the nightly delta path, cold-record a COMPLETE pack against
+# the public server, then verify it builds the spec HERMETICALLY with zero terminology network (so a
+# missing answer is a hard failure, never a silent miss) and upload it as an artifact. This is the
+# from-scratch pinning demonstration — and because a GitHub runner can only reach the public server,
+# the resulting pack is provably recorded against tx.fhir.org, never a local terminology server.
 
 on:
   schedule:
@@ -32,12 +36,18 @@ on:
         description: "Terminology server to record against (a recording run hits it once, serially)"
         required: true
         default: "https://tx.fhir.org"
+      full_pin:
+        description: "Full re-pin: cold-record a COMPLETE pack against the server, verify it builds hermetically (zero misses), upload it as an artifact (the from-scratch pinning demo)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
 
 jobs:
+  # the nightly delta/refresh path (schedule, or a manual dispatch that is NOT a full re-pin)
   record:
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.full_pin)
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -103,3 +113,76 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: record-logs, path: "record-*.log", if-no-files-found: ignore }
+
+  # the from-scratch pinning demonstration (manual `full_pin` dispatch only): cold-record a COMPLETE
+  # pack against the public server, verify it builds the spec hermetically with zero misses, and
+  # upload it as an artifact for review + promotion to the pack release channel.
+  full-pin:
+    if: github.event_name == 'workflow_dispatch' && inputs.full_pin
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+      - name: Cache FHIR package cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.fhir/packages
+          key: fhir-packages-${{ runner.os }}-v1
+      - name: Fetch tooling jar (from kindling-wrapper.properties)
+        run: |
+          url=$(grep '^toolUrl=' tools/build/kindling-wrapper.properties | cut -d= -f2-)
+          sha=$(grep '^toolSha256=' tools/build/kindling-wrapper.properties | cut -d= -f2-)
+          curl -fsSL -o tool.jar "$url"; echo "$sha  tool.jar" | sha256sum -c -
+      - name: Cold serial record of a COMPLETE pack against the public server
+        run: |
+          # record() is cold + serial by design: it re-asks the build's full question set against the
+          # live server (serial keeps load-induced shedding under the retry cap so the capture is
+          # complete) and writes the RAW fresh recording — zero carry-forward — to candidate.fresh.zip.
+          SERVER="${{ inputs.server }}"; SERVER="${SERVER:-https://tx.fhir.org}"
+          printf '{ "txFhirProduction": "%s" }\n' "$SERVER" > /tmp/record-settings.json
+          java -Xmx11g -cp tool.jar org.hl7.fhir.tools.publisher.SpecBuild record . \
+            -fhir-settings /tmp/record-settings.json -out candidate
+      - name: Select the pure-fresh pack (zero carry-forward), name it by content hash
+        id: pack
+        run: |
+          if   [ -f candidate.fresh.zip ]; then PACK=candidate.fresh.zip   # the raw fresh recording
+          elif [ -f candidate.zip ];       then PACK=candidate.zip         # fresh == pinned: carry-forward is a no-op
+          else echo "::error::record produced no pack — the server was unreachable"; exit 1; fi
+          sha=$(sha256sum "$PACK" | cut -d' ' -f1)
+          out="txpack-${sha:0:8}.zip"; cp "$PACK" "$out"
+          echo "pack=$out" >> "$GITHUB_OUTPUT"
+          echo "sha=$sha"  >> "$GITHUB_OUTPUT"
+          echo "selected $out (sha256 $sha)"
+      - name: Verify PERFECT — hermetic build off the new pack (any miss is a hard failure)
+        env:
+          SIGNATURE_GATE: report   # a from-scratch pin sets a NEW signature; don't gate on the old one
+        run: |
+          # an explicit -Dorg.hl7.fhir.tx.pack WINS over fhir.lock (Publisher.java); --hermetic turns
+          # ANY unanswered terminology question into a hard TxHermeticViolationError. So rc=0 proves
+          # the pack served every question with ZERO terminology network — a complete, perfect pack.
+          java -Xmx11g -Dorg.hl7.fhir.tx.pack="$PWD/${{ steps.pack.outputs.pack }}" \
+            -cp tool.jar org.hl7.fhir.tools.publisher.SpecBuild build . --hermetic
+          sig=$(grep -E '^Summary: Errors=' build-future.log | tail -1)
+          echo "captured output signature: $sig"
+          e=$(echo "$sig" | sed -E 's/.*Errors=([0-9]+).*/\1/')
+          w=$(echo "$sig" | sed -E 's/.*Warnings=([0-9]+).*/\1/')
+          i=$(echo "$sig" | sed -E 's/.*Information messages=([0-9]+).*/\1/')
+          ssri="sha256-$(python3 -c "import base64;print(base64.b64encode(bytes.fromhex('${{ steps.pack.outputs.sha }}')).decode())")"
+          jq -n --arg pack "${{ steps.pack.outputs.pack }}" --arg sha "${{ steps.pack.outputs.sha }}" \
+                --arg ssri "$ssri" --argjson e "$e" --argjson w "$w" --argjson i "$i" \
+                --arg server "${{ inputs.server }}" --arg date "$(date -u +%Y-%m-%d)" \
+            '{pack:$pack, sha256:$sha, integrity:$ssri, expectedOutput:{errors:$e,warnings:$w,information:$i}, recordedAgainst:($server+" "+$date)}' \
+            | tee pin-proposal.json
+      - name: Upload the verified pack + proposed pin
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: txpack-full-pin
+          path: |
+            txpack-*.zip
+            pin-proposal.json
+            build-future.log
+            record.log
+          if-no-files-found: warn
