@@ -152,6 +152,15 @@ verify the diff is pure reordering/flicker, then allowlist.
   (precedent: `hl7.fhir.rX.expansions`), with `fhir.lock` carrying the integrity the package
   infrastructure doesn't enforce. Tooling belongs on Maven, not npm.
 
+## Build system docs
+
+In-repo documentation for actually running and maintaining this build:
+
+- [`tools/build/README.md`](tools/build/README.md) — quickstart: the one command to build and what to expect
+- [`tools/build/BUILD-REFERENCE.md`](tools/build/BUILD-REFERENCE.md) — CLI reference for every `SpecBuild`/launcher command and flag
+- [`tools/build/HOW-IT-WORKS.md`](tools/build/HOW-IT-WORKS.md) — the per-fork mechanism and rationale behind each change
+- [`tools/build/REFRESH-AND-CI.md`](tools/build/REFRESH-AND-CI.md) — the nightly recorder/refresh pipeline and CI wiring
+
 ## The full design
 
 - [The settled vision](https://github.com/jmandel/fhir-perf/blob/main/docs/txpack-vision.md) — moving parts, user experiences, trust model
