@@ -142,8 +142,10 @@ jobs:
           # complete) and writes the RAW fresh recording — zero carry-forward — to candidate.fresh.zip.
           SERVER="${{ inputs.server }}"; SERVER="${SERVER:-https://tx.fhir.org}"
           printf '{ "txFhirProduction": "%s" }\n' "$SERVER" > /tmp/record-settings.json
+          # -bootstrap: ignore any existing pin entirely (no carry-forward, no diff). The recorder's
+          # job is to CREATE the pin, so the from-scratch demo must not depend on a prior one.
           java -Xmx11g -cp tool.jar org.hl7.fhir.tools.publisher.SpecBuild record . \
-            -fhir-settings /tmp/record-settings.json -out candidate
+            -bootstrap -fhir-settings /tmp/record-settings.json -out candidate
       - name: Select the pure-fresh pack (zero carry-forward), name it by content hash
         id: pack
         run: |
