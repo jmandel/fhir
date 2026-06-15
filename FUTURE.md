@@ -66,8 +66,8 @@ undersized heap with the exact fix to apply.
 ### The Grahame story, end to end
 
 His server fixes a display string overnight. The nightly recording sees it, passes its gate
-(rc=0 + parity with its own previous output), and the canonical pack hash changes for the
-first time in weeks. A PR opens itself: *"1 answer changed (SNOMED display for X); 3 published
+(rc=0, the build-vs-build pack diff is empty, and the one changed answer *reproduces* on
+re-ask), and the canonical pack hash changes for the first time in weeks. A PR opens itself: *"1 answer changed (SNOMED display for X); 3 published
 pages change, listed; explanation attached."* It merges; every editor receives the fix at
 their next `git pull` — visibly, atomically, identically. His server's total cost to propagate
 the fix to the entire world: one build's worth of requests. Today the same fix arrives never,
@@ -81,14 +81,38 @@ re-verification ceremony exists. The pipeline has an upstream half (re-capture) 
 downstream half (propose), each a committed workflow.
 
 **Upstream — the nightly recorder** ([`txpack-record.yml`](.github/workflows/txpack-record.yml),
-`SpecBuild record`). Seeds the build with the *current* pinned pack and runs it **online with
-recording on**, so everything the pack already answers is served locally and only the
-genuinely-missing questions reach the server and get captured. The delta is merged onto the
-current pack to form a candidate, which is diffed back: unchanged → exit silently (the common
-nightly outcome, and a free daily proof the server still answers consistently); changed → emit
-the candidate. One build's worth of requests propagates any change to the whole world. In
-production this is a `schedule:` against the canonical server; it is dispatch-only here so a
-public demo never points a cron at tx.fhir.org.
+`SpecBuild record`). Runs a **cold** build against the canonical server with recording on — the
+pinned pack is *not* seeded, so every terminology question is re-asked fresh. (Seeding would
+serve known answers from the pack and only send new questions to the server, making a server
+*fix* to an existing answer invisible — the recorder must re-ask to detect drift at all.) The
+fresh recording is packaged and diffed against the pinned pack: unchanged → exit silently (the
+common nightly outcome, and a free daily proof the server still answers consistently); changed →
+emit the candidate. One build's worth of requests propagates any change to the whole world.
+Scheduled daily (`schedule:` cron) against tx.fhir.org now that `txpack-future` is the fork's
+default branch.
+
+What makes that diff trustworthy with no human watching is the **determinism contract** (see
+[txpack-vision.md](https://github.com/jmandel/fhir-perf/blob/main/docs/txpack-vision.md#the-determinism-contract)),
+which separates the three sources of run-to-run variation so none of them masquerades as a
+server change:
+
+- *Local nondeterminism is eliminated, not excused* — the build's own computation is a pure
+  function of inputs (the one offender, in-place mutation of a shared cached designation list,
+  is fixed copy-before-mutate), and a same-machine **build-vs-build canonical pack diff must be
+  empty** or the build fails. So our side never contributes a phantom delta.
+- *Inherent volatility is normalized* — timestamps, `urn:uuid`s, per-step `Nms` timings are
+  folded out by the one `diff-packs` canonicalizer; anything we would otherwise excuse becomes a
+  canonicalizer rule instead.
+- *Server flakiness is detected and degraded* — transport/transient errors are structurally
+  unpackable (poison-filtered); a failed request is retried, then **carries forward its
+  known-good pinned value** (so a flake never becomes a spurious "removed" and the run always
+  completes — this is a fallback, not seeding, since every key is still asked cold); and every
+  clean delta must **reproduce** on a re-ask before it is proposed. A persistently-unverified
+  key surfaces as a slow *"unverified for N days"* signal — the loop's only human touchpoint,
+  and on the order of days, not nightly.
+
+A non-empty nightly diff is therefore, by construction, a real change in the canonical server's
+answers — never our noise and never a server hiccup.
 
 **Downstream — the proposer** ([`txpack-refresh.yml`](.github/workflows/txpack-refresh.yml)).
 Takes a candidate and opens the lock-bump PR: canonical pack comparison (`SpecBuild diff-packs`

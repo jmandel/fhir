@@ -5,25 +5,26 @@ name: txpack record (nightly refresh — recorder half)
 # downstream txpack-refresh workflow, which diffs it, measures its published-output impact, and
 # opens the lock-bump PR.
 #
-# How it works: `SpecBuild record` seeds the build with the CURRENT pinned pack and runs it
-# ONLINE with recording on — so every question the pack already answers is served locally and
-# only the genuinely-missing ones reach the server and get captured. The captured delta is
-# merged onto the current pack to form a candidate, which is diffed back against the current
-# pack. Unchanged → exit silently (the common nightly outcome, and a free daily proof the
-# server still answers consistently). Changed → emit the candidate for proposal.
+# How it works (the determinism contract — see docs/txpack-vision.md in jmandel/fhir-perf):
+# `SpecBuild record` runs a COLD build (NOT seeded from the pinned pack) ONLINE with recording on,
+# so every question is re-asked and a server FIX is visible. The candidate is CARRY-FORWARD
+# (merge([pinned, fresh]) — fresh wins on overlap; the pinned answer survives only where a
+# transient server failure dropped it, so a flake never becomes a spurious "removed"). It is diffed
+# against the pinned pack: unchanged → exit silently (the common nightly outcome). On a delta, a
+# REPRODUCE step runs a second independent recording and `SpecBuild reproduce` keeps only the deltas
+# both recordings agree on — a load-induced flap does not reproduce and is dropped. So a proposal is,
+# by construction, a real change in the canonical server's answers, never our noise and never a hiccup.
 #
-# Scheduled nightly against the canonical server (tx.fhir.org), seeded from the current pack so
-# it sends only the pack's MISSES — one build's worth of light traffic, off-peak. This is the
-# ONE daily action that matters: it is what produces a new pack version when the server's answers
-# change. (Provenance note: this demo's pinned pack was recorded against a local FHIRsmith the
-# nightly can't reach, so a real rollout would re-base the pack on tx.fhir.org for consistent
-# provenance; the loop itself — record -> diff -> propose — runs the same either way.)
+# Scheduled nightly against the canonical server (tx.fhir.org). Most nights: one cold build, no delta,
+# silent. On a real change: a second build confirms it and a candidate is emitted. (Provenance note:
+# this demo's pinned pack was recorded against a local FHIRsmith the nightly can't reach, so a real
+# rollout would re-base the pack on tx.fhir.org for consistent provenance; the loop is identical.)
 
 on:
   schedule:
-    # the daily recapture: re-record against the canonical server, propose a pack bump if the
-    # server's answers changed. Fires from the default branch (txpack-future). 09:11 UTC is
-    # off-peak for tx.fhir.org; a seeded recording sends only the pack's MISSES, not a cold load.
+    # the daily recapture: cold-record against the canonical server, propose a pack bump only if a
+    # delta reproduces. Fires from the default branch (txpack-future). 09:11 UTC is off-peak for
+    # tx.fhir.org; most nights this is a single cold build with no delta (no second build).
     - cron: "11 9 * * *"
   workflow_dispatch:
     inputs:
@@ -53,16 +54,40 @@ jobs:
           url=$(grep '^toolUrl=' tools/build/kindling-wrapper.properties | cut -d= -f2-)
           sha=$(grep '^toolSha256=' tools/build/kindling-wrapper.properties | cut -d= -f2-)
           curl -fsSL -o tool.jar "$url"; echo "$sha  tool.jar" | sha256sum -c -
-      - name: Record the delta and build a candidate pack
+      - name: Record (build A) — cold recording against the canonical server
         run: |
+          # COLD: the build is NOT seeded from the pinned pack, so every question is re-asked and a
+          # server FIX is visible. The candidate is carry-forward (merge([pinned, fresh]), pinned
+          # filling only what a transient failure dropped), so a flake never becomes a "removed".
+          # A `candidate-A.fresh.zip` sidecar (the raw recording) is emitted only when build A sees a
+          # real delta vs the pinned pack.
           SERVER="${{ inputs.server }}"; SERVER="${SERVER:-https://tx.fhir.org}"
           printf '{ "txFhirProduction": "%s" }\n' "$SERVER" > /tmp/record-settings.json
           java -Xmx11g -cp tool.jar org.hl7.fhir.tools.publisher.SpecBuild record . \
-            -fhir-settings /tmp/record-settings.json -out candidate-pack
-      - name: Propose, if changed
+            -fhir-settings /tmp/record-settings.json -out candidate-A
+          mv -f record.log record-A.log 2>/dev/null || true
+      - name: Reproduce-before-propose — a second recording confirms the delta
+        run: |
+          # No sidecar => no delta => nothing to confirm (the common nightly outcome, one build).
+          if [ ! -f candidate-A.fresh.zip ]; then
+            echo "no delta — the pinned pack still matches the server; nothing to propose."
+            exit 0
+          fi
+          # An INDEPENDENT second recording. A real server change reproduces; a load-induced flap
+          # does not, and `reproduce` drops it (carrying the pinned answer forward). Run as a separate
+          # JVM — the Publisher is not re-entrant in-process.
+          SERVER="${{ inputs.server }}"; SERVER="${SERVER:-https://tx.fhir.org}"
+          printf '{ "txFhirProduction": "%s" }\n' "$SERVER" > /tmp/record-settings.json
+          java -Xmx11g -cp tool.jar org.hl7.fhir.tools.publisher.SpecBuild record . \
+            -fhir-settings /tmp/record-settings.json -out candidate-B
+          mv -f record.log record-B.log 2>/dev/null || true
+          java -cp tool.jar org.hl7.fhir.tools.publisher.SpecBuild reproduce \
+            -fresh candidate-A.fresh.zip -confirm candidate-B.fresh.zip \
+            -pinned fhir.lock -out candidate-pack
+      - name: Propose, if a change survived confirmation
         run: |
           if [ ! -f candidate-pack.zip ]; then
-            echo "no change — current pack is still complete; nothing to propose."
+            echo "no confirmed change — the build-A delta did not reproduce (server flakiness); nothing to propose."
             exit 0
           fi
           sha=$(sha256sum candidate-pack.zip | cut -d' ' -f1)
@@ -74,7 +99,7 @@ jobs:
           #   jq -n --arg u "<asset-url>" --arg s "$sha" \
           #     '{candidate_url:$u, candidate_sha256:$s}' > .txpack/refresh-request.json
           #   git add .txpack/refresh-request.json && git commit -m "refresh: propose $name" && git push
-          echo "candidate ready: $name (sha256 $sha) — hand to txpack-refresh to open the bump PR"
+          echo "confirmed candidate ready: $name (sha256 $sha) — hand to txpack-refresh to open the bump PR"
       - uses: actions/upload-artifact@v4
         if: always()
-        with: { name: record-log, path: record.log, if-no-files-found: ignore }
+        with: { name: record-logs, path: "record-*.log", if-no-files-found: ignore }

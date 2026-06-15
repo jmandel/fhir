@@ -91,6 +91,57 @@ jobs:
             parity-debug.tgz
           if-no-files-found: ignore
 
+  determinism-gate:
+    name: "Determinism gate: two converged builds, byte-identical (no excusal)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    # The LOCAL-nondeterminism half of the determinism contract (docs/txpack-vision.md): the build's
+    # own computation must be a pure function of inputs. Unlike the reproducibility job above, this
+    # gate has NO evidence excusal and NO allowlist - a category-2 (accidental) difference FAILS.
+    # Inherent volatility (timestamps, uuids, step timings) is normalized inside the manifest; only
+    # ordering-equal differences are excused (the O: hash). Conservative trigger for now (3 builds);
+    # intended to become a per-push blocking gate once the runner budget is confirmed.
+    if: >-
+      (github.event_name == 'workflow_dispatch' && inputs.parity) ||
+      (github.event_name == 'push' && contains(join(github.event.commits.*.message, ' '), '[determinism]'))
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+      - name: Cache FHIR package cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.fhir/packages
+          key: fhir-packages-${{ runner.os }}-v1
+      - name: Cache content-addressed tooling + pack
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.fhir/tx-packs
+            ~/.fhir/tools
+          key: fhirlock-${{ hashFiles('fhir.lock', 'tools/build/kindling-wrapper.properties') }}
+      - name: Fetch tooling jar (for the compare step)
+        run: |
+          url=$(grep '^toolUrl=' tools/build/kindling-wrapper.properties | cut -d= -f2-)
+          sha=$(grep '^toolSha256=' tools/build/kindling-wrapper.properties | cut -d= -f2-)
+          curl -fsSL -o tool.jar "$url"; echo "$sha  tool.jar" | sha256sum -c -
+      - name: Build to convergence (discarded — first build is not yet converged)
+        run: HEAP=11g ./tools/build/build.sh --manifest
+      - name: Converged build A
+        run: HEAP=11g ./tools/build/build.sh --manifest && cp build-future.manifest mA.manifest
+      - name: Converged build B
+        run: HEAP=11g ./tools/build/build.sh --manifest && cp build-future.manifest mB.manifest
+      - name: Assert local determinism — hard, no allowlist, no evidence excusal
+        run: |
+          # category-2 (accidental nondeterminism: shared-mutable-state, iteration order) must be EMPTY.
+          # `compare` with no -allowlist and no -prev fails (exit 1) on any non-ordering content diff
+          # between the two converged same-commit builds. That is a determinism bug to fix at source.
+          java -cp tool.jar org.hl7.fhir.tools.publisher.SpecBuild compare mA.manifest mB.manifest
+      - name: Upload manifests on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with: { name: determinism-manifests, path: "m*.manifest", if-no-files-found: ignore }
+
   stock-baseline:
     name: "Baseline: stock toolchain, cold, remote tx.fhir.org"
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.stock_baseline }}
