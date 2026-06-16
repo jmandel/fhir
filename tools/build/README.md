@@ -265,21 +265,14 @@ reproduce-before-propose. For the full treatment, see
 
 ### \* Didn't the build already cache terminology answers — and download a zip from tx.fhir.org?
 
-It did — and this is the core spec build, not an IG-Publisher-only path; both drive the same
-`TerminologyCacheManager` in core. The stock toolchain keeps a per-machine cache at
-`~/.fhir/tx-cache/{org}/{repo}/{branch}/` (the `{org}/{repo}/{branch}` comes from the checkout's
-git branch), read at startup and written each run, which is why a *warm* build (one whose cache is
-already populated) is much faster than a *cold* one. It also moves that cache over the network: at
-startup it downloads `https://tx.fhir.org/tx-cache/.../{branch}.zip` when its version stamp is
-stale, and a build that holds a tx.fhir.org API key (in practice HL7's CI or the tx maintainer)
-zips the cache back up at the end and PUTs it over the same URL in place.
-
-That download is also why "surely the zip keeps CI warm" doesn't hold in the old model: the zip
-exists only where a keyed build has uploaded it — the canonical HL7 repo's branches. A fork (say
-`jmandel/fhir`), or any runner without that API key, requests its own URL, gets a 404 (and the
-`default.zip` fallback 404s too), and runs cold. The zip warms HL7's own CI, not forks or
-contributors. (This is the terminology cache, used by *both* the core spec build and the IG
-Publisher; it is separate from the IG *expansions package*, which ships pre-expanded value sets.)
+It did. The stock toolchain keeps a per-machine cache at
+`~/.fhir/tx-cache/{org}/{repo}/{branch}/`, read at startup and written each run, so a *warm* build
+(its cache already populated) is much faster than a *cold* one. The code also moves that cache over
+the network — at startup it fetches `https://tx.fhir.org/tx-cache/.../{branch}.zip`, and a build
+holding a tx.fhir.org API key PUTs it back — but that public endpoint is empty today: its index
+lists nothing and the core-spec URLs 404. In practice HL7's CI stays warm through its own pipeline
+cache (an Azure cache keyed on the branch) and dev builds through the local one. (This is the
+terminology cache, separate from the IG *expansions package*, which ships pre-expanded value sets.)
 
 So txpack does not remove network calls the cache had already removed for warm builds. It changes
 what the cache *is*. The stock cache is mutable, machine-local, ungated, overwritten in place, and
