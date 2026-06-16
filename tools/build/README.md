@@ -271,8 +271,12 @@ It did. The stock toolchain keeps a per-machine cache at
 the network — at startup it fetches `https://tx.fhir.org/tx-cache/.../{branch}.zip`, and a build
 holding a tx.fhir.org API key PUTs it back — but that public endpoint is empty today: its index
 lists nothing and the core-spec URLs 404. In practice HL7's CI stays warm through its own pipeline
-cache (an Azure cache keyed on the branch) and dev builds through the local one. (This is the
-terminology cache, separate from the IG *expansions package*, which ships pre-expanded value sets.)
+cache, and dev builds through the local one. That pipeline cache, though, is opaque (it lives
+inside Azure DevOps, not retrievable), keyed only on the branch so nothing busts it, and frozen at
+each branch's first build (the `Cache@2` task saves only on a miss) — so a poisoned answer sticks,
+new codes re-fetch every run, and the `master` pipeline, which has no cache task at all, runs fully
+cold. (This is the terminology cache, separate from the IG *expansions package*, which ships
+pre-expanded value sets.)
 
 So txpack does not remove network calls the cache had already removed for warm builds. It changes
 what the cache *is*. The stock cache is mutable, machine-local, ungated, overwritten in place, and
