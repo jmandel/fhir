@@ -53,14 +53,11 @@ it. The miss count under `--online` surfaces in the CI log as a signal, not a ga
 
 ### Learn more
 
-- [`tools/build/README.md`](tools/build/README.md) — quickstart for the new build.
-- [`tools/build/BUILD-REFERENCE.md`](tools/build/BUILD-REFERENCE.md) — the full command surface
-  (every subcommand, flag, and system property).
-- [`tools/build/HOW-IT-WORKS.md`](tools/build/HOW-IT-WORKS.md) — what changed in each fork to make
-  the build hermetic, fast, and deterministic.
-- [`tools/build/REFRESH-AND-CI.md`](tools/build/REFRESH-AND-CI.md) — the nightly refresh/CI
-  pipeline that regenerates packs and `fhir.lock`.
-- [`FUTURE.md`](FUTURE.md) — the why: the txpack design, trust model, and refresh pipeline.
+- [`tools/build/README.md`](tools/build/README.md) — **the complete build guide**: the entry point
+  and full CLI, the concepts (recording, refresh, reproduce, the judge, from-scratch pin bootstrap),
+  the answer pack and `fhir.lock`, the CI workflows and verification layers, what changed in each
+  fork, and the determinism contract.
+- [`FUTURE.md`](FUTURE.md) — the vision in brief (why this exists; the trust model in one line).
 
 ---
 

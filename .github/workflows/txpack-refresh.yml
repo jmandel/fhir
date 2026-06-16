@@ -108,9 +108,10 @@ jobs:
           SIGNATURE_GATE=report java -Xmx11g -Dorg.hl7.fhir.tx.pack="$PWD/candidate.zip" -cp tool.jar \
             org.hl7.fhir.tools.publisher.SpecBuild build . --manifest
           CAND_SIG=$(grep -E "Summary: Errors=" build-future.log | tail -1 | sed 's/.*Summary: //')
+          CUR_SIG=$(jq -r '.expectedOutput | "Errors=\(.errors), Warnings=\(.warnings), Information messages=\(.information)"' fhir.lock)
           { echo "## Published-output impact (same-machine A/B, content-level)";
             echo;
-            echo "**Output signature with candidate: $CAND_SIG** (current pack: Errors=0, Warnings=3693, Information messages=345)";
+            echo "**Output signature with candidate: $CAND_SIG** (current pack: $CUR_SIG)";
             echo;
             java -cp tool.jar org.hl7.fhir.tools.publisher.SpecBuild impact /tmp/old-output.manifest build-future.manifest | sed 's/^/- /' > /tmp/impact-list.txt
             n=$(wc -l < /tmp/impact-list.txt)

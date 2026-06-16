@@ -387,7 +387,6 @@ gradle-app.setting
 tools/build/*/
 !tools/build/launcher-src/
 !tools/build/README.md
-!tools/build/BUILD-REFERENCE.md
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,eclipse,java,gradle,osx,windows,linux
 /comp
