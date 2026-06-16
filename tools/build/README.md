@@ -296,3 +296,46 @@ source**; *inherent* volatility (clocks, UUIDs, section numbers) is **normalized
 the judge; and *server* nondeterminism is **detected and degraded** via flake filtering, carry-forward,
 and reproduce-before-propose. For the full treatment, see
 [docs/txpack-vision.md](https://github.com/jmandel/fhir-perf/blob/main/docs/txpack-vision.md).
+
+---
+
+## FAQ
+
+### Didn't the build already cache terminology answers? Isn't there a zip from tx.fhir.org?
+
+Yes — and being clear about that is the point. The stock toolchain has a **per-machine on-disk
+cache** at `~/.fhir/tx-cache/{org}/{repo}/{branch}/`, read at startup and written during every run,
+which is why a **warm** build is already fast (~197s) while a **cold** one is ~18 min. It even has a
+zip pipeline: at startup it downloads `https://tx.fhir.org/tx-cache/.../{branch}.zip` when its
+version stamp is stale, and a *keyed* build (HL7 CI / the tx maintainer) zips the cache back up at
+the end and **HTTP-PUTs it over the same URL, in place**. (That's separate from the IG *expansions
+package*, which ships pre-expanded value sets as data.)
+
+So txpack is **not** "we removed network calls the cache hadn't already removed." It's a change in
+the cache's *nature*: that cache is **mutable, per-machine, per-branch, ungated, overwrite-in-place,
+and not in git**. The pack is the opposite — **immutable, content-addressed, pinned in `fhir.lock`,
+reviewed, and committed**. A per-machine convenience becomes a shared, reproducible contract.
+
+### If warm builds were already cached, what does the pack actually fix?
+
+The documented failure modes of that mutable cache — which the pinned, immutable model removes by
+construction:
+
+| Stock cache problem | Pinned-pack outcome |
+|---|---|
+| **Cached poison** — a server flake writes an *error* into a `.cache` file; every later warm build replays it as a failure (fix = tribal `rm -rf ~/.fhir/tx-cache`). | Transport/transient errors are **structurally unrepresentable** in a pack — a recording stores a clean answer or nothing. |
+| **Wrong-branch keying** — the cache is keyed to the *alphabetically first* local branch, so caches silently cross branches. | No branch keying — one **content-addressed** pin, identical everywhere. |
+| **Ungated publish** — any green keyed build overwrites the one shared zip: no hash, diff, review, or provenance (and can distribute the poison above). | A refresh is an **immutable, hash-named** pack proposed via a **reviewed PR** with a machine diff. |
+| **Forks & CI are always cold** (fork zips 404) and **version bumps re-cold everyone** at once. | The answers ship **with the checkout**, fetched by hash → **cold == warm** for forks, CI, and after a bump. |
+| **Failed builds re-pay the whole network bill** (the fail→fix→rerun loop). | Hermetic + **complete**: every answer is present or the build hard-fails; reruns are free and offline. |
+
+Net: not "faster than warm," but **cold == warm, identical on every machine, un-poisonable, and
+drift-free** (measured: ~195s cold-with-pack ≈ ~197s warm; ~231s fully hermetic with the exact
+reference signature).
+
+### Isn't this just the expansions package?
+
+Same spirit — "ship terminology as data instead of asking for it" — but the expansions package
+covers only **pre-expanded value sets**. The pack generalizes that to the **whole question surface**
+the build actually asks (`validate-code`, `$expand`, server capabilities, resource lookups, registry
+resolutions, *and* negative "not on the server" answers), and pins the whole thing by hash.
