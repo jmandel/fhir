@@ -1,341 +1,304 @@
 # The txpack FHIR spec build
 
-**Building the FHIR spec used to mean asking a terminology server thousands of
-questions over the network — slow, flaky, and never quite the same twice. So we
-ask those questions *once*, write down all the answers in a file we pin like a
-lockfile, and let every build replay from that file instead of the network.**
-That pinned file of answers is the **pack**. The result: ~4 minutes instead of
-18+, fully offline, byte-identical on every machine. The server gets touched
-only when you genuinely add new codes.
+Building the FHIR spec means answering thousands of terminology questions — *is this code
+valid? what is in this value set?* — that the build would otherwise put to a server over the
+network, one round-trip at a time.[\*](#faq) txpack answers them once, records the answers in a
+hash-pinned file, and replays that file on every build. Cold builds drop from 18+ minutes to
+~4, run fully offline, and produce identical bytes on every machine. The build touches the
+server only when you add a genuinely new code.
 
-If you read nothing else, read the [Quickstart](#quickstart). Everything after
-it is "go deeper."
+New here? Read the [Quickstart](#quickstart); the rest is reference.
 
 ---
 
 ## The problem
 
-A normal FHIR spec build doesn't just transform files. As it runs, it constantly
-turns to a **terminology server** (like `tx.fhir.org`) and asks: *Is this code
-valid? What's in this value set? Does this system exist?* — thousands of such
-questions, each a network round-trip. That has three costs:
+As it runs, the build keeps turning to a **terminology server** (e.g. `tx.fhir.org`): *Is this
+code valid? What does this value set contain? Does this system exist?* — thousands of times,
+each a network round-trip. Three costs follow:
 
-- **Slow.** A cold build is 18+ minutes, most of it waiting on the network.
-- **Flaky.** A server hiccup, a timeout, a changed answer mid-build — any of these
-  can derail or subtly alter the result.
-- **Non-reproducible.** Two people, or two days, can get different output because
-  the server's answers drifted underneath them.
+- **Slow.** A cold build spends most of 18+ minutes waiting on the network.
+- **Flaky.** A timeout, a shed request, or an answer that shifts mid-build can derail the run or
+  quietly change its output.
+- **Unreproducible.** The server's answers drift, so the same source builds differently on
+  different days and machines.
 
-## The idea: record the answers, then replay them
+A per-machine cache softens this for repeat builds on one machine — but it is mutable, unshared,
+and unreviewed, with failure modes of its own (see the [FAQ](#faq)).
 
-Here's the trick, and it's the same one your package manager already uses.
+## The idea: record the answers, replay them
 
-When you run `npm install`, npm doesn't re-resolve the whole dependency graph from
-scratch — it reads `package-lock.json`, which pins *exactly* which bytes you get.
-When you run a Gradle build, you don't install Gradle yourself — a tiny committed
-`gradlew` wrapper fetches the exact pinned Gradle for you and verifies it. We do
-both of those things, for terminology:
+Your package manager already does this. `npm install` reads `package-lock.json` to pin exactly
+which bytes you get instead of re-resolving the graph; `gradlew` fetches and verifies a pinned
+Gradle instead of trusting whatever is installed. txpack applies both moves to terminology:
 
-1. **Record once.** Run the build online against the live server with recording
-   turned on. Capture every question and its answer into a content-addressed zip:
-   the **pack**.
-2. **Pin it like a lockfile.** A file called `fhir.lock` names that pack by URL and
-   hash — exactly the shape of an npm lockfile entry.
-3. **Replay offline.** Every subsequent build reads answers from the pack and never
-   touches the network. This is called a **hermetic** build (hermetic = sealed: no
-   outside influence, so the result depends only on your inputs).
+1. **Record once.** Run online against the live server with recording on; capture every question
+   and its answer into a content-addressed zip — the **pack**.
+2. **Pin it.** `fhir.lock` names that pack by URL and hash, exactly like an npm lockfile entry.
+3. **Replay offline.** Every later build reads from the pack and never touches the network — a
+   **hermetic** build (sealed: the output depends only on your inputs).
 
 ### The three pinned files
 
-Just like Gradle has *a wrapper script* + *a pinned distribution*, and npm has
-*a lockfile*, this system has three committed files — and each has exactly one
-writer, so they never step on each other:
+Each has exactly one writer, so they never collide:
 
-| File | Analogy | Pins | Who edits it |
+| File | Analogy | Pins | Writer |
 |---|---|---|---|
-| `tools/build/launch.jar` | `gradlew` | the bootstrapper you run | a maintainer (recompiles `launcher-src/Launcher.java`) |
-| `tools/build/kindling-wrapper.properties` | `gradle-wrapper.properties` | the build **tool** (by URL + sha256) | a maintainer, on tool-release cadence |
+| `tools/build/launch.jar` | `gradlew` | the bootstrapper you run | maintainer (recompiles `launcher-src/Launcher.java`) |
+| `tools/build/kindling-wrapper.properties` | `gradle-wrapper.properties` | the build **tool** (URL + sha256) | maintainer, on tool releases |
 | `fhir.lock` | `package-lock.json` | the terminology **answers** (the pack) | the refresh **bot**, never a human |
 
-The split is the whole point: maintainers own the *toolchain*, the bot owns the
-*content*, and as an everyday editor **you change none of them**.
+Maintainers own the toolchain, the bot owns the content, and as an everyday editor you touch none
+of them.
 
 ---
 
 ## Quickstart
 
-**Prerequisites:** a JDK (Java 17+) and nothing else — no bash, Python, ant, curl,
-or git. Give the JVM ~12 GB of heap. Run from the **spec checkout root** (the folder
-that contains `fhir.lock` and `tools/`).
-
-### The one command
+You need a JDK (17+) and nothing else — no bash, Python, ant, curl, or git. Run from the spec
+root (the folder holding `fhir.lock` and `tools/`), and give the JVM ~12 GB of heap.
 
 ```sh
 java -jar tools/build/launch.jar build .
 ```
 
-That's it, on any OS. On a unix shell there's a 4-line convenience alias that
-`cd`s to the root for you:
+On a unix shell, a four-line alias `cd`s to the root for you:
 
 ```sh
 ./tools/build/build.sh
 ```
 
-On Windows, run the exact same launcher (it's pure JDK):
+Windows runs the same launcher:
 
 ```powershell
 java -jar tools\build\launch.jar build .
 ```
 
-By **default the build is hermetic**: it serves every answer from the pack and
-touches the network zero times. At startup it prints:
+The build is hermetic by default: every answer comes from the pack, and the network is never
+touched. It says so at startup:
 
 ```
 hermetic: any terminology network attempt is a hard failure (use --online when adding new codes)
 ```
 
-### When you add new codes
+### Adding new codes
 
-If your edit introduces terminology the pack has never seen, the hermetic build
-**fails loudly and names what it needs** — it does not silently guess or skip.
-That's your cue to re-run online so the new questions (and only those) go to the
-server:
+When your edit needs terminology the pack has never seen, the hermetic build stops and names what
+it needs — it never guesses or skips. Re-run online to send those questions, and only those, to
+the server:
 
 ```sh
 ./tools/build/build.sh --online
 ```
 
-`--online` doesn't hide anything; it answers everything it can from the pack, asks
-the server only the genuinely-new questions, and tells you how many:
+`--online` hides nothing. It answers what it can from the pack, asks the server the rest, and
+reports the count:
 
 ```
 terminology questions not answered by the pack: N (these will fold into the pack at the next refresh)
 ```
 
-You never edit the pack or `fhir.lock` to absorb those answers — the nightly
-[refresh loop](#keeping-the-pack-correct-the-refresh-loop) does that for you.
+You never edit the pack or `fhir.lock` to absorb those answers; the nightly
+[refresh loop](#keeping-the-pack-correct-the-refresh-loop) does that.
 
 ### Common variations
 
-| You want to… | Command |
+| Goal | Command |
 |---|---|
 | Build offline from the pin (default) | `./tools/build/build.sh` |
 | Build after adding new codes | `./tools/build/build.sh --online` |
-| Build and check output vs the reference | `./tools/build/build.sh --judge` |
-| See which published files your build changed | `./tools/build/build.sh --impact` |
+| Check output against the reference | `./tools/build/build.sh --judge` |
+| List which published files your build changed | `./tools/build/build.sh --impact` |
 | Use less heap | `HEAP=11g ./tools/build/build.sh` |
 | Pass extra JVM options | `JAVA_OPTS="-XX:+UseParallelGC" ./tools/build/build.sh` |
 
-Heap and JVM tuning come from the **environment** (`HEAP`, `JAVA_OPTS`), not from
-`build` flags, because the launcher applies them when it spawns the child JVM.
+Heap and JVM options come from the environment (`HEAP`, `JAVA_OPTS`), because the launcher applies
+them when it spawns the build's JVM.
 
-**Output** lands in `publish/` (the generated site) and `build-future.log` (the
-Publisher log). SpecBuild's own summary lines (`hermetic:`, `BUILD ok…`,
-`signature: …`) print to the console after the log closes, so they're on screen
-but not in the file.
+The build writes the site to `publish/` and its log to `build-future.log`. SpecBuild's own summary
+lines (`hermetic:`, `BUILD ok…`, `signature:…`) print to the console after the log closes.
 
-> The repo-**root** `build.sh` is a different, legacy thing (the old
-> bash + git-svn + ant build). The front door is `tools/build/build.sh` / `launch.jar`.
+> The repo-**root** `build.sh` is the old bash + git-svn + ant build, not this one. The front door
+> is `tools/build/build.sh` / `launch.jar`.
 
 ---
 
 ## Concepts
 
-A few terms recur. Each is defined here the first time you'll need it.
+- **Pack** — the content-addressed zip of recorded answers: validate-code, expand, server
+  capabilities, resource lookups, registry resolutions. It is a terminology-cache directory,
+  zipped. It records negative answers ("not on the server") too, so a recorded "no" heads off a
+  pointless re-ask.
 
-- **Pack** — the content-addressed zip of recorded terminology answers (validate,
-  expand, server capabilities, resource lookups, registry resolutions). It *is* a
-  terminology-cache directory, zipped. Negative answers ("not on the server") count
-  too, so a recorded "no" stops a pointless re-ask.
+- **Recording** — a cold, online build (`SpecBuild record`) that clears the local cache, ignores
+  the pinned pack, and re-asks the build's full question set against the live server. Going cold
+  is what exposes a *changed* server answer; the result is a candidate pack.
 
-- **Recording** — a *cold, online* build (`SpecBuild record`) that deletes the local
-  cache, ignores the pinned pack, and re-asks the build's **full** question set against
-  the live server, capturing today's answers. Going cold (not seeded from the old pack)
-  is what makes a *changed* server answer visible. The output is a candidate pack.
+- **Reproduce** — the flake defense. A second independent recording runs in a fresh process, and a
+  difference survives only if both recordings agree. A one-time blip is discarded as server noise,
+  so every proposed change is real by construction.
 
-- **Reproduce** — the flake defense. Before any proposed change is trusted, a **second
-  independent recording** runs in a separate process, and a difference is kept **only
-  if both recordings agree**. A difference that shows up once and not the other time is
-  discarded as server noise. So a proposal is, by construction, a real change.
+- **Refresh** — the nightly loop that keeps the pin honest: record → reproduce → open a one-line
+  `fhir.lock` PR, but only on a confirmed change. A frozen pack drifts as the spec grows and the
+  server corrects answers; refresh closes that gap.
 
-- **Refresh** — the nightly upkeep loop that keeps the pinned pack honest: record →
-  reproduce → (only on a confirmed change) open a one-line `fhir.lock` bump PR. A frozen
-  pack drifts as the spec grows and the server corrects answers; refresh closes the gap.
+- **The judge** — *does a pack-built spec still produce the right output?* It fingerprints every
+  published file and compares against a known-good reference. The work is separating a real change
+  from noise: timestamps, generated UUIDs, section numbers, reordered lines. So it normalizes that
+  noise and treats pure reordering as equal. It never excuses a file by name — a blanket by-name
+  skip once hid a real bug — so a file counts as "expected to vary" only on evidence: a same-commit
+  twin build (`-prev`) or the explicit allowlist `tools/build/noise-files-v2.txt`. `build --judge`
+  runs it against `tools/build/ref.manifest`.
 
-- **The judge** — *How do we know a pack-built spec still produces the right output?*
-  We fingerprint every published file and compare it to a known-good reference. The hard
-  part is telling a *real* change from meaningless noise — timestamps, generated UUIDs,
-  section numbers, reordered lines. So we **normalize the known noise** (and treat pure
-  reordering as equal), and we **deliberately never skip a file just because of its name**
-  — a blanket by-name skip once hid a real bug. A file is excused as "expected to vary"
-  only with *evidence* (a same-commit twin build via `-prev`) or via the explicit
-  allowlist `tools/build/noise-files-v2.txt` — never by guessing from a pattern.
-  Mechanically: `SpecBuild compare`, run for you by `build --judge` against
-  `tools/build/ref.manifest`.
-
-- **Pin bootstrap** — creating the *very first* pack when there's no prior pin to carry
-  forward from (`SpecBuild record -bootstrap`). It records cold, skips the carry-forward
-  merge, and emits a fresh pin. Don't confuse this with the launcher's **tool**
-  bootstrap (downloading and verifying the tool jar) — different mechanism, similar word.
+- **Pin bootstrap** — recording the first pack when no prior pin exists to carry forward from
+  (`SpecBuild record -bootstrap`): record cold, skip the carry-forward merge, emit a fresh pin.
+  Distinct from the launcher's *tool* bootstrap, which fetches and verifies the tool jar.
 
 ---
 
 ## Keeping the pack correct: the refresh loop
 
-A pinned pack is a snapshot, and snapshots go stale: the spec gains new codes, and the
-server occasionally corrects an old answer. The **refresh loop** keeps the pin matching
-reality, automatically, so humans never hand-edit it.
+A pinned pack is a snapshot, and snapshots go stale: the spec gains codes, and the server
+occasionally corrects an answer. The refresh loop keeps the pin matching reality without anyone
+hand-editing it. Each night a job:
 
-Every night a job:
+1. **Records** a fresh pack cold against the live server, carrying a pinned answer forward wherever
+   the fresh run only dropped it to a transient failure — so a flake never becomes a phantom removal.
+2. **Reproduces** every difference with a second recording, keeping only what both runs confirm.
+3. **Proposes** a confirmed change by publishing the candidate pack and opening a PR that rewrites
+   *only* `fhir.lock`.
 
-1. **Records** a fresh pack cold against the live server, carrying forward the pinned
-   answers where the fresh run merely dropped one to a transient failure (a flake never
-   becomes a phantom "removed").
-2. **Reproduces** any difference with a second independent recording — keeping only what
-   both runs confirm.
-3. **Proposes** — only if a real, confirmed change survives — by publishing the candidate
-   pack and opening a PR that rewrites *only* `fhir.lock`.
+Most nights nothing changed: one build, no diff, silence.
 
-Most nights, nothing changed: one build, no diff, silent.
+Two writers keep this safe:
 
-**Two personas, and that's the safety:**
-
-- **You, the editor.** You change content. You never touch `fhir.lock`. If your edit needs
-  new codes, you build `--online`, see the count, and move on — the bot folds them in later.
-- **The bot.** It is the *only* writer of `fhir.lock`, and every bump it proposes is backed
-  by a reproduced diff and an output-impact report. Maintainers, separately, are the only
-  writers of the tool pin.
+- **You, the editor,** change content and never touch `fhir.lock`. If an edit needs new codes, you
+  build `--online`, note the count, and move on; the bot folds them in.
+- **The bot** is the only writer of `fhir.lock`, and backs every bump with a reproduced diff and an
+  output-impact report. Maintainers, separately, are the only writers of the tool pin.
 
 ---
 
 ## How you know it's right
 
-Four independent checks, each guarding a different failure mode:
+Four checks, each guarding a different failure:
 
-| Check | The question it answers | When it runs |
+| Check | Question it answers | When |
 |---|---|---|
-| **Hermetic 0-miss** | Is the pack *complete* — can the build run fully offline? | on pin / tool changes (and every push, as a signal) |
-| **The judge** | Does the published output still match the known-good reference? | on demand (`--judge`, `[parity]` CI) |
-| **Determinism** | Do two builds of the same commit produce identical bytes? | on demand (`[determinism]` CI) |
-| **Drift diff** | Does the pinned pack still match what the live server says today? | nightly |
+| **Hermetic 0-miss** | Is the pack complete — can the build run fully offline? | on pin/tool changes (and every push, as a signal) |
+| **The judge** | Does the published output still match the reference? | on demand (`--judge`, `[parity]` CI) |
+| **Determinism** | Do two builds of one commit produce identical bytes? | on demand (`[determinism]` CI) |
+| **Drift diff** | Does the pin still match what the server says today? | nightly |
 
-A few notes that tie them together:
-
-- **Hermetic 0-miss** is strong because a missing answer is a *hard failure that names the
-  request*, not a silent fallback. Zero misses therefore proves completeness.
-- **Determinism is what makes the judge meaningful.** If the same commit produced different
-  bytes run-to-run, comparing output to a reference would be comparing noise. Run-to-run
-  variance was driven from ~21 differing files to ~0 (see the determinism contract below).
-- **The signature gate** is a lightweight always-on cousin of the judge: after every build,
-  the error/warning/info summary is compared to the count pinned in `fhir.lock`. A mismatch
-  fails the build, unless you set it to report-only with `SIGNATURE_GATE=report` (or
-  `-Dorg.hl7.fhir.spec.signatureGate=report`) — useful while a change is intentionally
-  moving the signature.
+Hermetic 0-miss is strong because a missing answer is a hard failure that names the request, not a
+silent fallback — so zero misses proves completeness. Determinism is what makes the judge
+meaningful: if one commit built to different bytes each run, comparing against a reference would
+compare noise (run-to-run variance fell from ~21 differing files to ~0). The **signature gate** is
+the judge's always-on cousin: after every build it compares the error/warning/info summary against
+the count pinned in `fhir.lock`, and fails on a mismatch unless you set `SIGNATURE_GATE=report`
+(or `-Dorg.hl7.fhir.spec.signatureGate=report`) while a change intentionally moves it.
 
 ---
 
-## CI workflows (the gate split)
+## CI workflows
 
-Three workflows live on `txpack-future`. The key design choice is **what's a signal vs. what's
-a hard gate**: everyday content pushes report new terminology rather than blocking on it;
-strict offline-completeness is enforced only when the *pin or tooling* changes.
+Three workflows run on `txpack-future`. The recurring design choice is **signal vs. gate**: a
+content push reports new terminology rather than blocking on it, and strict offline-completeness is
+enforced only when the pin or tooling changes.
 
-- **`txpack-future.yml` — build gates.**
-  - *future-build* (every push): one pack-seeded `--online` build. A no-new-code push touches
-    the network zero times; intentional new codes surface as an "N new terminology questions"
-    signal; the signature is reported, not gated.
-  - *pinned-world-hermetic* (only when `fhir.lock` or the wrapper changes): strict hermetic
-    cold build with zero-network **and** signature **both enforced** — proves the pin is
-    offline-complete.
-  - *reproducibility* (`[parity]`): runs the judge vs `ref.manifest`. *determinism-gate*
-    (`[determinism]`): two same-commit builds must be byte-identical, no excuses. *stock-baseline*
-    (manual): the legacy build, for timing comparison.
+- **`txpack-future.yml` — build gates.** *future-build* (every push) runs one pack-seeded
+  `--online` build: a no-new-code push touches the network zero times, new codes surface as an
+  "N new terminology questions" signal, and the signature is reported, not gated.
+  *pinned-world-hermetic* (only when `fhir.lock` or the wrapper changes) runs a strict hermetic
+  build with zero-network and the signature both enforced. *reproducibility* (`[parity]`) runs the
+  judge; *determinism-gate* (`[determinism]`) demands two byte-identical builds of one commit;
+  *stock-baseline* (manual) times the legacy build.
 
-- **`txpack-record.yml` — the nightly recorder.** Cron job that records → reproduces → publishes
-  a candidate pack to this repo's own `txpack-store` release, then emits a `refresh-request`
-  artifact. A manual `full_pin` job does a from-scratch [pin bootstrap](#concepts), hermetic-verified.
+- **`txpack-record.yml` — the nightly recorder.** A cron job records → reproduces → publishes a
+  candidate pack to this repo's own `txpack-store` release, then emits a `refresh-request` artifact.
+  A manual `full_pin` job does a from-scratch [pin bootstrap](#concepts), hermetic-verified.
 
-- **`txpack-refresh.yml` — the lock-bump PR.** Chained off the recorder via `workflow_run` (so no
-  cross-repo token is needed): canonically diffs the candidate vs the pinned pack, builds an A/B
-  output-impact report, has an LLM write a plain-English summary *from the diffs only*, and opens a
-  PR that mutates **only `fhir.lock`**.
+- **`txpack-refresh.yml` — the lock-bump PR.** Chained off the recorder by `workflow_run`, so it
+  needs no cross-repo token: it diffs the candidate against the pin, builds an A/B output-impact
+  report, has an LLM summarize those diffs in plain English, and opens a PR that touches **only
+  `fhir.lock`**.
 
-**Where artifacts live (all no-token, public `curl`, verified-on-use):** the answer **pack**
-publishes to *this* repo's own `txpack-store` release (default `GITHUB_TOKEN`); the build **tool
-jar** lives on the `jmandel/fhir-perf` release (human-bumped). Consumers need no token to read either.
+Reads need no token — they are public `curl`, verified on use. The **pack** publishes to this
+repo's `txpack-store` release (default `GITHUB_TOKEN`); the **tool jar** lives on the
+`jmandel/fhir-perf` release (human-bumped).
 
 ---
 
 ## What changed in each fork (for the curious)
 
-Three Git forks cooperate, all on `txpack-future`:
+Three forks cooperate, all on `txpack-future`:
 
-- **core (`org.hl7.fhir.core`) — the terminology engine.** Adds a read-only **pack seed layer**
-  consulted before the live cache (misses fall through — it's a seed, not a wall); a **hermetic
-  mode** whose violation is an `Error` (not an `Exception`, so tx clients can't swallow it);
-  cache-key canonicalization so per-run labels don't poison replay; the pack build/merge/diff
-  tooling with flake filtering; `TxLock` (reads `fhir.lock`, verifies integrity on every use); and
-  a batch of determinism fixes.
-- **kindling — the build front end.** Adds the **`SpecBuild` CLI** (`build`/`manifest`/`compare`/
-  `impact`/`diff-packs`/`record`/`reproduce`) that replaces shell scripting, the cold **recorder**,
-  routing all terminology through the cache so it's replayable, and an **honest judge** plus its
-  own determinism fixes.
-- **this repo (`jmandel/fhir`) — integration.** Holds the three pinned files, the unix alias, the
-  FHIR settings, the judge's reference (`ref.manifest`) + allowlist, and the three CI workflows.
+- **core (`org.hl7.fhir.core`) — the terminology engine.** A read-only pack seed layer sits in
+  front of the live cache (a miss falls through — it seeds, it does not wall); a hermetic mode
+  whose violation is an `Error`, not an `Exception`, so tx clients cannot swallow it; cache-key
+  canonicalization so per-run labels do not poison replay; the pack build/merge/diff tooling with
+  flake filtering; `TxLock`, which reads `fhir.lock` and verifies integrity on every use; and a
+  batch of determinism fixes.
+- **kindling — the build front end.** The `SpecBuild` CLI
+  (`build`/`manifest`/`compare`/`impact`/`diff-packs`/`record`/`reproduce`) that replaces shell
+  scripting; the cold recorder; terminology routed through the cache so it replays; the honest
+  judge; and its own determinism fixes.
+- **this repo (`jmandel/fhir`) — integration.** The three pinned files, the unix alias, the FHIR
+  settings, the judge's reference and allowlist, and the three CI workflows.
 
-For the build-CLI flag-by-flag reference, run `./tools/build/build.sh help` (or any of
-`build`/`manifest`/`compare`/`impact`/`diff-packs`/`record`/`reproduce`).
+Run `./tools/build/build.sh help` for the flag-by-flag CLI reference.
 
 ---
 
 ## The determinism contract (in brief)
 
-Determinism is what makes every output comparison sound, and it's enforced in three layers:
-*accidental* nondeterminism (shared state, hash-set ordering, torn parallel reads) is **fixed at
-source**; *inherent* volatility (clocks, UUIDs, section numbers) is **normalized** in diffs and in
-the judge; and *server* nondeterminism is **detected and degraded** via flake filtering, carry-forward,
-and reproduce-before-propose. For the full treatment, see
+Determinism makes every output comparison sound. It is enforced in three layers: *accidental*
+nondeterminism (shared state, hash-set ordering, torn parallel reads) is fixed at the source;
+*inherent* volatility (clocks, UUIDs, section numbers) is normalized in diffs and in the judge;
+*server* nondeterminism is detected and degraded by flake filtering, carry-forward, and
+reproduce-before-propose. For the full treatment, see
 [docs/txpack-vision.md](https://github.com/jmandel/fhir-perf/blob/main/docs/txpack-vision.md).
 
 ---
 
 ## FAQ
 
-### Didn't the build already cache terminology answers? Isn't there a zip from tx.fhir.org?
+### \* Didn't the build already cache terminology answers — and download a zip from tx.fhir.org?
 
-Yes — and being clear about that is the point. The stock toolchain has a **per-machine on-disk
-cache** at `~/.fhir/tx-cache/{org}/{repo}/{branch}/`, read at startup and written during every run,
-which is why a **warm** build is already fast (~197s) while a **cold** one is ~18 min. It even has a
-zip pipeline: at startup it downloads `https://tx.fhir.org/tx-cache/.../{branch}.zip` when its
-version stamp is stale, and a *keyed* build (HL7 CI / the tx maintainer) zips the cache back up at
-the end and **HTTP-PUTs it over the same URL, in place**. (That's separate from the IG *expansions
-package*, which ships pre-expanded value sets as data.)
+It did — and this is the core spec build, not an IG-Publisher-only path; both drive the same
+`TerminologyCacheManager` in core. The stock toolchain keeps a per-machine cache at
+`~/.fhir/tx-cache/{org}/{repo}/{branch}/` (the `{org}/{repo}/{branch}` comes from the checkout's
+git branch), read at startup and written each run, so a *warm* build already finishes in ~197s
+while a *cold* one takes ~18 min. It also moves that cache over the network: at startup it downloads
+`https://tx.fhir.org/tx-cache/.../{branch}.zip` when its version stamp is stale, and a keyed build
+(HL7 CI, or the tx maintainer) zips the cache back up at the end and PUTs it over the same URL in
+place. (That cache is separate from the IG *expansions package*, which ships pre-expanded value
+sets.)
 
-So txpack is **not** "we removed network calls the cache hadn't already removed." It's a change in
-the cache's *nature*: that cache is **mutable, per-machine, per-branch, ungated, overwrite-in-place,
-and not in git**. The pack is the opposite — **immutable, content-addressed, pinned in `fhir.lock`,
-reviewed, and committed**. A per-machine convenience becomes a shared, reproducible contract.
+So txpack does not remove network calls the cache had already removed for warm builds. It changes
+what the cache *is*. The stock cache is mutable, per-machine, per-branch, ungated, overwritten in
+place, and absent from git. The pack is immutable, content-addressed, pinned in `fhir.lock`,
+reviewed, and committed — a private convenience replaced by a shared, reproducible contract.
 
-### If warm builds were already cached, what does the pack actually fix?
+### Then what does the pack fix?
 
-The documented failure modes of that mutable cache — which the pinned, immutable model removes by
-construction:
+The stock cache's documented failure modes — each removed by the immutable, pinned model:
 
-| Stock cache problem | Pinned-pack outcome |
+| Stock cache failure | Pinned pack |
 |---|---|
-| **Cached poison** — a server flake writes an *error* into a `.cache` file; every later warm build replays it as a failure (fix = tribal `rm -rf ~/.fhir/tx-cache`). | Transport/transient errors are **structurally unrepresentable** in a pack — a recording stores a clean answer or nothing. |
-| **Wrong-branch keying** — the cache is keyed to the *alphabetically first* local branch, so caches silently cross branches. | No branch keying — one **content-addressed** pin, identical everywhere. |
-| **Ungated publish** — any green keyed build overwrites the one shared zip: no hash, diff, review, or provenance (and can distribute the poison above). | A refresh is an **immutable, hash-named** pack proposed via a **reviewed PR** with a machine diff. |
-| **Forks & CI are always cold** (fork zips 404) and **version bumps re-cold everyone** at once. | The answers ship **with the checkout**, fetched by hash → **cold == warm** for forks, CI, and after a bump. |
-| **Failed builds re-pay the whole network bill** (the fail→fix→rerun loop). | Hermetic + **complete**: every answer is present or the build hard-fails; reruns are free and offline. |
+| A server flake writes an *error* into a `.cache` file, and every later warm build replays it as a failure (the folk remedy is `rm -rf ~/.fhir/tx-cache`). | A pack cannot hold a transport error: a recording stores a clean answer or nothing. |
+| The cache keys on the *alphabetically first* local branch, so branches silently share caches. | One content-addressed pin, identical on every branch and machine. |
+| Any green keyed build overwrites the one shared zip — no hash, diff, review, or provenance. | A refresh proposes an immutable, hash-named pack through a reviewed PR with a machine diff. |
+| Forks and CI start cold (their zips 404), and a cache-version bump re-colds everyone at once. | The answers arrive with the checkout, fetched by hash: cold equals warm for forks, CI, and after a bump. |
+| A failed build discards its fetches, so the fail→fix→rerun loop re-pays the full network bill. | The build is hermetic and complete: every answer is present or it stops, and reruns are free and offline. |
 
-Net: not "faster than warm," but **cold == warm, identical on every machine, un-poisonable, and
-drift-free** (measured: ~195s cold-with-pack ≈ ~197s warm; ~231s fully hermetic with the exact
-reference signature).
+The payoff is not "faster than warm." It is **cold equals warm, identical everywhere,
+un-poisonable, and drift-free** — measured at ~195s cold-with-pack against ~197s warm, and ~231s
+fully hermetic with the exact reference signature.
 
-### Isn't this just the expansions package?
+### Isn't this the expansions package?
 
-Same spirit — "ship terminology as data instead of asking for it" — but the expansions package
-covers only **pre-expanded value sets**. The pack generalizes that to the **whole question surface**
-the build actually asks (`validate-code`, `$expand`, server capabilities, resource lookups, registry
-resolutions, *and* negative "not on the server" answers), and pins the whole thing by hash.
+Same instinct — ship terminology as data instead of asking for it — but the expansions package
+ships only pre-expanded value sets. The pack covers the build's whole question surface:
+validate-code, expand, server capabilities, resource lookups, registry resolutions, and negative
+answers, all pinned by hash.
