@@ -4,7 +4,7 @@
   "packages": {
     "hl7.fhir.r6.txpack": {
       "version": "20260615",
-      "resolved": "https://github.com/jmandel/fhir-perf/releases/download/txpack-future-v1/txpack-fa8828e5.zip",
+      "resolved": "https://github.com/jmandel/fhir/releases/download/txpack-store/txpack-fa8828e5.zip",
       "integrity": "sha256-+ogo5S8ClXr73ma1upOEAVjq418hz9VCTTTyw/SgEfY=",
       "contentSha256": "fa8828e52f02957afbde66b5ba93840158eae35f21cfd5424d34f2c3f4a011f6",
       "recordedAgainst": "tx.fhir.org (the canonical public server; federates to tx.hl7europe.eu), 2026-06-15 (recorded from scratch in GitHub Actions via the full_pin bootstrap, no prior pin)"

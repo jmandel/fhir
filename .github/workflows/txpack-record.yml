@@ -96,7 +96,7 @@ jobs:
             -pinned fhir.lock -out candidate-pack
       - name: Propose, if a change survived confirmation
         env:
-          PACK_STORE_TOKEN: ${{ secrets.PACK_STORE_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           if [ ! -f candidate-pack.zip ]; then
             echo "no confirmed change — the build-A delta did not reproduce (server flakiness); nothing to propose."
@@ -105,27 +105,24 @@ jobs:
           sha=$(sha256sum candidate-pack.zip | cut -d' ' -f1)
           name="txpack-${sha:0:8}.zip"
           cp candidate-pack.zip "$name"
-          if [ -z "$PACK_STORE_TOKEN" ]; then
-            echo "::warning::Confirmed candidate $name (sha256 $sha) is ready, but the PACK_STORE_TOKEN secret is"
-            echo "::warning::unset, so it cannot be published to the cross-repo pack store and no lock-bump PR can"
-            echo "::warning::be filed. Add a PAT with contents:write on BOTH this repo and the pack-store repo"
-            echo "::warning::(jmandel/fhir-perf) as the PACK_STORE_TOKEN secret to close the loop."
-            exit 0
-          fi
-          # 1) publish the immutable, hash-named pack to the store (cross-repo upload needs the PAT)
-          GH_TOKEN="$PACK_STORE_TOKEN" gh release upload txpack-future-v1 "$name" --repo jmandel/fhir-perf --clobber
-          url="https://github.com/jmandel/fhir-perf/releases/download/txpack-future-v1/$name"
-          # 2) file the refresh request -> triggers txpack-refresh.yml (canonical diff -> output A/B ->
-          #    AI explanation -> lock-bump PR). Pushed with the PAT, NOT the default GITHUB_TOKEN: a
-          #    GITHUB_TOKEN-authored push deliberately does not trigger other workflows (loop guard).
-          mkdir -p .txpack
-          jq -n --arg u "$url" --arg s "$sha" '{candidate_url:$u, candidate_sha256:$s}' > .txpack/refresh-request.json
-          git config user.name "txpack-recorder"
-          git config user.email "noreply@github.com"
-          git add .txpack/refresh-request.json
-          git commit -m "refresh: propose $name (sha256 $sha)"
-          git push "https://x-access-token:${PACK_STORE_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:${GITHUB_REF_NAME}"
-          echo "proposed $name -> txpack-refresh will diff it, measure published impact, and open the lock-bump PR"
+          # Publish the immutable, hash-named pack to THIS repo's own store release (default
+          # GITHUB_TOKEN, same repo — no cross-repo token). Reads stay public curl, so consumers
+          # need nothing. The store release is created on demand if it doesn't exist yet.
+          gh release view txpack-store --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1 \
+            || gh release create txpack-store --repo "$GITHUB_REPOSITORY" --title "txpack answer-pack store" --notes "Content-addressed terminology answer packs, published by this repo's own recorder."
+          gh release upload txpack-store "$name" --repo "$GITHUB_REPOSITORY" --clobber
+          url="https://github.com/${GITHUB_REPOSITORY}/releases/download/txpack-store/$name"
+          # Hand the candidate to the downstream refresh workflow as an artifact; it chains off this
+          # run via workflow_run (GITHUB_TOKEN-safe) and downloads it — no PAT, no triggering push.
+          mkdir -p out
+          jq -n --arg u "$url" --arg s "$sha" '{candidate_url:$u, candidate_sha256:$s}' > out/refresh-request.json
+          echo "proposed $name (sha256 $sha) -> txpack-refresh will diff it, measure impact, and open the PR"
+      - name: Hand candidate to the refresh workflow
+        if: hashFiles('out/refresh-request.json') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: refresh-request
+          path: out/refresh-request.json
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: record-logs, path: "record-*.log", if-no-files-found: ignore }

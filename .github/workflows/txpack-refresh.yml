@@ -10,13 +10,22 @@ name: txpack refresh (lock-bump PR prototype)
 # policy is a dial on the machine-generated facts (auto-merge additions-only; human review for
 # changed answers) - never on the AI prose, which is explanation, not evidence.
 
-# Trigger: push a request file (the dispatch API requires workflows to exist on the default
-# branch, which this demo branch is not; on a real deployment this workflow lives on main and
-# plain workflow_dispatch works). The request file carries the candidate pack's url + sha256.
+# Trigger: chained off the recorder via workflow_run (GITHUB_TOKEN-safe — no PAT, no triggering
+# push) when a nightly delta survives reproduce-before-propose; the candidate (url + sha256)
+# arrives as the record run's `refresh-request` artifact. Also manually runnable with explicit
+# candidate inputs (e.g. to exercise the diff -> impact -> explanation -> PR machinery on demand).
 on:
-  push:
-    branches: [txpack-future]
-    paths: ['.txpack/refresh-request.json']
+  workflow_run:
+    workflows: ["txpack record (nightly refresh — recorder half)"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      candidate_url:
+        description: "URL of the candidate pack zip"
+        required: true
+      candidate_sha256:
+        description: "sha256 (hex) of the candidate pack zip"
+        required: true
 
 permissions:
   contents: write
@@ -26,29 +35,46 @@ permissions:
 jobs:
   compare-and-propose:
     runs-on: ubuntu-latest
+    # only proceed when triggered manually, or by a record run that actually SUCCEEDED
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v4
-      - name: Read request, fetch current and candidate packs
+      - name: Resolve candidate (record-run artifact, or dispatch inputs)
         id: req
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          cand_url=$(jq -r .candidate_url .txpack/refresh-request.json)
-          cand_sha=$(jq -r .candidate_sha256 .txpack/refresh-request.json)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            cand_url='${{ inputs.candidate_url }}'; cand_sha='${{ inputs.candidate_sha256 }}'
+          else
+            # the triggering record run attaches a refresh-request artifact ONLY when it proposed a
+            # confirmed delta; absent it, this was a no-delta night - exit quietly.
+            if ! gh run download "${{ github.event.workflow_run.id }}" --repo "$GITHUB_REPOSITORY" --name refresh-request --dir req 2>/dev/null; then
+              echo "no refresh-request artifact on the triggering run - nothing proposed; done."
+              echo "proceed=false" >> "$GITHUB_OUTPUT"; exit 0
+            fi
+            cand_url=$(jq -r .candidate_url req/refresh-request.json)
+            cand_sha=$(jq -r .candidate_sha256 req/refresh-request.json)
+          fi
+          echo "proceed=true" >> "$GITHUB_OUTPUT"
           echo "cand_url=$cand_url" >> "$GITHUB_OUTPUT"; echo "cand_sha=$cand_sha" >> "$GITHUB_OUTPUT"
           cur_url=$(jq -r '.packages[] | select(.contentSha256) | .resolved' fhir.lock)
           cur_int=$(jq -r '.packages[] | select(.contentSha256) | .integrity' fhir.lock)
           cur_sha=$(echo "$cur_int" | sed 's/^sha256-//' | base64 -d | xxd -p -c64)
-          curl -fsSL -o current.zip "$cur_url";   echo "$cur_sha  current.zip"   | sha256sum -c -
-          curl -fsSL -o candidate.zip "$cand_url"
-          echo "$cand_sha  candidate.zip" | sha256sum -c -
+          curl -fsSL -o current.zip "$cur_url";    echo "$cur_sha  current.zip"   | sha256sum -c -
+          curl -fsSL -o candidate.zip "$cand_url"; echo "$cand_sha  candidate.zip" | sha256sum -c -
       - uses: actions/setup-java@v4
+        if: steps.req.outputs.proceed == 'true'
         with: { distribution: temurin, java-version: "17" }
       - name: Fetch tooling jar (from kindling-wrapper.properties)
+        if: steps.req.outputs.proceed == 'true'
         run: |
           url=$(grep '^toolUrl=' tools/build/kindling-wrapper.properties | cut -d= -f2-)
           sha=$(grep '^toolSha256=' tools/build/kindling-wrapper.properties | cut -d= -f2-)
           curl -fsSL -o tool.jar "$url"; echo "$sha  tool.jar" | sha256sum -c -
       - name: Canonical compare (Java packager diff)
         id: diff
+        if: steps.req.outputs.proceed == 'true'
         run: |
           set +e
           java -cp tool.jar org.hl7.fhir.tools.publisher.SpecBuild diff-packs current.zip candidate.zip > pack-diff.md
