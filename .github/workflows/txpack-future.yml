@@ -15,10 +15,14 @@ on:
         default: false
 
 jobs:
-  # the required, every-push gate: ONE hermetic cold build (~4 min). Zero terminology network,
-  # enforced; output signature checked. This is the everyday CI cost of the future world.
-  future-hermetic:
-    name: "Future: hermetic cold build (zero terminology network)"
+  # The required, every-push gate: ONE pack-seeded build (~4 min) that ALLOWS intentional new codes
+  # to reach the server, and surfaces the new-terminology count + the output signature as SIGNALS,
+  # not gates. A content edit that adds new terminology is GREEN here (with "N new terminology
+  # questions" reported for the reviewer); a no-new-code push still touches the network zero times
+  # (the pack answers everything). Offline-completeness of the *pinned world* is proven separately,
+  # on pin changes (the job below). See docs/txpack-vision.md ("a signal, not a gate").
+  future-build:
+    name: "Future: pack-seeded build (online; new terminology is a signal, not a gate)"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,12 +40,61 @@ jobs:
             ~/.fhir/tx-packs
             ~/.fhir/tools
           key: fhirlock-${{ hashFiles('fhir.lock', 'tools/build/kindling-wrapper.properties') }}
-      - name: Hermetic cold build + signature check
-        run: HEAP=11g ./tools/build/build.sh
+      - name: Build (pack-seeded, --online) + report new terminology & signature as signals
+        env:
+          SIGNATURE_GATE: report   # content edits legitimately move the signature; report, don't gate
+        run: HEAP=11g ./tools/build/build.sh --online
       - name: Upload build log
         if: always()
         uses: actions/upload-artifact@v4
         with: { name: build-future-log, path: build-future.log }
+
+  # The pinned world's property, verified where the vision says it lives: ON A REFRESH (a fhir.lock
+  # or toolchain-pin change). Strict hermetic (zero terminology network) + signature, BOTH enforced,
+  # proving the pin is offline-complete. Skipped on ordinary content pushes — which may legitimately
+  # add codes the current pin does not cover yet (those build green above, with a signal).
+  pinned-world-hermetic:
+    name: "Pinned world: strict hermetic + signature (on pin / tooling change)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 2 }
+      - name: Did the pinned world (fhir.lock / wrapper) change in this push?
+        id: pin
+        run: |
+          base="${{ github.event.before }}"
+          if [ -n "$base" ] && git cat-file -e "${base}^{commit}" 2>/dev/null \
+             && git diff --name-only "$base" HEAD > /tmp/changed 2>/dev/null; then
+            if grep -qE '^fhir\.lock$|^tools/build/kindling-wrapper\.properties$' /tmp/changed; then
+              changed=true
+            else
+              changed=false
+            fi
+          else
+            changed=true   # can't determine the base -> verify, to be safe
+          fi
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+          if [ "$changed" = true ]; then
+            echo "pinned world changed -> strict hermetic + signature ENFORCED."
+          else
+            echo "content-only push -> strict hermetic skipped (it is verified on pin changes)."
+          fi
+      - uses: actions/setup-java@v4
+        if: steps.pin.outputs.changed == 'true'
+        with: { distribution: temurin, java-version: "17" }
+      - name: Cache FHIR package cache
+        if: steps.pin.outputs.changed == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.fhir/packages
+          key: fhir-packages-${{ runner.os }}-v1
+      - name: Strict hermetic cold build + signature (ENFORCED)
+        if: steps.pin.outputs.changed == 'true'
+        run: HEAP=11g ./tools/build/build.sh
+      - name: Upload build log
+        if: always() && steps.pin.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with: { name: build-pinned-hermetic-log, path: build-future.log }
 
   # the OPTIONAL reproducibility track: double build + evidence-judged byte parity against the
   # committed reference. Runs when the pinned world itself changes (fhir.lock, the wrapper pin, the verification

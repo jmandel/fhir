@@ -7,7 +7,12 @@ A fast, hermetic, reproducible build of the FHIR specification, driven by a pinn
 - **Hermetic.** Every terminology question (`validate-code`, `expand`, server capabilities,
   `findTxResource`, tx-registry `/resolve`) is answered from a pinned, content-addressed pack
   *before* any network call. By default **any** attempt to reach a terminology server is a hard
-  failure — proving the build is offline-complete.
+  failure — proving the build is offline-complete. Adding new codes the pack hasn't seen is the
+  one expected exception: the failure names the missing answer and tells you to re-run with
+  `--online` (see [§1.2](#12-hermetic-is-the-default), which asks the server *only* those new
+  questions and reports the count). CI follows the same split — content PRs that add terminology
+  are green with a "N new terminology questions" signal; strict offline-completeness is enforced
+  on pin changes, not on every content push.
 - **Reproducible.** Accidental nondeterminism is fixed at source and inherent volatility is
   normalized, so the same commit produces the same bytes (run-to-run variance went from ~21
   differing output files to ~0). The output is checked against a signature pinned in `fhir.lock`.
@@ -301,13 +306,16 @@ moves in a separate, evidence-backed bot PR.
 
 ## 4. The CI workflows & verification layers
 
-Three workflows live on `txpack-future`. One gates every push; two run the refresh loop.
+Three workflows live on `txpack-future`. `txpack-future.yml` gates builds (a pack-seeded build on
+every push; strict hermetic on pin changes); `txpack-record.yml` + `txpack-refresh.yml` run the
+refresh loop.
 
 ### The verification layers, at a glance
 
 | Layer | What it ensures | When |
 |---|---|---|
-| **Hermetic 0-miss** | offline completeness — the pack answers every question, zero tx network | every push |
+| **Pack-seeded build + new-terminology signal** | the spec builds; intentional new codes reach the server and are *reported*, not blocked | every push |
+| **Hermetic 0-miss** | offline completeness — the pinned pack answers every question, zero tx network | on pin / tooling change |
 | **Drift diff** (record vs pinned) | server drift — the pinned pack still matches reality | nightly |
 | **Reproduce-before-propose** | flake filter — a proposed change reproduces independently | nightly, on a delta |
 | **Judge vs `ref.manifest`** | output reproducibility — published bytes match the reference | on `[parity]` / dispatch |
@@ -320,7 +328,8 @@ Determinism is what makes every *output* comparison meaningful.
 
 | Job | Trigger | What it does |
 |---|---|---|
-| **`future-hermetic`** | **every push** (required) | one hermetic cold build, `HEAP=11g ./tools/build/build.sh` — zero tx network (enforced) + signature check. The everyday CI cost. |
+| **`future-build`** | **every push** (required) | one pack-seeded build, `SIGNATURE_GATE=report HEAP=11g ./tools/build/build.sh --online` — a no-new-code push still touches the network zero times; intentional new codes reach the server and surface as a "N new terminology questions" signal; the signature is reported, not gated. The everyday CI cost. |
+| **`pinned-world-hermetic`** | **pin / tooling change** (`fhir.lock` or wrapper) | strict hermetic cold build `HEAP=11g ./tools/build/build.sh` — zero tx network + signature, **both enforced**: proves the pin is offline-complete. Skipped on content-only pushes. |
 | **`reproducibility`** | `[parity]` commit msg, or dispatch `parity=true` (`continue-on-error`) | two builds: `--manifest` (convergence + evidence) then `--judge` (compare vs `ref.manifest`, with allowlist + `-prev`). Non-blocking signal; *allows* expected differences. |
 | **`determinism-gate`** | `[determinism]` commit msg, or dispatch `parity=true` | three builds (first discarded for convergence), then `SpecBuild compare mA mB` with **no allowlist, no `-prev`** — any non-ordering content diff between two same-commit builds **fails**. *Forbids* differences. |
 | **`stock-baseline`** | dispatch `stock_baseline=true` | the legacy `./publish.sh` cold build vs `tx.fhir.org`, for timing comparison. Slow; run rarely. |
