@@ -99,7 +99,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           if [ ! -f candidate-pack.zip ]; then
-            echo "no confirmed change — the build-A delta did not reproduce (server flakiness); nothing to propose."
+            # No candidate survived. Two distinct, both-fine reasons (the record + reproduce steps
+            # above say which): the cold recording was canonically identical to the pinned pack (the
+            # common quiet night), OR a delta did not reproduce in the second recording (server flake,
+            # correctly dropped). Either way there is nothing to propose - this is success, not failure.
+            echo "nothing to propose: the pinned pack still matches the server (no delta), or a delta did not reproduce. See the record/reproduce steps above for which."
             exit 0
           fi
           sha=$(sha256sum candidate-pack.zip | cut -d' ' -f1)
