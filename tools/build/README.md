@@ -193,7 +193,7 @@ Four checks, each guarding a different failure:
 Hermetic 0-miss is strong because a missing answer is a hard failure that names the request, not a
 silent fallback — so zero misses proves completeness. Determinism is what makes the judge
 meaningful: if one commit built to different bytes each run, comparing against a reference would
-compare noise (run-to-run variance fell from ~21 differing files to ~0). The **signature gate** is
+compare noise (run-to-run variance fell from a couple dozen differing files to essentially none). The **signature gate** is
 the judge's always-on cousin: after every build it compares the error/warning/info summary against
 the count pinned in `fhir.lock`, and fails on a mismatch unless you set `SIGNATURE_GATE=report`
 (or `-Dorg.hl7.fhir.spec.signatureGate=report`) while a change intentionally moves it.
@@ -268,12 +268,18 @@ reproduce-before-propose. For the full treatment, see
 It did — and this is the core spec build, not an IG-Publisher-only path; both drive the same
 `TerminologyCacheManager` in core. The stock toolchain keeps a per-machine cache at
 `~/.fhir/tx-cache/{org}/{repo}/{branch}/` (the `{org}/{repo}/{branch}` comes from the checkout's
-git branch), read at startup and written each run, so a *warm* build already finishes in ~197s
-while a *cold* one takes ~18 min. It also moves that cache over the network: at startup it downloads
-`https://tx.fhir.org/tx-cache/.../{branch}.zip` when its version stamp is stale, and a build that
-holds a tx.fhir.org API key (in practice HL7's CI or the tx maintainer) zips the cache back up at
-the end and PUTs it over the same URL in place. (That cache is separate from the IG *expansions
-package*, which ships pre-expanded value sets.)
+git branch), read at startup and written each run, which is why a *warm* build (one whose cache is
+already populated) is much faster than a *cold* one. It also moves that cache over the network: at
+startup it downloads `https://tx.fhir.org/tx-cache/.../{branch}.zip` when its version stamp is
+stale, and a build that holds a tx.fhir.org API key (in practice HL7's CI or the tx maintainer)
+zips the cache back up at the end and PUTs it over the same URL in place.
+
+That download is also why "surely the zip keeps CI warm" doesn't hold in the old model: the zip
+exists only where a keyed build has uploaded it — the canonical HL7 repo's branches. A fork (say
+`jmandel/fhir`), or any runner without that API key, requests its own URL, gets a 404 (and the
+`default.zip` fallback 404s too), and runs cold. The zip warms HL7's own CI, not forks or
+contributors. (This is the terminology cache, used by *both* the core spec build and the IG
+Publisher; it is separate from the IG *expansions package*, which ships pre-expanded value sets.)
 
 So txpack does not remove network calls the cache had already removed for warm builds. It changes
 what the cache *is*. The stock cache is mutable, machine-local, ungated, overwritten in place, and
@@ -296,8 +302,8 @@ The stock cache's documented failure modes — each removed by the immutable, pi
 | A failed build discards its fetches, so the fail→fix→rerun loop re-pays the full network bill. | The build is hermetic and complete: every answer is present or it stops, and reruns are free and offline. |
 
 The payoff is not "faster than warm." It is **cold equals warm, identical everywhere,
-un-poisonable, and drift-free** — measured at ~195s cold-with-pack against ~197s warm, and ~231s
-fully hermetic with the exact reference signature.
+un-poisonable, and drift-free**: a cold build with the pack runs in the same few minutes as a warm
+one, and a fully hermetic build (zero terminology network) lands on the exact reference signature.
 
 ### Isn't this the expansions package?
 
