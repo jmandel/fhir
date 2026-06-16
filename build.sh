@@ -1,4 +1,14 @@
 #!/bin/bash
+# ----------------------------------------------------------------------------------------------
+# LEGACY stock build (svn + ant + publish.sh; ~20 min, requires a live terminology server).
+# On the txpack-future branch this is NOT the front door. The fast, offline, JDK-only build is:
+#
+#     java -jar tools/build/launch.jar build .      # any OS; ~4 min; zero terminology network
+#     ./tools/build/build.sh                        # unix alias for the same command
+#
+# Full guide: tools/build/README.md  (concepts, CLI, --online for new codes, CI, the refresh loop).
+# This legacy script is kept for the existing Azure pipelines and is otherwise superseded.
+# ----------------------------------------------------------------------------------------------
 set -ev
 
 NAME="Continuous Integration Build"
