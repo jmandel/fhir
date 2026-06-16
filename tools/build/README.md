@@ -270,15 +270,18 @@ It did — and this is the core spec build, not an IG-Publisher-only path; both 
 `~/.fhir/tx-cache/{org}/{repo}/{branch}/` (the `{org}/{repo}/{branch}` comes from the checkout's
 git branch), read at startup and written each run, so a *warm* build already finishes in ~197s
 while a *cold* one takes ~18 min. It also moves that cache over the network: at startup it downloads
-`https://tx.fhir.org/tx-cache/.../{branch}.zip` when its version stamp is stale, and a keyed build
-(HL7 CI, or the tx maintainer) zips the cache back up at the end and PUTs it over the same URL in
-place. (That cache is separate from the IG *expansions package*, which ships pre-expanded value
-sets.)
+`https://tx.fhir.org/tx-cache/.../{branch}.zip` when its version stamp is stale, and a build that
+holds a tx.fhir.org API key (in practice HL7's CI or the tx maintainer) zips the cache back up at
+the end and PUTs it over the same URL in place. (That cache is separate from the IG *expansions
+package*, which ships pre-expanded value sets.)
 
 So txpack does not remove network calls the cache had already removed for warm builds. It changes
-what the cache *is*. The stock cache is mutable, per-machine, per-branch, ungated, overwritten in
-place, and absent from git. The pack is immutable, content-addressed, pinned in `fhir.lock`,
-reviewed, and committed — a private convenience replaced by a shared, reproducible contract.
+what the cache *is*. The stock cache is mutable, machine-local, ungated, overwritten in place, and
+has no committed reference at all — a build just trusts whatever happens to be on disk or in the
+shared zip. The pack is immutable and named by a hash that a reviewed `fhir.lock` pins. As with
+`package-lock.json`, what's committed is the *pin*, not the data: the pack bytes live in a release,
+fetched and integrity-checked on use (like `node_modules`, never vendored into git). A
+machine-local convenience becomes a shared, reviewed contract.
 
 ### Then what does the pack fix?
 
@@ -287,8 +290,8 @@ The stock cache's documented failure modes — each removed by the immutable, pi
 | Stock cache failure | Pinned pack |
 |---|---|
 | A server flake writes an *error* into a `.cache` file, and every later warm build replays it as a failure (the folk remedy is `rm -rf ~/.fhir/tx-cache`). | A pack cannot hold a transport error: a recording stores a clean answer or nothing. |
-| The cache keys on the *alphabetically first* local branch, so branches silently share caches. | One content-addressed pin, identical on every branch and machine. |
-| Any green keyed build overwrites the one shared zip — no hash, diff, review, or provenance. | A refresh proposes an immutable, hash-named pack through a reviewed PR with a machine diff. |
+| It is meant to be per-branch, but it picks the branch wrong — the *alphabetically-first* local branch, not the one checked out — so builds of different branches collide in one directory. | One content-addressed pin, the same on every branch and machine. |
+| Any successful build that holds a tx.fhir.org API key overwrites the one shared zip — no hash, diff, review, or provenance. | A refresh proposes an immutable, hash-named pack through a reviewed PR with a machine diff. |
 | Forks and CI start cold (their zips 404), and a cache-version bump re-colds everyone at once. | The answers arrive with the checkout, fetched by hash: cold equals warm for forks, CI, and after a bump. |
 | A failed build discards its fetches, so the fail→fix→rerun loop re-pays the full network bill. | The build is hermetic and complete: every answer is present or it stops, and reruns are free and offline. |
 
