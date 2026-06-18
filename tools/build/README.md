@@ -202,7 +202,7 @@ the count pinned in `fhir.lock`, and fails on a mismatch unless you set `SIGNATU
 
 ## CI workflows
 
-Three workflows run on `txpack-future`. The recurring design choice is **signal vs. gate**: a
+Two workflows run on `txpack-future`. The recurring design choice is **signal vs. gate**: a
 content push reports new terminology rather than blocking on it, and strict offline-completeness is
 enforced only when the pin or tooling changes.
 
@@ -214,14 +214,14 @@ enforced only when the pin or tooling changes.
   judge; *determinism-gate* (`[determinism]`) demands two byte-identical builds of one commit;
   *stock-baseline* (manual) times the legacy build.
 
-- **`txpack-record.yml` — the nightly recorder.** A cron job records → reproduces → publishes a
-  candidate pack to this repo's own `txpack-store` release, then emits a `refresh-request` artifact.
-  A manual `full_pin` job does a from-scratch [pin bootstrap](#concepts), hermetic-verified.
-
-- **`txpack-refresh.yml` — the lock-bump PR.** Chained off the recorder by `workflow_run`, so it
-  needs no cross-repo token: it diffs the candidate against the pin, builds an A/B output-impact
-  report, has an LLM summarize those diffs in plain English, and opens a PR that touches **only
-  `fhir.lock`**.
+- **`txpack-record.yml` — the nightly refresh.** A cron workflow with two dependent jobs in one run.
+  *record* cold-records → reproduces → publishes a confirmed candidate pack to this repo's own
+  `txpack-store` release, and exposes its url + sha as **job outputs** (`changed`/`cand_url`/`cand_sha`).
+  *refresh* (`needs: record`, `if: changed == 'true'`) diffs the candidate against the pin, builds an
+  A/B output-impact report, has an LLM summarize the diffs in plain English, and opens a PR that
+  touches **only `fhir.lock`**. On a quiet night `record` sets `changed=false` and *refresh* is simply
+  **skipped** — no separate run, no artifact. A manual `full_pin` job does a from-scratch
+  [pin bootstrap](#concepts), hermetic-verified.
 
 Reads need no token — they are public `curl`, verified on use. The **pack** publishes to this
 repo's `txpack-store` release (default `GITHUB_TOKEN`); the **tool jar** lives on the

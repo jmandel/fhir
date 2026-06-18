@@ -1,28 +1,26 @@
-name: txpack record (nightly refresh — recorder half)
+name: "txpack refresh (nightly: record → reproduce → lock-bump PR)"
 
-# The UPSTREAM half of the lock-bump pipeline: re-capture any terminology questions the current
-# pinned pack is missing, and (if the answers actually changed) hand a candidate pack to the
-# downstream txpack-refresh workflow, which diffs it, measures its published-output impact, and
-# opens the lock-bump PR.
+# The nightly pack-refresh pipeline, in ONE workflow: re-record the terminology answers against the
+# canonical server, and — only if they genuinely changed — open a lock-bump PR.
 #
 # How it works (the determinism contract — see docs/txpack-vision.md in jmandel/fhir-perf):
 # `SpecBuild record` runs a COLD build (NOT seeded from the pinned pack) ONLINE with recording on,
 # so every question is re-asked and a server FIX is visible. The candidate is CARRY-FORWARD
-# (merge([pinned, fresh]) — fresh wins on overlap; the pinned answer survives only where a
-# transient server failure dropped it, so a flake never becomes a spurious "removed"). It is diffed
-# against the pinned pack: unchanged → exit silently (the common nightly outcome). On a delta, a
-# REPRODUCE step runs a second independent recording and `SpecBuild reproduce` keeps only the deltas
-# both recordings agree on — a load-induced flap does not reproduce and is dropped. So a proposal is,
-# by construction, a real change in the canonical server's answers, never our noise and never a hiccup.
+# (merge([pinned, fresh]) — fresh wins on overlap; the pinned answer survives only where a transient
+# server failure dropped it, so a flake never becomes a spurious "removed"). It is diffed against the
+# pinned pack: unchanged → nothing to propose (the common nightly outcome). On a delta, a REPRODUCE
+# step runs a second independent recording and `SpecBuild reproduce` keeps only the deltas both
+# recordings agree on. So a proposal is, by construction, a real change in the server's answers.
 #
-# Scheduled nightly against the canonical server (tx.fhir.org). Most nights: one cold build, no delta,
-# silent. On a real change: a second build confirms it and a candidate is emitted.
+# Two jobs, one run:
+#   record  — cold-record → reproduce → publish the confirmed candidate pack to THIS repo's own
+#             txpack-store release, and expose its url+sha as job outputs (changed/cand_url/cand_sha).
+#   refresh — needs: record, runs ONLY when changed=true: canonical diff → published-output A/B →
+#             AI explanation → a PR that mutates only fhir.lock. On a quiet night `record` sets
+#             changed=false and this job is simply SKIPPED — no separate workflow run, no artifact.
 #
-# Manual `full_pin` dispatch: instead of the nightly delta path, cold-record a COMPLETE pack against
-# the public server, then verify it builds the spec HERMETICALLY with zero terminology network (so a
-# missing answer is a hard failure, never a silent miss) and upload it as an artifact. This is the
-# from-scratch pinning demonstration — and because a GitHub runner can only reach the public server,
-# the resulting pack is provably recorded against tx.fhir.org, never a local terminology server.
+# Manual `full_pin` dispatch: a separate from-scratch pinning demo — cold-record a COMPLETE pack and
+# verify it builds hermetically (zero misses). Uploaded as an artifact; does not open a PR.
 
 on:
   schedule:
@@ -43,6 +41,8 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
+  models: read
 
 jobs:
   # the nightly delta/refresh path (schedule, or a manual dispatch that is NOT a full re-pin)
@@ -50,6 +50,10 @@ jobs:
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.full_pin)
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    outputs:
+      changed:  ${{ steps.propose.outputs.changed }}
+      cand_url: ${{ steps.propose.outputs.cand_url }}
+      cand_sha: ${{ steps.propose.outputs.cand_sha }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -95,6 +99,7 @@ jobs:
             -fresh candidate-A.fresh.zip -confirm candidate-B.fresh.zip \
             -pinned fhir.lock -out candidate-pack
       - name: Propose, if a change survived confirmation
+        id: propose
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -104,6 +109,7 @@ jobs:
             # common quiet night), OR a delta did not reproduce in the second recording (server flake,
             # correctly dropped). Either way there is nothing to propose - this is success, not failure.
             echo "nothing to propose: the pinned pack still matches the server (no delta), or a delta did not reproduce. See the record/reproduce steps above for which."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           sha=$(sha256sum candidate-pack.zip | cut -d' ' -f1)
@@ -116,20 +122,122 @@ jobs:
             || gh release create txpack-store --repo "$GITHUB_REPOSITORY" --title "txpack answer-pack store" --notes "Content-addressed terminology answer packs, published by this repo's own recorder."
           gh release upload txpack-store "$name" --repo "$GITHUB_REPOSITORY" --clobber
           url="https://github.com/${GITHUB_REPOSITORY}/releases/download/txpack-store/$name"
-          # Hand the candidate to the downstream refresh workflow as an artifact; it chains off this
-          # run via workflow_run (GITHUB_TOKEN-safe) and downloads it — no PAT, no triggering push.
-          mkdir -p out
-          jq -n --arg u "$url" --arg s "$sha" '{candidate_url:$u, candidate_sha256:$s}' > out/refresh-request.json
-          echo "proposed $name (sha256 $sha) -> txpack-refresh will diff it, measure impact, and open the PR"
-      - name: Hand candidate to the refresh workflow
-        if: hashFiles('out/refresh-request.json') != ''
-        uses: actions/upload-artifact@v4
-        with:
-          name: refresh-request
-          path: out/refresh-request.json
+          # Hand the candidate to the refresh job (below) via job OUTPUTS — same workflow run, no
+          # artifact, no cross-workflow trigger.
+          echo "changed=true"   >> "$GITHUB_OUTPUT"
+          echo "cand_url=$url"   >> "$GITHUB_OUTPUT"
+          echo "cand_sha=$sha"   >> "$GITHUB_OUTPUT"
+          echo "proposed $name (sha256 $sha) -> the refresh job will diff it, measure impact, and open the PR"
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: record-logs, path: "record-*.log", if-no-files-found: ignore }
+
+  # the downstream half, now a DEPENDENT job: runs only when `record` confirmed a real, reproduced
+  # change. On a quiet night `record.outputs.changed` is "false" and this whole job is SKIPPED — no
+  # separate workflow run, no artifact hand-off; the candidate url+sha arrive as job outputs.
+  refresh:
+    needs: record
+    if: needs.record.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch the current + candidate packs (urls/shas from the record job)
+        run: |
+          cand_url='${{ needs.record.outputs.cand_url }}'
+          cand_sha='${{ needs.record.outputs.cand_sha }}'
+          cur_url=$(jq -r '.packages[] | select(.contentSha256) | .resolved' fhir.lock)
+          cur_int=$(jq -r '.packages[] | select(.contentSha256) | .integrity' fhir.lock)
+          cur_sha=$(echo "$cur_int" | sed 's/^sha256-//' | base64 -d | xxd -p -c64)
+          curl -fsSL -o current.zip "$cur_url";    echo "$cur_sha  current.zip"   | sha256sum -c -
+          curl -fsSL -o candidate.zip "$cand_url"; echo "$cand_sha  candidate.zip" | sha256sum -c -
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+      - name: Fetch tooling jar (from kindling-wrapper.properties)
+        run: |
+          url=$(grep '^toolUrl=' tools/build/kindling-wrapper.properties | cut -d= -f2-)
+          sha=$(grep '^toolSha256=' tools/build/kindling-wrapper.properties | cut -d= -f2-)
+          curl -fsSL -o tool.jar "$url"; echo "$sha  tool.jar" | sha256sum -c -
+      - name: Canonical compare (Java packager diff)
+        id: diff
+        run: |
+          set +e
+          java -cp tool.jar org.hl7.fhir.tools.publisher.SpecBuild diff-packs current.zip candidate.zip > pack-diff.md
+          rc=$?
+          set -e
+          if [ $rc -eq 0 ]; then
+            echo "No semantic change - keeping the current pack; nothing to propose."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          elif [ $rc -eq 3 ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            exit $rc
+          fi
+          cat pack-diff.md
+      # layer 1: what does this bump actually do to the published spec? Same-machine A/B:
+      # build with the current pack, build with the candidate, diff content-level output.
+      # Hermetic both times - a candidate that DROPS needed answers fails loudly right here.
+      - name: Cache FHIR package cache
+        if: steps.diff.outputs.changed == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.fhir/packages
+          key: fhir-packages-${{ runner.os }}-v1
+      - name: Output A/B (current pack, then candidate)
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          java -Xmx11g -Dorg.hl7.fhir.tx.pack="$PWD/current.zip" -cp tool.jar \
+            org.hl7.fhir.tools.publisher.SpecBuild build . --manifest
+          cp build-future.manifest /tmp/old-output.manifest
+          rm -f build-future.manifest
+          SIGNATURE_GATE=report java -Xmx11g -Dorg.hl7.fhir.tx.pack="$PWD/candidate.zip" -cp tool.jar \
+            org.hl7.fhir.tools.publisher.SpecBuild build . --manifest
+          CAND_SIG=$(grep -E "Summary: Errors=" build-future.log | tail -1 | sed 's/.*Summary: //')
+          CUR_SIG=$(jq -r '.expectedOutput | "Errors=\(.errors), Warnings=\(.warnings), Information messages=\(.information)"' fhir.lock)
+          { echo "## Published-output impact (same-machine A/B, content-level)";
+            echo;
+            echo "**Output signature with candidate: $CAND_SIG** (current pack: $CUR_SIG)";
+            echo;
+            java -cp tool.jar org.hl7.fhir.tools.publisher.SpecBuild impact /tmp/old-output.manifest build-future.manifest | sed 's/^/- /' > /tmp/impact-list.txt
+            n=$(wc -l < /tmp/impact-list.txt)
+            if [ "$n" -eq 0 ]; then echo "**No published file changes** - this bump is output-inert."; else
+              echo "**$n published file(s) change with this bump:**"; echo; cat /tmp/impact-list.txt; fi; } > output-impact.md
+          cat output-impact.md
+      - name: "Explanation section (GitHub Models - narrative only, no tools, no authority)"
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cat pack-diff.md output-impact.md > /tmp/explain-input.md 2>/dev/null || cp pack-diff.md /tmp/explain-input.md
+          jq -n --rawfile diff /tmp/explain-input.md '{
+            model: "openai/gpt-4o-mini",
+            messages: [
+              {role: "system", content: "You explain terminology answer-pack diffs for FHIR spec build reviewers. Use ONLY facts present in the supplied diff. Group related changes, state the likely kind of cause (new spec content vs server-side curation), and say plainly what a reviewer should look at. 3 short paragraphs max. Do not invent counts or claims."},
+              {role: "user", content: $diff}
+            ]
+          }' > req.json
+          curl -fsS https://models.github.ai/inference/chat/completions \
+            -H "Authorization: Bearer $GH_TOKEN" -H "Content-Type: application/json" \
+            -d @req.json | jq -r '.choices[0].message.content' > explanation.md \
+            || echo "_(explanation service unavailable; machine diff above is authoritative)_" > explanation.md
+      - name: Open lock-bump PR
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ssri="sha256-$(echo '${{ needs.record.outputs.cand_sha }}' | xxd -r -p | base64)"
+          name=$(jq -r '.packages | to_entries[] | select(.key | endswith(".txpack")) | .key' fhir.lock)
+          jq --arg n "$name" --arg url '${{ needs.record.outputs.cand_url }}' --arg int "$ssri" \
+             '.packages[$n].resolved=$url | .packages[$n].integrity=$int' fhir.lock > fhir.lock.new && mv fhir.lock.new fhir.lock
+          branch="txpack-bump-$(date +%Y%m%d-%H%M)"
+          git checkout -b "$branch"
+          git -c user.name=txpack-refresh -c user.email=noreply@github.com commit -am "Bump fhir.lock to candidate pack"
+          git push origin "$branch"
+          { echo "Machine-verified canonical diff (authoritative):"; echo; cat pack-diff.md; echo;
+            cat output-impact.md 2>/dev/null || true; echo;
+            echo "## Explanation (AI-generated from the diffs above - narrative only)"; echo; cat explanation.md; } > body.md
+          gh pr create --base "${{ github.ref_name }}" --head "$branch" \
+            --title "txpack refresh: $(grep -m1 'changed' pack-diff.md || echo 'answer updates')" \
+            --body-file body.md
 
   # the from-scratch pinning demonstration (manual `full_pin` dispatch only): cold-record a COMPLETE
   # pack against the public server, verify it builds the spec hermetically with zero misses, and
